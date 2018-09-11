@@ -6,6 +6,8 @@
 using namespace std;
 
 int main() {
-	Tournament t1;	
-	t1.print_welcome();
+	Tournament t1;
+	for (int i = 0; i < 5; i++) {
+		t1.start_round();
+	}	
 }
