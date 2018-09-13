@@ -23,6 +23,7 @@ using namespace std;
  * types array but instead use the modulus operator to incrementally apply types to each
  * card in the deck. 
  * Return: None
+ * Assistance: Neel helped me figure out an issue with pointer handling semantics during Card creation. 
  */
 Deck::Deck() {
 	// Iterate through deck and initialize cards.
