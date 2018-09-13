@@ -53,8 +53,14 @@ Deck::Deck() {
 
 /*
  * Function Name: draw_card()
- * Purpose: Will draw a card off the top of the deck.
+ * Purpose: Will draw a card off the top of the deck and return that card to be handled by player.
  * Params: None
+ * Local Variables: Card* card_drawn, a pointer to keep track of the card drawn off the top of the deck.
+ * Algo: 1) If deck is empty: Let user know and return default card.
+ * 	 2) Create a pointer and pass the address of the top card of the deck.
+ * 	 3) Print the card drawn to console.
+ * 	 4) Remove the top card from the deck.
+ * 	 5) Set the top_of_deck pointer to current top card. 
  * Return: Card * card_drawn - pointer to the Card drawn.
  */
 Card* Deck::draw_card() {
@@ -77,7 +83,8 @@ Card* Deck::draw_card() {
  * Purpose: Shuffles the deck of cards.
  * Params: None
  * Local Variables:
- * Algo:
+ * Algo: 1) Seed random generator based on time.
+ * 	 2) Shuffle deck.
  * Return: None
  */
 void Deck::shuffle_deck() {
@@ -85,9 +92,3 @@ void Deck::shuffle_deck() {
 	random_shuffle(&this->game_deck.front(), &this->game_deck.back());		
 }
 
-// Iterate through deck and print each card using get_card_string()
-/*void Deck::print_deck() {
-	for (int i = 0; i < 52; i++) {
-		cout << i << ": " <<  this->game_deck[i]->get_card_string() << endl;
-	}
-}*/

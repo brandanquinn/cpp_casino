@@ -8,9 +8,11 @@ using namespace std;
 
 int main() {
 	Deck test = Deck();
+	Card* temp_ptr = NULL;
 
 	cout << "Deck created" << endl;
 	for (int i = 0; i < 53; i++) {
-		test.draw_card();
+		temp_ptr = test.draw_card();
+		delete temp_ptr;		
 	}
 }

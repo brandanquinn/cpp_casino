@@ -25,6 +25,15 @@ Card::Card(char a_suit, char a_type) {
 	set_value();	
 }
 
+/*
+ * Function Name: create_map()
+ * Purpose: Generate map to pair card type to integer value.
+ * Params: None
+ * Return Value: None
+ * Local Variables: None
+ * Algo: 1) Generate map
+ * Assistance: None
+ */
 void Card::create_map() {
 	this->type_value_pairs = {
 		{'2', 2},
@@ -43,31 +52,98 @@ void Card::create_map() {
 	};
 }
 
+/*
+ * Function Name: get_suit()
+ * Purpose: Get the card's suit.
+ * Params: None
+ * Return Value: char suit
+ * Local Variables: None
+ * Algo: None
+ * Assistance: None
+ */
 char Card::get_suit() {
 	return this->suit;
 }
 
+/*
+ * Function Name: set_suit()
+ * Purpose: Set the card's suit.
+ * Params: char a_suit, Suit to set member variable to.
+ * Return Value: None
+ * Local Variables: None
+ * Algo: None
+ * Assistance: None
+ */
 void Card::set_suit(char a_suit) {
 	this->suit = a_suit;
 }
 
+/*
+ * Function Name: get_type()
+ * Purpose: Get the card's type.
+ * Params: None
+ * Return Value: char
+ * Local Variables: None
+ * Algo: None
+ * Assistance: None
+ */
 char Card::get_type() {
 	return this->type;
 }
 
+/*
+ * Function Name: set_type() 
+ * Purpose: Set the card's type.
+ * Params: char a_type
+ * Return Value: None
+ * Local Variables: None
+ * Algo: None
+ * Assistance: None
+ */
 void Card::set_type(char a_type) {
 	this->type = a_type;
 }
 
+/*
+ * Function Name: get_value
+ * Purpose: Get the card's value.
+ * Params: None
+ * Return Value: int
+ * Local Variables: None
+ * Algo: None
+ * Assistance: None
+ */
 int Card::get_value() {
 	return this->value;
 }
 
+/*
+ * Function Name: set_value()
+ * Purpose: Set the value of a card.
+ * Params: None
+ * Return Value: None
+ * Local Variables: None
+ * Algo: 1) Check type_value map to get corresponding value.
+ * 	 2) Assign proper value to member variable.
+ * Assistance: None
+ */
 void Card::set_value() {
 	// Will need to build a map / algorithm to determine value based on type.	
 	this->value = type_value_pairs[this->type];			
 }
 
+/*
+ * Function Name: get_card_string()
+ * Purpose: Generate string containing suit and type of a card.
+ * Params: None
+ * Return Value: string
+ * Local Variables: card_string, Used to concatenate suit and type of card.
+ * Algo: 1) Create string for concatenation
+ * 	 2) To add the char member variables using '+' operator, use string() as the
+ * 	 first arg so that compiler knows you want a string not an integer.
+ * 	 3) Return string. 
+ * Assistance: None
+ */
 string Card::get_card_string() {
 	string card_string = string() + get_suit() + get_type();
 	return card_string;
