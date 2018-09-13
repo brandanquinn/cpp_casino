@@ -10,6 +10,7 @@ int main() {
 	Deck test = Deck();
 
 	cout << "Deck created" << endl;
-	test.draw_card();
-	test.print_deck();
+	for (int i = 0; i < 53; i++) {
+		test.draw_card();
+	}
 }

@@ -2,18 +2,21 @@
 #define DECK_H
 
 #include <string>
+#include <queue>
 #include "Card.h"
+
+using namespace std;
 
 class Deck {
 	private:
 		// Array of Card pointers to represent deck.
-		Card* game_deck[52];
+		queue <Card*> game_deck;
 		Card* top_of_deck;	
 
 	public:	
 		Deck();
 		// Deck(string pre_loaded_deck);
-		void draw_card();
+		Card* draw_card();
 		void shuffle_deck();
 		void print_deck();
 };

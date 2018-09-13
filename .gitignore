@@ -1,0 +1,13 @@
+*.swp
+*.swo
+build.cpp
+build.h
+card.cpp
+card.h
+human.cpp
+human.h
+main.cpp
+player.cpp
+player.h
+table.cpp
+table.h

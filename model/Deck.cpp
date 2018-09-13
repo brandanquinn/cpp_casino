@@ -2,6 +2,7 @@
 #include <string>
 #include <algorithm>
 #include <random>
+#include <queue>
 
 #include "Deck.h"
 #include "Card.h"
@@ -29,17 +30,15 @@ Deck::Deck() {
 	// Each suit has types '2-9', 'X for 10', 'J, Q, K, A'
 	char suits[4] = {'S', 'C', 'H', 'D'};
 	char types[13] = {'2', '3', '4', '5', '6', '7', '8', '9', 'X', 'J', 'Q', 'K', 'A'};
-	Card card_list[52];
 
 
 	for (int i = 0; i < 52; i++) {
-		card_list[i] = Card(suits[i/13], types[i%13]);
-		game_deck[i] = &card_list[i];
+		this->game_deck.push(new Card(suits[i/13], types[i%13]));
 	}
 
 	shuffle_deck();
-	print_deck();
-	this->top_of_deck = this->game_deck[0];
+	// print_deck();
+	this->top_of_deck = this->game_deck.front();
 }
 
 /*
@@ -56,11 +55,21 @@ Deck::Deck() {
  * Function Name: draw_card()
  * Purpose: Will draw a card off the top of the deck.
  * Params: None
- * Return: None
+ * Return: Card * card_drawn - pointer to the Card drawn.
  */
-void Deck::draw_card() {
-	cout << "Card drawn: " << this->top_of_deck->get_card_string() << endl;
-	this->top_of_deck++;		
+Card* Deck::draw_card() {
+	// Need to handle if deck is empty
+	if (game_deck.empty()) {
+		cout << "Deck is empty. Round has ended." << endl;
+		return new Card();
+	}
+
+	Card * card_drawn = this->top_of_deck;
+	cout << "Card drawn: " << card_drawn->get_card_string() << endl;
+	game_deck.pop();
+	this->top_of_deck = game_deck.front();	
+
+	return card_drawn;			
 }
 
 /*
@@ -73,12 +82,12 @@ void Deck::draw_card() {
  */
 void Deck::shuffle_deck() {
 	srand(time(NULL));
-	random_shuffle(&this->game_deck[0], &this->game_deck[51]);		
+	random_shuffle(&this->game_deck.front(), &this->game_deck.back());		
 }
 
 // Iterate through deck and print each card using get_card_string()
-void Deck::print_deck() {
+/*void Deck::print_deck() {
 	for (int i = 0; i < 52; i++) {
 		cout << i << ": " <<  this->game_deck[i]->get_card_string() << endl;
 	}
-}
+}*/
