@@ -15,6 +15,7 @@ class Deck {
 		// Deck(string pre_loaded_deck);
 		void draw_card();
 		void shuffle_deck();
+		void print_deck();
 };
 
 #endif

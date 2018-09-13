@@ -70,7 +70,5 @@ void Card::set_value() {
 
 string Card::get_card_string() {
 	string card_string = string() + get_suit() + get_type();
-	cout << "suit: " << get_suit() << endl;
-	cout << "type: " << get_type() << endl;
 	return card_string;
 }

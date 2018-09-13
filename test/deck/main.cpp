@@ -7,8 +7,9 @@
 using namespace std;
 
 int main() {
-	Deck game_deck;
+	Deck test = Deck();
 
 	cout << "Deck created" << endl;
-	game_deck.draw_card();	
+	test.draw_card();
+	test.print_deck();
 }

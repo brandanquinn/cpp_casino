@@ -17,7 +17,7 @@ using namespace std;
  * Algo: Instead of hard coding the entire 52 card deck, I decided to use a simple for loop
  * that works on the premise that the deck is split evenly into 4 suits and 13 types. To
  * make sure the suits were applied correctly, I found that you could use the division
- * operator to apply suit[0] ('S' or spades) to the first 14 cards because x/4=0 if
+ * operator to apply suit[0] ('S' or spades) to the first 14 cards because x/13=0 if
  * x < 13. That same logic can be applied to the other suits. I use similar logic for the
  * types array but instead use the modulus operator to incrementally apply types to each
  * card in the deck. 
@@ -31,13 +31,15 @@ Deck::Deck() {
 	char types[13] = {'2', '3', '4', '5', '6', '7', '8', '9', 'X', 'J', 'Q', 'K', 'A'};
 	Card card_list[52];
 
-	for (int i = 0; i < 52; i++) {	
+
+	for (int i = 0; i < 52; i++) {
 		card_list[i] = Card(suits[i/13], types[i%13]);
-		game_deck[i] = &card_list[i];		
+		game_deck[i] = &card_list[i];
 	}
 
 	shuffle_deck();
-	this->top_of_deck = this->game_deck[0];	
+	print_deck();
+	this->top_of_deck = this->game_deck[0];
 }
 
 /*
@@ -72,4 +74,11 @@ void Deck::draw_card() {
 void Deck::shuffle_deck() {
 	srand(time(NULL));
 	random_shuffle(&this->game_deck[0], &this->game_deck[51]);		
+}
+
+// Iterate through deck and print each card using get_card_string()
+void Deck::print_deck() {
+	for (int i = 0; i < 52; i++) {
+		cout << i << ": " <<  this->game_deck[i]->get_card_string() << endl;
+	}
 }
