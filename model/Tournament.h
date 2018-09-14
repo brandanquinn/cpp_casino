@@ -7,11 +7,11 @@ using namespace std;
 
 class Tournament {
 	private:
+		void print_welcome();
 		Round* current_round;
 		int rounds_played;
 	public:
 		Tournament();
-		void print_welcome();
 		void start_round();
 };
 
