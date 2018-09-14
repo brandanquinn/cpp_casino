@@ -13,7 +13,7 @@ class Human: public Player {
 	private:
 		string name;
 	public:
-		Human(string a_name);
+		Human();
 		Human(string a_name, int a_score);
 		string get_name();
 		void set_name(string a_name);

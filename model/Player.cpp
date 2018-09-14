@@ -7,7 +7,7 @@
 using namespace std;
 
 Player::Player() {
-	
+	set_score(0);	
 }
 
 int Player::get_score() {

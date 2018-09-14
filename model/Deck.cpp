@@ -32,7 +32,6 @@ Deck::Deck() {
 	char suits[4] = {'S', 'C', 'H', 'D'};
 	char types[13] = {'2', '3', '4', '5', '6', '7', '8', '9', 'X', 'J', 'Q', 'K', 'A'};
 
-
 	for (int i = 0; i < 52; i++) {
 		this->game_deck.push(new Card(suits[i/13], types[i%13]));
 	}
@@ -88,8 +87,7 @@ Card* Deck::draw_card() {
  * 	 2) Shuffle deck.
  * Return: None
  */
-void Deck::shuffle_deck() {
-	srand(time(NULL));
+void Deck::shuffle_deck() {	
 	random_shuffle(&this->game_deck.front(), &this->game_deck.back());		
 }
 

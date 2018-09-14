@@ -3,18 +3,18 @@
 #include <vector>
 
 #include "Human.h"
+#include "Player.h"
 #include "Card.h"
 
 using namespace std;
 
-Human::Human(string a_name) {
-	set_name(a_name);
-	set_score(0);
+Human::Human() {
+	Player::set_score(0);
 }
 
 Human::Human(string a_name, int a_score) {
 	set_name(a_name);
-	set_score(a_score);
+	Player::set_score(a_score);
 }
 
 string Human::get_name() {

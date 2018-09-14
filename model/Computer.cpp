@@ -7,11 +7,11 @@
 using namespace std;
 
 Computer::Computer() {
-	set_score(0);
+	Player::set_score(0);
 }
 
 Computer::Computer(int a_score) {
-	set_score(a_score);
+	Player::set_score(a_score);
 }
 
 void Computer::play() {

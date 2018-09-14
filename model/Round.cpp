@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "Round.h"
 #include "Player.h"
@@ -10,10 +11,10 @@
 
 using namespace std;
 
-Round::Round(int a_round_num) {
+Round::Round(int a_round_num, vector<Player*> a_game_players) {
 	this->round_num = a_round_num;
-	game_deck = new Deck;
-	start_game();
+	this->game_deck = new Deck;
+	this->game_players = a_game_players;
 }
 
 int Round::get_round_num() {
@@ -21,19 +22,16 @@ int Round::get_round_num() {
 }
 
 void Round::start_game() {
-	Player* game_players[2];
-	game_players[0] = new Human("Brandan");
-	game_players[1] = new Computer;
-	Deck* game_deck = new Deck;
 	deal_hands(game_players);
 
 	game_players[0]->play();
 	game_players[1]->play();		
 }
 
-void Round::deal_hands(Player* game_players[2]) {
+void Round::deal_hands(vector<Player*> game_players) {
 	for (int i = 0; i < 4; i++) {
 		game_players[0]->add_to_hand(game_deck->draw_card());
 		game_players[1]->add_to_hand(game_deck->draw_card());
 	} 
 }
+
