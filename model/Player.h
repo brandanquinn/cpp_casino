@@ -16,6 +16,7 @@ class Player {
 		void set_score(int a_score);
 		void add_to_hand(Card* new_card);
 		vector<Card*> get_hand();
+		void clear_hand();
 };
 
 #endif

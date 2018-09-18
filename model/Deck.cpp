@@ -71,7 +71,7 @@ Card* Deck::draw_card() {
 	}
 
 	Card * card_drawn = this->top_of_deck;
-	cout << "Card drawn: " << card_drawn->get_card_string() << endl;
+	// cout << "Card drawn: " << card_drawn->get_card_string() << endl;
 	game_deck.pop();
 	this->top_of_deck = game_deck.front();	
 

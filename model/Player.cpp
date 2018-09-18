@@ -20,9 +20,12 @@ void Player::set_score(int a_score) {
 
 void Player::add_to_hand(Card* new_card) {
 	hand.push_back(new_card);
-	cout << new_card->get_card_string() << " added to hand!" << endl;
 }
 
 vector<Card*> Player::get_hand() {
 	return this->hand;
+}
+
+void Player::clear_hand() {
+	this->hand.clear();
 }
