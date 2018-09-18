@@ -6,6 +6,7 @@
 
 #include "Card.h"
 #include "Player.h"
+#include "Move.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ class Human: public Player {
 		Human(string a_name, int a_score);
 		string get_name();
 		void set_name(string a_name);
-		void play();
+		Move* play();
 };
 
 #endif

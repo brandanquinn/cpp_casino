@@ -5,6 +5,7 @@
 
 #include "Card.h"
 #include "Player.h"
+#include "Move.h"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ class Computer: public Player {
 	public:
 		Computer();
 		Computer(int a_score);
-		void play();	
+		Move* play();	
 };
 
 #endif

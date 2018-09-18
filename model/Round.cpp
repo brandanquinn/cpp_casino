@@ -9,6 +9,7 @@
 #include "Deck.h"
 #include "Card.h"
 #include "Table.h"
+#include "Move.h"
 
 using namespace std;
 
@@ -31,6 +32,10 @@ void Round::start_game() {
 	// Player plays, returns Move object
 	// Create Round function to update model using Move object info
 	// Update game_view after each play
+	Move* game_move = game_players[0]->play();
+	if (game_move->get_move_type() == 't') {
+		trail(game_move->get_card_played(), game_players[0]);
+	}
 }
 
 void Round::deal_hands(vector<Player*> game_players) {
@@ -48,4 +53,13 @@ void Round::deal_to_table(Table* game_table) {
 
 Table* Round::get_game_table() {
 	return this->game_table;
+}
+
+void Round::trail(Card* card_played, Player* game_player) {
+	// Remove card from players hand
+	// Add card to table_cards
+	// Update view
+	game_player->discard(card_played);
+	this->game_table->add_to_table_cards(card_played);
+	this->game_view->update_view(this->game_players, this->game_table, this->round_num);
 }

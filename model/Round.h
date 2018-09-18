@@ -25,6 +25,8 @@ class Round {
 		void start_game();
 		void deal_to_table(Table* game_table);
 		Table* get_game_table();
+		void trail(Card* card_played, Player* game_player);
+		void capture(Card* card_played, vector<Card*> cards_captured, Player* game_player);
 };	
 
 #endif

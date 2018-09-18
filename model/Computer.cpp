@@ -3,6 +3,7 @@
 
 #include "Computer.h"
 #include "Card.h" 
+#include "Move.h"
 
 using namespace std;
 
@@ -14,6 +15,6 @@ Computer::Computer(int a_score) {
 	Player::set_score(a_score);
 }
 
-void Computer::play() {
+Move* Computer::play() {
 	cout << "Computer is playing!" << endl;
 }

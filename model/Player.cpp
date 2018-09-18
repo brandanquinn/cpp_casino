@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #include "Player.h"
 #include "Card.h"
@@ -22,6 +23,10 @@ void Player::add_to_hand(Card* new_card) {
 	hand.push_back(new_card);
 }
 
+void Player::discard(Card* removed_card) {
+	this->hand.erase(remove(hand.begin(), hand.end(), removed_card), hand.end());
+}
+
 vector<Card*> Player::get_hand() {
 	return this->hand;
 }
@@ -29,3 +34,5 @@ vector<Card*> Player::get_hand() {
 void Player::clear_hand() {
 	this->hand.clear();
 }
+
+
