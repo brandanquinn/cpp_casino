@@ -13,6 +13,7 @@ using namespace std;
 class Human: public Player {
 	private:
 		string name;
+		int get_card_index(char move_type);
 	public:
 		Human();
 		Human(string a_name, int a_score);

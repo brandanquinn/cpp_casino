@@ -11,7 +11,6 @@ using namespace std;
 
 class Tournament {
 	private:
-		void print_welcome();
 		Round* current_round;
 		int rounds_played;
 		vector<Player*> game_players;

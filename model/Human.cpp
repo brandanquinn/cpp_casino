@@ -36,17 +36,35 @@ Move* Human::play() {
 		}		
 	}
 	if (move_option == 't') {
-		int card_num = 0;
-		while (card_num < 1 || card_num > Player::get_hand().size()) {
-			cout << "Which card would you like to trail? (Enter # of card position, leftmost being 1): ";
-			cin >> card_num;
-			if (card_num < 1 || card_num > Player::get_hand().size()) {
-				cout << "Invalid number input. Try again." << endl;
-			}
-		}
-		// To account for array indexing in C++ 
-		card_num -= 1;
+		int card_num = get_card_index('t');
 		vector<Card*> player_hand = Player::get_hand();
-		return new Move(player_hand[card_num], vector<Card*>(), vector<Card*>(), 'h', 't');
+		return new Move(player_hand[card_num], 'h', 't');
+	} else if (move_option == 'c') {
+		// Select card to capture with
+		// Return move with played card, player type, and move option
+		int card_num = get_card_index('c');
+		vector<Card*> player_hand = Player::get_hand();
+		return new Move(player_hand[card_num], 'h', 'c');
 	}
 }
+
+int Human::get_card_index(char move_type) {
+	int card_num = 0;
+	while (card_num < 1 || card_num > Player::get_hand().size()) {
+		switch(move_type) {
+			case 't': 
+				cout << "Which card would you like to trail? (Enter # of card position, leftmost being 1): ";
+				break;
+			case 'c':
+				cout << "Which card would you like to play to capture? (Enter # of card position, leftmost being 1): ";
+				break;
+		}
+		cin >> card_num;
+		if (card_num < 1 || card_num > Player::get_hand().size()) {
+			cout << "Invalid number input. Try again." << endl;
+		}
+	}
+	// To account for array indexing in C++ 
+	return card_num -1;
+}
+	

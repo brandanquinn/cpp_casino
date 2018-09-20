@@ -23,6 +23,16 @@ void Player::add_to_hand(Card* new_card) {
 	hand.push_back(new_card);
 }
 
+void Player::add_to_pile(vector<Card*> captured_cards) {
+	for (int i = 0; i < captured_cards.size(); i++) {
+		this->pile.push_back(captured_cards[i]);
+	}	
+}
+
+vector<Card*> Player::get_pile() {
+	return this->pile;
+}
+
 void Player::discard(Card* removed_card) {
 	this->hand.erase(remove(hand.begin(), hand.end(), removed_card), hand.end());
 }

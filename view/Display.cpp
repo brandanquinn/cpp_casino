@@ -14,8 +14,7 @@ Display::Display() {
 	
 }
 
-void Display::update_view(vector<Player*> game_players, Table* game_table, int round_num) {
-	print_welcome(round_num);
+void Display::update_view(vector<Player*> game_players, Table* game_table) {
 	print_cards(game_players, game_table);
 	print_scores(game_players);
 }
