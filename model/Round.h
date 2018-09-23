@@ -28,7 +28,7 @@ class Round {
 		Table* get_game_table();
 		void trail(Card* card_played, Player* game_player);
 		bool capture(Card* card_played, Player* game_player);
-		Move* get_capturable_cards(Card* card_played, Player* game_player);
+		Move* generate_capture_move(Card* card_played, Player* game_player);
 };	
 
 #endif

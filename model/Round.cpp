@@ -79,13 +79,55 @@ bool Round::capture(Card* card_played, Player* game_player) {
 	// Remove card(s) captured from table, add to vector
 	// Add vector to pile
 	// Update view
-	cout << "Capture using: " << card_played->get_card_string() << endl;	
+	Move* game_move = generate_capture_move(card_played, game_player);
+	vector<Card*> capturable_cards = game_move->get_capturable_cards();
+	vector<Card*> pile_additions;	
+	
+	if (capturable_cards.empty()) {
+		cout << "No cards on the table can be captured with this card." << endl;
+		return false;
+	}
+	
+	cout << "Would you like to capture? (y/n)" << endl;
+	for (int i = 0; i < capturable_cards.size(); i++) {
+		cout << "(" << i+1 << ") " << capturable_cards[i]->get_card_string() << " ";
+	}
+	cout << endl;
+	char will_capture;
+	while(will_capture != 'y' && will_capture != 'n') {
+		cin >> will_capture;
+		if (will_capture != 'y' && will_capture != 'n') {
+			cout << "Input not recognized. Try again." << endl;
+		} 
+	}
+	
+	game_player->discard(card_played);
+	this->game_table->remove_cards(capturable_cards);	
+
+	pile_additions.push_back(card_played);
+	for (int i = 0; i < capturable_cards.size(); i++) {
+		pile_additions.push_back(capturable_cards[i]);
+	}
+	game_player->add_to_pile(pile_additions);
+	this->game_view->update_view(this->game_players, this->game_table);
+	return true;			
 }
 
-Move* Round::get_capturable_cards(Card* card_played, Player* game_player) {
+
+Move* Round::generate_capture_move(Card* card_played, Player* game_player) {
 	// Get value of card played
 	// Check values of cards on board, if matches exist add to vector
 	// (Eventually - check list of build values on board)
 	// Check all possible sets of cards, if value of sets match card value, add to 2d vector
 	// Return Move obj generated with (card_played, capturable_cards, capturable_sets) 
+	int played_value = card_played->get_value();
+	vector<Card*> avail_cards = this->game_table->get_table_cards();
+	vector<Card*> capturable_cards;
+	// Find exact value matches
+	for (int i = 0; i < avail_cards.size(); i++) {
+		if (avail_cards[i]->get_value() == played_value) {
+			capturable_cards.push_back(avail_cards[i]);
+		}
+	}
+	return new Move(card_played, capturable_cards, vector<vector<Card*>>());		
 }

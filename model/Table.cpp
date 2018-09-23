@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -20,4 +21,17 @@ void Table::add_to_table_cards(Card* new_card) {
 
 void Table::clear_table_cards() {
 	this->table_cards.clear();
+}
+
+void Table::remove_cards(vector<Card*> cards_to_remove) {
+	for (int i = 0; i < cards_to_remove.size(); i++) {
+		Card* removed_card = cards_to_remove[i];
+		this->table_cards.erase(
+			remove(
+			table_cards.begin(), 
+			table_cards.end(), 
+			removed_card
+			), 
+			table_cards.end());
+	}
 }

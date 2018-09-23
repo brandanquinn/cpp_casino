@@ -22,6 +22,7 @@ Card::Card() {
 Card::Card(char a_suit, char a_type) {
 	set_suit(a_suit);
 	set_type(a_type);
+	create_map();
 	set_value();	
 }
 
