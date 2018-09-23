@@ -2,9 +2,9 @@
 #define PLAYER_H
 
 #include <vector>
+#include <utility>
 
 #include "Card.h"
-#include "Move.h"
 
 class Player {
 	private:
@@ -13,7 +13,7 @@ class Player {
 		vector<Card*> pile;
 	public:
 		Player();
-		virtual Move* play() = 0;
+		virtual pair<Card*, char> play() = 0;
 		int get_score();
 		void set_score(int a_score);
 		void add_to_hand(Card* new_card);

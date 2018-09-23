@@ -10,13 +10,13 @@ using namespace std;
 class Move {
 	private:
 		Card* card_played;
-		char move_player;
-		char move_type;	
+		vector<Card*> capturable_cards;
+		vector<vector<Card*>> capturable_sets;
 	public:
-		Move(Card* a_card_played, char a_move_player, char a_move_type);
+		Move(Card* a_card_played, vector<Card*> a_capturable_cards, vector<vector<Card*>> a_capturable_sets);
 		Card* get_card_played();
-		char get_move_player();
-		char get_move_type();
+		vector<Card*> get_capturable_cards();
+		vector<vector<Card*>> get_capturable_sets();
 };
 
 #endif

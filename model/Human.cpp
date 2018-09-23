@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <utility>
 
 #include "Human.h"
 #include "Player.h"
@@ -25,8 +26,9 @@ void Human::set_name(string a_name) {
 	this->name = a_name;
 }
 
-Move* Human::play() {
+pair<Card*, char> Human::play() {
 	char move_option = ' ';
+	pair<Card*, char> move_pair;
 	while (move_option != 't' && move_option != 'b' && move_option != 'c') {
 		cout << "Enter (t) to trail, (b) to build, or (c) to capture: ";
 		cin >> move_option; 
@@ -38,14 +40,20 @@ Move* Human::play() {
 	if (move_option == 't') {
 		int card_num = get_card_index('t');
 		vector<Card*> player_hand = Player::get_hand();
-		return new Move(player_hand[card_num], 'h', 't');
+		move_pair.first = player_hand[card_num];
+			
+	
 	} else if (move_option == 'c') {
 		// Select card to capture with
 		// Return move with played card, player type, and move option
 		int card_num = get_card_index('c');
 		vector<Card*> player_hand = Player::get_hand();
-		return new Move(player_hand[card_num], 'h', 'c');
+		move_pair.first = player_hand[card_num];
+		
 	}
+	
+	move_pair.second = move_option;
+	return move_pair;	
 }
 
 int Human::get_card_index(char move_type) {

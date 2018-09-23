@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <utility>
 
 #include "Round.h"
 #include "Player.h"
@@ -30,17 +31,16 @@ void Round::start_game() {
 	deal_to_table(game_table);
 	this->game_view->print_welcome(this->round_num);
 	this->game_view->update_view(this->game_players, this->game_table);	
-	// Player plays, returns Move object
-	// Create Round function to update model using Move object info
+	// Player plays, returns pair for move selected.
+	// Create Round function to update model using info from pair.
 	// Update game_view after each play
-	Move* game_move = game_players[0]->play();
-	if (game_move->get_move_type() == 't') {
-		trail(game_move->get_card_played(), game_players[0]);
-	} else if (game_move->get_move_type() == 'c') {
-		capture(game_move->get_card_played(), game_players[0]);
+	pair<Card*, char> move_pair = game_players[0]->play();
+	if (move_pair.second == 't') {
+		trail(move_pair.first, game_players[0]);
+	} else if (move_pair.second == 'c') {
+		capture(move_pair.first, game_players[0]);
 	}
 	
-	delete game_move;
 }
 
 void Round::deal_hands(vector<Player*> game_players) {
@@ -80,4 +80,12 @@ bool Round::capture(Card* card_played, Player* game_player) {
 	// Add vector to pile
 	// Update view
 	cout << "Capture using: " << card_played->get_card_string() << endl;	
+}
+
+Move* Round::get_capturable_cards(Card* card_played, Player* game_player) {
+	// Get value of card played
+	// Check values of cards on board, if matches exist add to vector
+	// (Eventually - check list of build values on board)
+	// Check all possible sets of cards, if value of sets match card value, add to 2d vector
+	// Return Move obj generated with (card_played, capturable_cards, capturable_sets) 
 }

@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <utility>
 
 #include "Computer.h"
 #include "Card.h" 
@@ -15,6 +16,6 @@ Computer::Computer(int a_score) {
 	Player::set_score(a_score);
 }
 
-Move* Computer::play() {
+pair<Card*, char> Computer::play() {
 	cout << "Computer is playing!" << endl;
 }

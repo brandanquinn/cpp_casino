@@ -9,6 +9,7 @@
 #include "Computer.h"
 #include "Deck.h"
 #include "Table.h"
+#include "Move.h"
 #include "../view/Display.h"
 
 class Round {
@@ -27,6 +28,7 @@ class Round {
 		Table* get_game_table();
 		void trail(Card* card_played, Player* game_player);
 		bool capture(Card* card_played, Player* game_player);
+		Move* get_capturable_cards(Card* card_played, Player* game_player);
 };	
 
 #endif

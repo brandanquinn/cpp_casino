@@ -2,6 +2,7 @@
 #define COMPUTER_H
 
 #include <vector>
+#include <utility>
 
 #include "Card.h"
 #include "Player.h"
@@ -15,7 +16,7 @@ class Computer: public Player {
 	public:
 		Computer();
 		Computer(int a_score);
-		Move* play();	
+		pair<Card*, char> play();	
 };
 
 #endif
