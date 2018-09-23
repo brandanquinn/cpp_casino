@@ -15,6 +15,7 @@
 class Round {
 	private:	
 		void deal_hands(vector<Player*> game_players);
+		int get_set_value(vector<Card*> card_set);
 		int round_num;
 		Deck* game_deck;
 		Table* game_table;

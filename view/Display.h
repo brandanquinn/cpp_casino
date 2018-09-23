@@ -13,6 +13,7 @@ class Display {
 	private:
 		void print_cards(vector<Player*> game_players, Table* game_table);
 		void print_scores(vector<Player*> game_players);
+		void print_line_break();
 	public:
 		Display();
 		void update_view(vector<Player*> game_players, Table* game_table);

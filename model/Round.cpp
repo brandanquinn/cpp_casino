@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <algorithm>
 
 #include "Round.h"
 #include "Player.h"
@@ -34,13 +35,17 @@ void Round::start_game() {
 	// Player plays, returns pair for move selected.
 	// Create Round function to update model using info from pair.
 	// Update game_view after each play
-	pair<Card*, char> move_pair = game_players[0]->play();
-	if (move_pair.second == 't') {
-		trail(move_pair.first, game_players[0]);
-	} else if (move_pair.second == 'c') {
-		capture(move_pair.first, game_players[0]);
-	}
+	bool possible_move_selected = false;
 	
+	while (!possible_move_selected) {
+		pair<Card*, char> move_pair = game_players[0]->play();
+		if (move_pair.second == 't') {
+			trail(move_pair.first, game_players[0]);
+			possible_move_selected = true;
+		} else if (move_pair.second == 'c') {
+			possible_move_selected = capture(move_pair.first, game_players[0]);
+		}
+	}	
 }
 
 void Round::deal_hands(vector<Player*> game_players) {
@@ -100,6 +105,8 @@ bool Round::capture(Card* card_played, Player* game_player) {
 			cout << "Input not recognized. Try again." << endl;
 		} 
 	}
+	if (will_capture == 'n')
+		return false;
 	
 	game_player->discard(card_played);
 	this->game_table->remove_cards(capturable_cards);	
@@ -128,6 +135,36 @@ Move* Round::generate_capture_move(Card* card_played, Player* game_player) {
 		if (avail_cards[i]->get_value() == played_value) {
 			capturable_cards.push_back(avail_cards[i]);
 		}
+	}	
+	// Iterate through avail_cards vector
+	// Take element i and  
+	vector<Card*> sub_set;
+	vector<vector<Card*>> avail_sets;
+	vector<Card*> empty;
+	avail_sets.push_back(empty);	
+	for (int i = 0; i < avail_cards.size(); i++) {
+		vector<vector<Card*>> temp_sets = avail_sets;
+		
+		for (int j = 0; j < temp_sets.size(); j++)
+			temp_sets[j].push_back(avail_cards[i]);
+		for (int j = 0; j < temp_sets.size(); j++) 
+			avail_sets.push_back(temp_sets[j]);
 	}
+	for (int i = 0; i < avail_sets.size(); i++) {
+		if (get_set_value(avail_sets[i]) == played_value && avail_sets[i].size() > 1) {
+			for (int j = 0; j < avail_sets[i].size(); j++) {
+				cout << avail_sets[i][j]->get_card_string() << " ";	
+			}
+			cout << endl;
+		}
+	}	
 	return new Move(card_played, capturable_cards, vector<vector<Card*>>());		
+}
+
+int Round::get_set_value(vector<Card*> card_set) {
+	int value_sum = 0;
+	for (int i = 0; i < card_set.size(); i++) {
+		value_sum += card_set[i]->get_value();
+	}
+	return value_sum;
 }

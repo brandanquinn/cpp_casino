@@ -15,19 +15,34 @@ Display::Display() {
 }
 
 void Display::update_view(vector<Player*> game_players, Table* game_table) {
+	print_line_break();
 	print_cards(game_players, game_table);
 	print_scores(game_players);
+	print_line_break();
 }
 
 void Display::print_welcome(int round_num) {
 	cout << "Welcome to Casino C++! Round " << round_num << " is about to begin!" << endl;
 }
 
+void Display::print_line_break() {
+	cout << "----------------------------------------------------------" << endl;
+}
 
 void Display::print_cards(vector<Player*> game_players, Table* game_table) {
 	vector<Card*> human_card_list = game_players[0]->get_hand();
+	vector<Card*> human_pile = game_players[0]->get_pile();
 	vector<Card*> comp_card_list = game_players[1]->get_hand();
+	vector<Card*> comp_pile = game_players[1]->get_pile();
 	vector<Card*> table_card_list = game_table->get_table_cards();
+	
+	cout << "Player pile: ";
+	for (int i = 0; i < human_pile.size(); i++) {
+		cout << human_pile[i]->get_card_string() << " ";
+	}
+	cout << endl;
+
+	print_line_break();
 
 	cout << "Player hand: ";
 	for (int i = 0; i < human_card_list.size(); i++) {
@@ -46,6 +61,16 @@ void Display::print_cards(vector<Player*> game_players, Table* game_table) {
 		cout << comp_card_list[i]->get_card_string() << " ";
 	}		
 	cout << endl;
+
+	print_line_break();
+
+	cout << "Computer pile: ";
+	for (int i = 0; i < comp_pile.size(); i++) {
+		cout << comp_pile[i]->get_card_string() << " ";
+	}
+	cout << endl;
+	
+	print_line_break();	
 
 	
 }
