@@ -87,33 +87,66 @@ bool Round::capture(Card* card_played, Player* game_player) {
 	Move* game_move = generate_capture_move(card_played, game_player);
 	vector<Card*> capturable_cards = game_move->get_capturable_cards();
 	vector<Card*> pile_additions;	
-	
-	if (capturable_cards.empty()) {
+	vector<vector<Card*>> capturable_sets = game_move->get_capturable_sets();
+	vector<vector<Card*>> selected_sets;
+
+	if (capturable_cards.empty() && capturable_sets.empty()) {
 		cout << "No cards on the table can be captured with this card." << endl;
 		return false;
 	}
-	
-	cout << "Would you like to capture? (y/n)" << endl;
-	for (int i = 0; i < capturable_cards.size(); i++) {
-		cout << "(" << i+1 << ") " << capturable_cards[i]->get_card_string() << " ";
+
+	if (!capturable_cards.empty()) {	
+		cout << "Would you like to capture? (y/n)" << endl;
+		for (int i = 0; i < capturable_cards.size(); i++) {
+			cout << "(" << i+1 << ") " << capturable_cards[i]->get_card_string() << " ";
+		}
+		cout << endl;
+		char will_capture;
+		while(will_capture != 'y' && will_capture != 'n') {
+			cin >> will_capture;
+			if (will_capture != 'y' && will_capture != 'n') {
+				cout << "Input not recognized. Try again." << endl;
+			} 
+		}
+		if (will_capture == 'n')
+			return false;
 	}
-	cout << endl;
-	char will_capture;
-	while(will_capture != 'y' && will_capture != 'n') {
-		cin >> will_capture;
-		if (will_capture != 'y' && will_capture != 'n') {
-			cout << "Input not recognized. Try again." << endl;
-		} 
+	if (!capturable_sets.empty()) {
+		// Give selection of sets to capture as well:
+		for (int i = 0; i < capturable_sets.size(); i++) {
+			cout << "Subset (" << i+1 << ") ";
+			for (int j = 0; j < capturable_sets[i].size(); j++) {
+				cout << capturable_sets[i][j]->get_card_string() << " ";
+			}
+			cout << endl;
+		}
+		int set_selection = -1;
+			while (set_selection != 0) {
+			cout << "Select which subsets you'd like to capture. Input '0' when you are finished." << endl;
+			cout << "Input: ";
+			cin >> set_selection;
+			if (set_selection == 0) break;
+			if (set_selection <= 0 || set_selection > capturable_sets.size()) {
+				cout << "Input not recognized. Try again." << endl;
+			} else {
+				selected_sets.push_back(capturable_sets[set_selection-1]);	
+			}	
+		} 	
 	}
-	if (will_capture == 'n')
-		return false;
-	
+
+		
 	game_player->discard(card_played);
 	this->game_table->remove_cards(capturable_cards);	
+	this->game_table->remove_sets(selected_sets);	
 
 	pile_additions.push_back(card_played);
 	for (int i = 0; i < capturable_cards.size(); i++) {
 		pile_additions.push_back(capturable_cards[i]);
+	}
+	for (int i = 0; i < selected_sets.size(); i++) {
+		for (int j = 0; j < selected_sets[i].size(); j++) {
+			pile_additions.push_back(selected_sets[i][j]);
+		}
 	}
 	game_player->add_to_pile(pile_additions);
 	this->game_view->update_view(this->game_players, this->game_table);
@@ -150,15 +183,13 @@ Move* Round::generate_capture_move(Card* card_played, Player* game_player) {
 		for (int j = 0; j < temp_sets.size(); j++) 
 			avail_sets.push_back(temp_sets[j]);
 	}
+	vector<vector<Card*>> capturable_sets;
 	for (int i = 0; i < avail_sets.size(); i++) {
 		if (get_set_value(avail_sets[i]) == played_value && avail_sets[i].size() > 1) {
-			for (int j = 0; j < avail_sets[i].size(); j++) {
-				cout << avail_sets[i][j]->get_card_string() << " ";	
-			}
-			cout << endl;
+			capturable_sets.push_back(avail_sets[i]);	
 		}
 	}	
-	return new Move(card_played, capturable_cards, vector<vector<Card*>>());		
+	return new Move(card_played, capturable_cards, capturable_sets);		
 }
 
 int Round::get_set_value(vector<Card*> card_set) {

@@ -35,3 +35,9 @@ void Table::remove_cards(vector<Card*> cards_to_remove) {
 			table_cards.end());
 	}
 }
+
+void Table::remove_sets(vector<vector<Card*>> sets_to_remove) {
+	for (int i = 0; i < sets_to_remove.size(); i++) {
+		remove_cards(sets_to_remove[i]);
+	}	
+}
