@@ -24,6 +24,7 @@ Card::Card(char a_suit, char a_type) {
 	set_type(a_type);
 	create_map();
 	set_value();	
+	set_locked_to_build(false);
 }
 
 /*
@@ -148,4 +149,12 @@ void Card::set_value() {
 string Card::get_card_string() {
 	string card_string = string() + get_suit() + get_type();
 	return card_string;
+}
+
+bool Card::get_locked_to_build() {
+	return this->locked_to_build;
+}
+
+void Card::set_locked_to_build(bool a_locked_to_build) {
+	this->locked_to_build = a_locked_to_build;
 }

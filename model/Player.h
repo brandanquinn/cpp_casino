@@ -11,6 +11,7 @@ class Player {
 		int score;
 		vector<Card*> hand;
 		vector<Card*> pile;
+		bool is_playing;
 	public:
 		Player();
 		virtual pair<Card*, char> play() = 0;
@@ -22,6 +23,9 @@ class Player {
 		void discard(Card* removed_card);
 		vector<Card*> get_hand();
 		void clear_hand();
+		bool hand_is_empty();
+		void set_is_playing(bool a_is_playing);
+		bool get_is_playing();
 };
 
 #endif

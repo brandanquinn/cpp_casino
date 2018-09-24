@@ -91,3 +91,9 @@ void Deck::shuffle_deck() {
 	random_shuffle(&this->game_deck.front(), &this->game_deck.back());		
 }
 
+bool Deck::is_empty() {
+	return game_deck.empty();
+}
+	
+
+

@@ -44,7 +44,8 @@ void Display::print_cards(vector<Player*> game_players, Table* game_table) {
 
 	print_line_break();
 
-	cout << "Player hand: ";
+	if (game_players[0]->get_is_playing()) cout << "[x] Player hand: ";
+	else cout << "Player hand: ";
 	for (int i = 0; i < human_card_list.size(); i++) {
 		cout << human_card_list[i]->get_card_string() << " ";
 	}
@@ -56,7 +57,8 @@ void Display::print_cards(vector<Player*> game_players, Table* game_table) {
 	}
 	cout << endl;
 
-	cout << "Computer hand: ";
+	if (game_players[1]->get_is_playing()) cout <<  "[x] Computer hand: ";
+	else cout << "Computer hand: ";	
 	for (int i = 0; i < comp_card_list.size(); i++) {
 		cout << comp_card_list[i]->get_card_string() << " ";
 	}		

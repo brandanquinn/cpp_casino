@@ -9,6 +9,7 @@ using namespace std;
 
 Player::Player() {
 	set_score(0);	
+	set_is_playing(false);
 }
 
 int Player::get_score() {
@@ -45,4 +46,14 @@ void Player::clear_hand() {
 	this->hand.clear();
 }
 
+bool Player::hand_is_empty() {
+	return this->hand.empty();
+}
+	
+void Player::set_is_playing(bool a_is_playing) {
+	this->is_playing = a_is_playing;
+}
 
+bool Player::get_is_playing() {
+	return this->is_playing;
+}

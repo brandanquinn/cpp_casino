@@ -24,11 +24,12 @@ class Round {
 	public:
 		Round(int a_round_num, vector<Player*> a_game_players);
 		int get_round_num();
-		void start_game();
+		void start_game(bool human_is_first);
 		void deal_to_table(Table* game_table);
 		Table* get_game_table();
 		void trail(Card* card_played, Player* game_player);
 		bool capture(Card* card_played, Player* game_player);
+		bool build(Card* card_played, Player* game_player);
 		Move* generate_capture_move(Card* card_played, Player* game_player);
 };	
 

@@ -18,6 +18,7 @@ class Tournament {
 		Tournament();
 		void start_round();
 		void end_round();
+		bool coin_toss();
 };
 
 #endif

@@ -41,3 +41,7 @@ void Table::remove_sets(vector<vector<Card*>> sets_to_remove) {
 		remove_cards(sets_to_remove[i]);
 	}	
 }
+
+bool Table::is_empty() {
+	return this->table_cards.empty();
+}

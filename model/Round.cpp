@@ -27,24 +27,67 @@ int Round::get_round_num() {
 	return this->round_num;
 }
 
-void Round::start_game() {
+void Round::start_game(bool human_is_first) {
 	deal_hands(game_players);
 	deal_to_table(game_table);
-	this->game_view->print_welcome(this->round_num);
-	this->game_view->update_view(this->game_players, this->game_table);	
+		
 	// Player plays, returns pair for move selected.
 	// Create Round function to update model using info from pair.
 	// Update game_view after each play
 	bool possible_move_selected = false;
+	Player* player_one;
+	Player* player_two;
+	if (human_is_first) { 
+		player_one = game_players[0];
+		player_two = game_players[1];
+	}
+	else { 
+		player_one = game_players[1];	
+		player_two = game_players[0];
+	}
 	
-	while (!possible_move_selected) {
-		pair<Card*, char> move_pair = game_players[0]->play();
-		if (move_pair.second == 't') {
-			trail(move_pair.first, game_players[0]);
-			possible_move_selected = true;
-		} else if (move_pair.second == 'c') {
-			possible_move_selected = capture(move_pair.first, game_players[0]);
+	player_one->set_is_playing(true);
+
+	cout << "Human playing: " << game_players[0]->get_is_playing() << endl;
+	cout << "Computer playing: " << game_players[1]->get_is_playing() << endl;
+	this->game_view->print_welcome(this->round_num);
+	this->game_view->update_view(this->game_players, this->game_table);
+	
+	while (!this->game_deck->is_empty()) {	
+		if (player_one->hand_is_empty() && player_two->hand_is_empty()) { 
+			deal_hands(game_players);
+			this->game_view->update_view(this->game_players, this->game_table);
 		}
+		while (!possible_move_selected) {
+			pair<Card*, char> move_pair = player_one->play();
+			if (move_pair.second == 't') {
+				trail(move_pair.first, player_one);
+				possible_move_selected = true;
+			} else if (move_pair.second == 'c') {
+				possible_move_selected = capture(move_pair.first, player_one);
+			} else {
+				possible_move_selected = build(move_pair.first, player_one);
+			}
+		}
+		player_one->set_is_playing(false);
+		player_two->set_is_playing(true);
+		this->game_view->update_view(this->game_players, this->game_table);
+		possible_move_selected = false;
+		while (!possible_move_selected) {
+			pair<Card*, char> move_pair = player_two->play();
+			if (move_pair.second == 't') {
+				trail(move_pair.first, player_two);
+				possible_move_selected = true;
+			} else if (move_pair.second == 'c') {
+				possible_move_selected = capture(move_pair.first, player_two);
+			} else {
+				possible_move_selected = build(move_pair.first, player_two);
+			}
+		}
+		player_one->set_is_playing(true);
+		player_two->set_is_playing(false);
+		this->game_view->update_view(this->game_players, this->game_table);
+		possible_move_selected = false;	
 	}	
 }
 
@@ -73,7 +116,8 @@ void Round::trail(Card* card_played, Player* game_player) {
 	// Update view
 	game_player->discard(card_played);
 	this->game_table->add_to_table_cards(card_played);
-	this->game_view->update_view(this->game_players, this->game_table);
+	game_player->set_is_playing(false);
+	
 }
 
 bool Round::capture(Card* card_played, Player* game_player) {
@@ -149,8 +193,12 @@ bool Round::capture(Card* card_played, Player* game_player) {
 		}
 	}
 	game_player->add_to_pile(pile_additions);
-	this->game_view->update_view(this->game_players, this->game_table);
 	return true;			
+}
+
+bool build(Card* card_played, Player* game_player) {
+	// Get value of card played
+	//  	
 }
 
 

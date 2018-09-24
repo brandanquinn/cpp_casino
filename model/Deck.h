@@ -19,6 +19,7 @@ class Deck {
 		Card* draw_card();
 		void shuffle_deck();
 		void print_deck();
+		bool is_empty();
 };
 
 #endif

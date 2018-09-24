@@ -15,6 +15,7 @@ class Table {
 		void clear_table_cards();
 		void remove_cards(vector<Card*> cards_to_remove);
 		void remove_sets(vector<vector<Card*>> sets_to_remove);
+		bool is_empty();
 };
 
 #endif

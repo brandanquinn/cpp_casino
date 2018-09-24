@@ -29,6 +29,8 @@ void Human::set_name(string a_name) {
 pair<Card*, char> Human::play() {
 	char move_option = ' ';
 	pair<Card*, char> move_pair;
+	vector<Card*> player_hand = Player::get_hand();
+	
 	while (move_option != 't' && move_option != 'b' && move_option != 'c') {
 		cout << "Enter (t) to trail, (b) to build, or (c) to capture: ";
 		cin >> move_option; 
@@ -39,17 +41,17 @@ pair<Card*, char> Human::play() {
 	}
 	if (move_option == 't') {
 		int card_num = get_card_index('t');
-		vector<Card*> player_hand = Player::get_hand();
 		move_pair.first = player_hand[card_num];
-			
-	
 	} else if (move_option == 'c') {
 		// Select card to capture with
 		// Return move with played card, player type, and move option
 		int card_num = get_card_index('c');
-		vector<Card*> player_hand = Player::get_hand();
 		move_pair.first = player_hand[card_num];
-		
+	} else {
+		// Select card to start a build with
+		// If that card is already locked to a build; ask if you'd like to start a multi build.
+		int card_num = get_card_index('b');
+		move_pair.first = player_hand[card_num];
 	}
 	
 	move_pair.second = move_option;
@@ -65,6 +67,9 @@ int Human::get_card_index(char move_type) {
 				break;
 			case 'c':
 				cout << "Which card would you like to play to capture? (Enter # of card position, leftmost being 1): ";
+				break;
+			case 'b':
+				cout << "Which card would you like to start or continue a build with? (Enter # of card position, leftmost being 1): ";
 				break;
 		}
 		cin >> card_num;
