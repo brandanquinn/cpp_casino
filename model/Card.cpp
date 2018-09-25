@@ -25,6 +25,7 @@ Card::Card(char a_suit, char a_type) {
 	create_map();
 	set_value();	
 	set_locked_to_build(false);
+	set_part_of_build(false);
 }
 
 /*
@@ -157,4 +158,20 @@ bool Card::get_locked_to_build() {
 
 void Card::set_locked_to_build(bool a_locked_to_build) {
 	this->locked_to_build = a_locked_to_build;
+}
+
+bool Card::get_part_of_build() {
+	return this->part_of_build;
+}
+
+void Card::set_part_of_build(bool a_part_of_build) {
+	this->part_of_build = a_part_of_build;
+}
+
+vector<Card*> Card::get_build_buddies() {
+	return this->build_buddies;
+}
+
+void Card::set_build_buddies(vector<Card*> a_build_buddies) {
+	this->build_buddies = a_build_buddies;
 }

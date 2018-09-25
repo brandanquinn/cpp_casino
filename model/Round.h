@@ -16,6 +16,7 @@ class Round {
 	private:	
 		void deal_hands(vector<Player*> game_players);
 		int get_set_value(vector<Card*> card_set);
+		void print_vector_cards(vector<Card*> card_list);
 		int round_num;
 		Deck* game_deck;
 		Table* game_table;
@@ -32,6 +33,7 @@ class Round {
 		bool build(Card* card_selected, Player* game_player);
 		vector<Card*> filter_build_options(vector<Card*> available_cards, int played_value, int build_sum); 
 		Move* generate_capture_move(Card* card_played, Player* game_player);
+		void remove_card_from_vector(vector<Card*> &card_list, Card* card_to_remove); 
 };	
 
 #endif

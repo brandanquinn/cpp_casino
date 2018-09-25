@@ -6,6 +6,7 @@
 #include "../model/Player.h"
 #include "../model/Deck.h"
 #include "../model/Table.h"
+#include "../model/Build.h"
 #include "Display.h"
 
 using namespace std;
@@ -34,7 +35,8 @@ void Display::print_cards(vector<Player*> game_players, Table* game_table) {
 	vector<Card*> human_pile = game_players[0]->get_pile();
 	vector<Card*> comp_card_list = game_players[1]->get_hand();
 	vector<Card*> comp_pile = game_players[1]->get_pile();
-	vector<Card*> table_card_list = game_table->get_table_cards();
+	vector<vector<Card*>> table_card_list = game_table->get_total_table_cards();
+	vector<Build*> build_list = game_table->get_current_builds();
 	
 	cout << "Player pile: ";
 	for (int i = 0; i < human_pile.size(); i++) {
@@ -47,20 +49,36 @@ void Display::print_cards(vector<Player*> game_players, Table* game_table) {
 	if (game_players[0]->get_is_playing()) cout << "[x] Player hand: ";
 	else cout << "Player hand: ";
 	for (int i = 0; i < human_card_list.size(); i++) {
-		cout << human_card_list[i]->get_card_string() << " ";
+		if (human_card_list[i]->get_locked_to_build()) 
+			cout << "*" << human_card_list[i]->get_card_string() << " ";
+		else
+			cout << human_card_list[i]->get_card_string() << " ";
 	}
 	cout << endl;	
 
 	cout << "Table hand: ";
 	for (int i = 0; i < table_card_list.size(); i++) {
-		cout << table_card_list[i]->get_card_string() << " ";
+		for (int j = 0; j < table_card_list[i].size(); j++) {	
+			if (table_card_list[i][j]->get_part_of_build()) {
+				if (j == 0)  
+					cout << "[ ";
+			}
+			cout << table_card_list[i][j]->get_card_string() << " ";
+			if (table_card_list[i][j]->get_part_of_build()) {
+				if (j == table_card_list[i].size() - 1)  
+					cout << "] ";
+			}
+		}
 	}
 	cout << endl;
 
 	if (game_players[1]->get_is_playing()) cout <<  "[x] Computer hand: ";
 	else cout << "Computer hand: ";	
 	for (int i = 0; i < comp_card_list.size(); i++) {
-		cout << comp_card_list[i]->get_card_string() << " ";
+		if (comp_card_list[i]->get_locked_to_build())
+			cout << "*" << comp_card_list[i]->get_card_string() << " ";
+		else
+			cout << comp_card_list[i]->get_card_string() << " ";
 	}		
 	cout << endl;
 
@@ -81,3 +99,4 @@ void Display::print_scores(vector<Player*> game_players) {
 	cout << "Player score: " << game_players[0]->get_score() << endl;
 	cout << "Computer score: " << game_players[1]->get_score() << endl; 
 }
+

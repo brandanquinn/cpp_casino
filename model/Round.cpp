@@ -245,9 +245,13 @@ bool Round::build(Card* card_selected, Player* game_player) {
 		// If (1) + (2) = locked card value, ask user if they'd like to complete build.
 		Card* build_card = filtered_cards[card_num-1];
 		build_cards.push_back(build_card);
+		remove_card_from_vector(filtered_cards, build_card);
 		
 		if (played_value + build_card->get_value() == selected_value) {
-			cout << "Would you like to create the build of: [" << card_played->get_card_string() << " " << build_card->get_card_string() << "] (y/n)?";
+			// Needs to print all cards in build_cards
+			cout << "Would you like to create the build of: [ "; 
+			print_vector_cards(build_cards); 
+			cout << "] (y/n)? " << endl;
 			char user_input;
 			while (user_input != 'y' && user_input != 'n') {
 				cin >> user_input;
@@ -259,8 +263,12 @@ bool Round::build(Card* card_selected, Player* game_player) {
 				// create build and update model
 				Build* b1 = new Build(build_cards, selected_value, card_selected);
 				this->game_table->add_build(b1);
+				card_played->set_part_of_build(true);
+				card_played->set_build_buddies(build_cards);
+				build_card->set_part_of_build(true);
 				game_player->discard(card_played);
 				this->game_table->add_to_table_cards(card_played);
+				card_selected->set_locked_to_build(true);
 				return true;
 			} else {
 				return false;
@@ -272,6 +280,12 @@ bool Round::build(Card* card_selected, Player* game_player) {
 		cout << "Played val: " << played_value << endl;
 	}
 	
+}
+
+void Round::print_vector_cards(vector<Card*> card_list) {
+	for (int i = 0; i < card_list.size(); i++) {
+		cout << card_list[i]->get_card_string() << " ";
+	}
 }
 
 vector<Card*> Round::filter_build_options(vector<Card*> available_cards, int played_value, int build_sum) {
@@ -333,3 +347,8 @@ int Round::get_set_value(vector<Card*> card_set) {
 	}
 	return value_sum;
 }
+
+void Round::remove_card_from_vector(vector<Card*> &card_list, Card* card_to_remove) {
+	card_list.erase(remove(card_list.begin(), card_list.end(), card_to_remove), card_list.end());
+}
+

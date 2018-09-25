@@ -1,4 +1,6 @@
 #include <vector>
+#include <algorithm>
+#include <string>
 
 #include "Build.h"
 #include "Card.h"

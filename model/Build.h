@@ -23,8 +23,7 @@ class Build {
 		void set_sum(int a_sum);
 		Card* get_sum_card();
 		void set_sum_card(Card* a_sum_card);
-		vector<vector<Card*>> get_total_build_cards();
-		
+		vector<vector<Card*>> get_total_build_cards();	
 };
 
 #endif
