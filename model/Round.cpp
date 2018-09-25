@@ -196,9 +196,95 @@ bool Round::capture(Card* card_played, Player* game_player) {
 	return true;			
 }
 
-bool build(Card* card_played, Player* game_player) {
-	// Get value of card played
-	//  	
+bool Round::build(Card* card_selected, Player* game_player) {
+	// Get value of card selected
+	// Have player select card to play into the build.
+	int selected_value = card_selected->get_value();
+	vector<Card*> player_hand = game_player->get_hand();
+	int card_num = 0;
+	while (card_num < 1 || card_num > player_hand.size()) {
+		cout << "Which card would you like to add to the build? (Enter # of card position, leftmost being 1): ";
+		cin >> card_num;
+		if (card_num < 1 || card_num > player_hand.size())
+			cout << "Invalid number input. Try again." << endl;
+	}	
+	Card* card_played = player_hand[card_num-1];
+	// If that card has value >= locked card: return false
+	if (card_played->get_value() >= selected_value) {
+		cout << "Card selected cannot be used in this build." << endl;
+		return false;
+	}
+	vector<Card*> table_cards = this->game_table->get_table_cards();
+	vector<Card*> filtered_cards = table_cards;
+	int played_value = card_played->get_value();
+	// Provide options to build with on table.
+	card_num = 0;
+	bool build_created = false;
+	vector<Card*> build_cards;
+	build_cards.push_back(card_played);
+	while (!build_created) {
+		// Filter available cards to remove all cards with value + played_value > locked card val
+		filtered_cards = filter_build_options(filtered_cards, played_value, selected_value);
+		if (filtered_cards.empty()) {
+			cout << "No cards can be used for this build." << endl;
+			return false;
+		}
+		while (card_num < 1 || card_num > filtered_cards.size()) {
+			cout << "Select cards to build with, enter '0' when you are done." << endl;
+			for (int i = 0; i < filtered_cards.size(); i++) {
+				cout << "(" << i+1 << ") " << filtered_cards[i]->get_card_string() << endl;	
+			}
+			cin >> card_num;
+			if (card_num < 1 || card_num > filtered_cards.size()) {
+				cout << "Invalid number input. Try again" << endl;	
+			} 
+		}
+		// At this point we have a locked card for the build to sum to | card_selected
+		// A card selected to play into a build (1) | card_played
+		// And a card on the board to build with (2) | build_card
+		// If (1) + (2) = locked card value, ask user if they'd like to complete build.
+		Card* build_card = filtered_cards[card_num-1];
+		build_cards.push_back(build_card);
+		
+		if (played_value + build_card->get_value() == selected_value) {
+			cout << "Would you like to create the build of: [" << card_played->get_card_string() << " " << build_card->get_card_string() << "] (y/n)?";
+			char user_input;
+			while (user_input != 'y' && user_input != 'n') {
+				cin >> user_input;
+				if (user_input != 'y' && user_input != 'n') {
+					cout << "Input not recognized. Try again." << endl;
+				}
+			}
+			if (user_input == 'y') {
+				// create build and update model
+				Build* b1 = new Build(build_cards, selected_value, card_selected);
+				this->game_table->add_build(b1);
+				game_player->discard(card_played);
+				this->game_table->add_to_table_cards(card_played);
+				return true;
+			} else {
+				return false;
+			}			 
+		} 
+		// Need to build with more cards on the table.
+		played_value = get_set_value(build_cards);		
+		card_num = 0;
+		cout << "Played val: " << played_value << endl;
+	}
+	
+}
+
+vector<Card*> Round::filter_build_options(vector<Card*> available_cards, int played_value, int build_sum) {
+	vector<Card*> filtered_options;
+	// Iterate through avail_cards
+	// If avail_card val + played_val < build_sum
+	// Add avail_card to filtered vector
+	// Return filtered vector
+	for (int i = 0; i < available_cards.size(); i++) {
+		if (available_cards[i]->get_value() + played_value <= build_sum)
+			filtered_options.push_back(available_cards[i]); 
+	}
+	return filtered_options;
 }
 
 

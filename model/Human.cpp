@@ -71,6 +71,9 @@ int Human::get_card_index(char move_type) {
 			case 'b':
 				cout << "Which card would you like to start or continue a build with? (Enter # of card position, leftmost being 1): ";
 				break;
+			default:
+				cout << "Which card would you like to add to the build? (Enter # of card position, leftmost being 1): ";
+				break;
 		}
 		cin >> card_num;
 		if (card_num < 1 || card_num > Player::get_hand().size()) {

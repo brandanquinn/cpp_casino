@@ -29,7 +29,8 @@ class Round {
 		Table* get_game_table();
 		void trail(Card* card_played, Player* game_player);
 		bool capture(Card* card_played, Player* game_player);
-		bool build(Card* card_played, Player* game_player);
+		bool build(Card* card_selected, Player* game_player);
+		vector<Card*> filter_build_options(vector<Card*> available_cards, int played_value, int build_sum); 
 		Move* generate_capture_move(Card* card_played, Player* game_player);
 };	
 

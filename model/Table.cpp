@@ -6,6 +6,7 @@ using namespace std;
 
 #include "Card.h"
 #include "Table.h"
+#include "Build.h"
 
 Table::Table() {
 
@@ -44,4 +45,12 @@ void Table::remove_sets(vector<vector<Card*>> sets_to_remove) {
 
 bool Table::is_empty() {
 	return this->table_cards.empty();
+}
+
+void Table::add_build(Build* new_build) {
+	this->current_builds.push_back(new_build);
+}
+
+vector<Build*> Table::get_current_builds() {
+	return this->current_builds;
 }

@@ -1,9 +1,12 @@
+#include <vector>
+
 #include "Build.h"
+#include "Card.h"
 
 using namespace std;
 
-Build::Build(bool a_multi_build, int a_sum, string a_sum_card) {
-	set_multi_build(a_multi_build);
+Build::Build(vector<Card*> a_build_cards, int a_sum, Card* a_sum_card) {
+	this->total_build_cards.push_back(a_build_cards);
 	set_sum(a_sum);
 	set_sum_card(a_sum_card);
 }
@@ -24,13 +27,18 @@ void Build::set_sum(int a_sum) {
 	this->sum = a_sum;
 }
 
-string Build::get_sum_card() {
+Card* Build::get_sum_card() {
 	return this->sum_card;
 }
 
-void Build::set_sum_card(string a_sum_card) {
+void Build::set_sum_card(Card* a_sum_card) {
 	this->sum_card = a_sum_card;
 }
+
+vector<vector<Card*>> Build::get_total_build_cards() {
+	return this->total_build_cards;
+}
+
 
 
 
