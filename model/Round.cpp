@@ -157,16 +157,18 @@ bool Round::capture(Card* card_played, Player* game_player) {
 	}
 	if (!capturable_sets.empty()) {
 		// Give selection of sets to capture as well:
-		for (int i = 0; i < capturable_sets.size(); i++) {
-			cout << "Subset (" << i+1 << ") ";
-			for (int j = 0; j < capturable_sets[i].size(); j++) {
-				cout << capturable_sets[i][j]->get_card_string() << " ";
-			}
-			cout << endl;
-		}
+		
 		int set_selection = -1;
 			while (set_selection != 0) {
-			cout << "Select which subsets you'd like to capture. Input '0' when you are finished." << endl;
+			cout << "List of capturable sets:" << endl;
+			for (int i = 0; i < capturable_sets.size(); i++) {
+				cout << "Subset (" << i+1 << ") ";
+				for (int j = 0; j < capturable_sets[i].size(); j++) {
+					cout << capturable_sets[i][j]->get_card_string() << " ";
+				}
+				cout << endl;
+			}
+			cout << "Select which sets you'd like to capture. Input '0' when you are finished." << endl;
 			cout << "Input: ";
 			cin >> set_selection;
 			if (set_selection == 0) break;
@@ -174,6 +176,8 @@ bool Round::capture(Card* card_played, Player* game_player) {
 				cout << "Input not recognized. Try again." << endl;
 			} else {
 				selected_sets.push_back(capturable_sets[set_selection-1]);	
+				// remove cards in selected_sets from capturable_sets
+				remove_selected_set(capturable_sets, capturable_sets[set_selection-1]);
 			}	
 		} 	
 	}
@@ -194,6 +198,17 @@ bool Round::capture(Card* card_played, Player* game_player) {
 	}
 	game_player->add_to_pile(pile_additions);
 	return true;			
+}
+
+void Round::remove_selected_set(vector<vector<Card*>> &total_sets, vector<Card*> selected_set) {
+	// if any cards within the selected_set exist in total_subset; remove subset
+	
+	for (int i = 0; i < selected_set.size(); i++) {
+		for (int j = 0; j < total_sets.size(); j++) {
+			if (count(total_sets[j].begin(), total_sets[j].end(), selected_set[i]))
+				total_sets.erase(total_sets.begin() + j);	
+		}
+	}
 }
 
 bool Round::build(Card* card_selected, Player* game_player) {
@@ -261,7 +276,7 @@ bool Round::build(Card* card_selected, Player* game_player) {
 			}
 			if (user_input == 'y') {
 				// create build and update model
-				Build* b1 = new Build(build_cards, selected_value, card_selected);
+				Build* b1 = new Build(build_cards, selected_value, card_selected, game_player);
 				this->game_table->add_build(b1);
 				card_played->set_part_of_build(true);
 				card_played->set_build_buddies(build_cards);

@@ -30,6 +30,9 @@ void Table::add_to_table_cards(Card* new_card) {
 		vector<Card*> build_buddies = new_card->get_build_buddies();
 		// build_buddies.push_back(new_card);
 		// Remove elements of build_buddies from table_cards
+		for (int i = 0; i < build_buddies.size(); i++) {
+			remove_card_from_vector(this->table_cards, build_buddies[i]);
+		}
 		this->total_table_cards.insert(total_table_cards.begin(), build_buddies);
 		// Insert them in the front of the vector with new_card			
 	} else {
