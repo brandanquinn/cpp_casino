@@ -6,6 +6,7 @@
 
 #include "Round.h"
 #include "Player.h"
+#include "Build.h"
 
 using namespace std;
 
@@ -14,6 +15,14 @@ class Tournament {
 		Round* current_round;
 		int rounds_played;
 		vector<Player*> game_players;
+		vector<Card*> parse_cards_from_file(string line);
+		void print_cards(vector<Card*> card_list);
+		vector<string> parse_builds(string line);
+		vector<Build*> get_build_objects(vector<string> build_strings, string line, vector<Card*> player_hand, vector<Card*> computer_hand);
+		int get_build_str_val(string build_str);
+		vector<vector<Card*>> get_build_cards(string build_str);
+
+
 	public:
 		Tournament();
 		void show_start_screen();

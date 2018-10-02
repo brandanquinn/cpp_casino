@@ -3,6 +3,8 @@
 
 #include <string>
 #include <queue>
+#include <vector>
+
 #include "Card.h"
 
 using namespace std;
@@ -15,7 +17,7 @@ class Deck {
 
 	public:	
 		Deck();
-		// Deck(string pre_loaded_deck);
+		Deck(vector<Card*> pre_loaded_deck);
 		Card* draw_card();
 		void shuffle_deck();
 		void print_deck();

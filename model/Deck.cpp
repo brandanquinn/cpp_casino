@@ -42,14 +42,17 @@ Deck::Deck() {
 }
 
 /*
- * Function Name: Deck(string pre_loaded_deck)
+ * Function Name: Deck(vector<Card*> pre_loaded_deck)
  * Purpose: Overloaded constructor for Deck class; will be used to generate a serialized deck.
  * Params: string pre_loaded_deck
  * Return: None
  */
-/*Deck::Deck(string pre_loaded_deck) {
-
-}*/
+Deck::Deck(vector<Card*> pre_loaded_deck) {
+	for (int i = 0; i < pre_loaded_deck.size(); i++) 
+		this->game_deck.push(pre_loaded_deck[i]);
+	
+	this->top_of_deck = this->game_deck.front();
+}
 
 /*
  * Function Name: draw_card()

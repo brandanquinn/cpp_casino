@@ -8,10 +8,18 @@
 using namespace std;
 
 Build::Build(vector<Card*> a_build_cards, int a_sum, Card* a_sum_card, Player* a_build_owner) {
-	this->total_build_cards.push_back(a_build_cards);
+	this->total_build_cards.push_back(a_build_cards);	
 	set_sum(a_sum);
 	set_sum_card(a_sum_card);
 	this->build_owner = a_build_owner;
+}
+
+Build::Build(vector<vector<Card*>> a_multi_build_cards, int a_sum, Card* a_sum_card, Player* a_build_owner) {
+	this->total_build_cards = a_multi_build_cards;	
+	set_sum(a_sum);
+	set_sum_card(a_sum_card);
+	this->build_owner = a_build_owner;
+	set_multi_build(true);
 }
 
 bool Build::get_multi_build() {

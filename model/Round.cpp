@@ -250,6 +250,7 @@ bool Round::build(Card* card_selected, Player* game_player) {
 				cout << "(" << i+1 << ") " << filtered_cards[i]->get_card_string() << endl;	
 			}
 			cin >> card_num;
+			if (card_num == 0) break;
 			if (card_num < 1 || card_num > filtered_cards.size()) {
 				cout << "Invalid number input. Try again" << endl;	
 			} 
@@ -258,9 +259,16 @@ bool Round::build(Card* card_selected, Player* game_player) {
 		// A card selected to play into a build (1) | card_played
 		// And a card on the board to build with (2) | build_card
 		// If (1) + (2) = locked card value, ask user if they'd like to complete build.
+		
+		if (card_num == 0 && build_cards.size() == 1) {
+			cout << "0 was input, returning to move selection." << endl;
+			return false;
+		}
+
 		Card* build_card = filtered_cards[card_num-1];
 		build_cards.push_back(build_card);
 		remove_card_from_vector(filtered_cards, build_card);
+		
 		
 		if (played_value + build_card->get_value() == selected_value) {
 			// Needs to print all cards in build_cards

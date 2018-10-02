@@ -6,7 +6,7 @@ Computer:
    Pile: SX SQ SK D6 H8
  
 Human:
-   Scorple: 14
+   Score: 14
    Hand: SA S4 CA C9
    Pile: DJ DA C3 C5
 
