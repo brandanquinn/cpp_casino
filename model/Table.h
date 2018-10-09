@@ -14,6 +14,7 @@ class Table {
 		vector<Build*> current_builds;
 		void remove_card_from_vector(vector<Card*> &card_list, Card* card_to_remove);
 		bool does_build_exist(vector<Card*> build_buddies);
+		void remove_from_table_builds(vector<Card*> cards_to_remove);
 
 	public:
 		Table();
@@ -24,6 +25,7 @@ class Table {
 		void clear_table_cards();
 		void remove_cards(vector<Card*> cards_to_remove);
 		void remove_sets(vector<vector<Card*>> sets_to_remove);
+		void remove_builds(vector<Build*> builds_to_remove);
 		bool is_empty();
 		void add_build(Build* new_build);
 		vector<Build*> get_current_builds();

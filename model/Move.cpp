@@ -3,11 +3,13 @@
 
 #include "Move.h"
 #include "Card.h"
+#include "Build.h"
 
-Move::Move(Card* a_card_played, vector<Card*> a_capturable_cards, vector<vector<Card*>> a_capturable_sets) {
+Move::Move(Card* a_card_played, vector<Card*> a_capturable_cards, vector<vector<Card*>> a_capturable_sets, vector<Build*> a_capturable_builds) {
 	this->card_played = a_card_played;
 	this->capturable_cards = a_capturable_cards;
 	this->capturable_sets = a_capturable_sets;
+	this->capturable_builds = a_capturable_builds;
 }
 
 Card* Move::get_card_played() {
@@ -20,4 +22,8 @@ vector<Card*> Move::get_capturable_cards() {
 
 vector<vector<Card*>> Move::get_capturable_sets() {
 	return this->capturable_sets;
+}
+
+vector<Build*> Move::get_capturable_builds() {
+	return this->capturable_builds;
 }

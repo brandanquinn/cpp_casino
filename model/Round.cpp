@@ -169,11 +169,39 @@ bool Round::capture(Card* card_played, Player* game_player) {
 	vector<Card*> capturable_cards = game_move->get_capturable_cards();
 	vector<Card*> pile_additions;	
 	vector<vector<Card*>> capturable_sets = game_move->get_capturable_sets();
+	vector<Build*> capturable_builds = game_move->get_capturable_builds();
 	vector<vector<Card*>> selected_sets;
 
-	if (capturable_cards.empty() && capturable_sets.empty()) {
+	if (capturable_cards.empty() && capturable_sets.empty() && capturable_builds.empty()) {
 		cout << "No cards on the table can be captured with this card." << endl;
 		return false;
+	}
+
+	if (!capturable_builds.empty()) {
+		cout << "Would you like to capture? (y/n)" << endl;
+		for (int i = 0; i < capturable_builds.size(); i++) {
+			vector<vector<Card*>> temp_build_cards = capturable_builds[i]->get_total_build_cards();
+			if (temp_build_cards.size() > 1) cout << "[ ";
+			for (int j = 0; j < temp_build_cards.size(); j++) {
+				cout << "[ ";
+				for (int k = 0; k < temp_build_cards[j].size(); k++) {
+					cout << temp_build_cards[j][k]->get_card_string() << " ";
+				}
+				cout << "]";
+			}
+			if (temp_build_cards.size() > 1) cout << " ]";
+			cout << endl;
+		}
+		
+		char will_capture;
+		while(will_capture != 'y' && will_capture != 'n') {
+			cin >> will_capture;
+			if (will_capture != 'y' && will_capture != 'n') {
+				cout << "Input not recognized. Try again." << endl;
+			} 
+		}
+		if (will_capture == 'n')
+			return false;
 	}
 
 	if (!capturable_cards.empty()) {	
@@ -222,7 +250,8 @@ bool Round::capture(Card* card_played, Player* game_player) {
 		
 	game_player->discard(card_played);
 	this->game_table->remove_cards(capturable_cards);	
-	this->game_table->remove_sets(selected_sets);	
+	this->game_table->remove_sets(selected_sets);
+	this->game_table->remove_builds(capturable_builds);	
 
 	pile_additions.push_back(card_played);
 	for (int i = 0; i < capturable_cards.size(); i++) {
@@ -231,6 +260,14 @@ bool Round::capture(Card* card_played, Player* game_player) {
 	for (int i = 0; i < selected_sets.size(); i++) {
 		for (int j = 0; j < selected_sets[i].size(); j++) {
 			pile_additions.push_back(selected_sets[i][j]);
+		}
+	}
+	for (int i = 0; i < capturable_builds.size(); i++) {
+		vector<vector<Card*>> temp_build_cards = capturable_builds[i]->get_total_build_cards();
+		for (int j = 0; j < temp_build_cards.size(); j++) {
+			for (int k = 0; k < temp_build_cards[j].size(); k++) {
+				pile_additions.push_back(temp_build_cards[j][k]);
+			}
 		}
 	}
 	game_player->add_to_pile(pile_additions);
@@ -367,12 +404,19 @@ Move* Round::generate_capture_move(Card* card_played, Player* game_player) {
 	// Check values of cards on board, if matches exist add to vector
 	// (Eventually - check list of build values on board)
 	// Check all possible sets of cards, if value of sets match card value, add to 2d vector
-	// Return Move obj generated with (card_played, capturable_cards, capturable_sets) 
+	// Return Move obj generated with (card_played, capturable_cards, capturable_sets)
+	vector<Build*> capturable_builds; 
 	if (card_played->get_locked_to_build()) {
 			// give option to capture your build
 			// if yes selected, get other builds that can be captured and offer them.
 				// Then, continue with algo
 			// if no, return Move obj with empty capturable_cards / sets 
+			vector<Build*> current_builds = this->game_table->get_current_builds();
+			for (int i = 0; i < current_builds.size(); i++) {
+				if (current_builds[i]->get_sum_card()->get_card_string() == card_played->get_card_string()) {
+					capturable_builds.push_back(current_builds[i]);	
+				}
+			}
 	}
 
 	int played_value = card_played->get_value();
@@ -404,7 +448,7 @@ Move* Round::generate_capture_move(Card* card_played, Player* game_player) {
 			capturable_sets.push_back(avail_sets[i]);	
 		}
 	}	
-	return new Move(card_played, capturable_cards, capturable_sets);		
+	return new Move(card_played, capturable_cards, capturable_sets, capturable_builds);		
 }
 
 int Round::get_set_value(vector<Card*> card_set) {

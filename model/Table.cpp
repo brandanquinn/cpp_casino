@@ -112,6 +112,30 @@ void Table::remove_sets(vector<vector<Card*>> sets_to_remove) {
 	}	
 }
 
+void Table::remove_builds(vector<Build*> builds_to_remove) {
+	for (int i = 0; i < builds_to_remove.size(); i++) {
+		vector<vector<Card*>> temp_build_cards = builds_to_remove[i]->get_total_build_cards();
+		for (int j = 0; j < temp_build_cards.size(); j++) {
+			remove_from_table_builds(temp_build_cards[j]);
+		} 
+	}
+}
+
+void Table::remove_from_table_builds(vector<Card*> cards_to_remove) {
+	// Look for 
+	vector<vector<Card*>> builds_to_erase;
+	for (int i = 0; i < table_builds.size(); i++) {
+		for (int j = 0; j < table_builds[i].size(); j++) {
+			for (int k = 0; k < cards_to_remove.size(); k++)
+				if (table_builds[i][j]->get_card_string() == cards_to_remove[i]->get_card_string())
+					builds_to_erase.push_back(table_builds[i]);
+		}
+	}
+	
+	for (int i = 0; i < builds_to_erase.size(); i++)
+		table_builds.erase(remove(table_builds.begin(), table_builds.end(), builds_to_erase[i]), table_builds.end());
+}
+
 bool Table::is_empty() {
 	return this->table_cards.empty();
 }
