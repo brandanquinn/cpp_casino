@@ -22,6 +22,7 @@ class Deck {
 		void shuffle_deck();
 		void print_deck();
 		bool is_empty();
+		int get_num_cards_left();
 };
 
 #endif

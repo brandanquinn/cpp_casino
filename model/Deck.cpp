@@ -97,6 +97,10 @@ void Deck::shuffle_deck() {
 bool Deck::is_empty() {
 	return game_deck.empty();
 }
+
+int Deck::get_num_cards_left() {
+	return this->game_deck.size();
+}
 	
 
 

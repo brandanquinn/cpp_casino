@@ -9,11 +9,15 @@
 class Table {
 	private:
 		vector<vector<Card*>> total_table_cards;
-		vector<Card*> table_cards;				
+		vector<Card*> table_cards;	
+		vector<vector<Card*>> table_builds;			
 		vector<Build*> current_builds;
 		void remove_card_from_vector(vector<Card*> &card_list, Card* card_to_remove);
+		bool does_build_exist(vector<Card*> build_buddies);
+
 	public:
 		Table();
+		Table(vector<Card*> a_table_cards, vector<Build*> a_current_builds);
 		vector<Card*> get_table_cards();
 		vector<vector<Card*>> get_total_table_cards();
 		void add_to_table_cards(Card* new_card);
@@ -23,6 +27,7 @@ class Table {
 		bool is_empty();
 		void add_build(Build* new_build);
 		vector<Build*> get_current_builds();
+		vector<Card*> get_flattened_card_list();
 };
 
 #endif

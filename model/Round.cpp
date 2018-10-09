@@ -23,13 +23,46 @@ Round::Round(int a_round_num, vector<Player*> a_game_players) {
 	this->game_view = new Display;
 }
 
+Round::Round(int a_round_num, vector<Player*> a_game_players, vector<Card*> a_deck_list, vector<Card*> a_table_cards, vector<Build*> a_current_builds) {
+	this->round_num = a_round_num;
+	this->game_deck = new Deck(a_deck_list);
+	// create and use table constructor with cards + builds
+	this->game_table = new Table(a_table_cards, a_current_builds);
+	this->game_players = a_game_players;
+	this->game_view = new Display;
+	
+	// cout << "In round constructor..." << endl;
+
+	// vector<Card*> table_cards = this->game_table->get_flattened_card_list();
+
+	// for (int i = 0; i < table_cards.size(); i++) {
+	// 	if (table_cards[i]->get_part_of_build())
+	// 		cout << table_cards[i]->get_card_string() << " is a part of a build." << endl;
+	// 	else
+	// 		cout << table_cards[i]->get_card_string() << " is not part of a build." << endl;
+	// }
+
+	// cout << "According to a_table_cards..." << endl;
+
+	// for (int i = 0; i < a_table_cards.size(); i++) {
+	// 	if (a_table_cards[i]->get_part_of_build())
+	// 		cout << a_table_cards[i]->get_card_string() << " is a part of a build." << endl;
+	// 	else
+	// 		cout << a_table_cards[i]->get_card_string() << " is not part of a build." << endl;
+	// }
+
+	
+}
+
 int Round::get_round_num() {
 	return this->round_num;
 }
 
-void Round::start_game(bool human_is_first) {
-	deal_hands(game_players);
-	deal_to_table(game_table);
+void Round::start_game(bool human_is_first, bool loaded_game) {
+	if (!loaded_game) {
+		deal_hands(game_players);
+		deal_to_table(game_table);
+	}
 		
 	// Player plays, returns pair for move selected.
 	// Create Round function to update model using info from pair.
@@ -52,8 +85,10 @@ void Round::start_game(bool human_is_first) {
 	cout << "Computer playing: " << game_players[1]->get_is_playing() << endl;
 	this->game_view->print_welcome(this->round_num);
 	this->game_view->update_view(this->game_players, this->game_table);
+
 	
 	while (!this->game_deck->is_empty()) {	
+		// cout << "Seg fault occurs before move selection." << endl;
 		if (player_one->hand_is_empty() && player_two->hand_is_empty()) { 
 			deal_hands(game_players);
 			this->game_view->update_view(this->game_players, this->game_table);
@@ -89,6 +124,8 @@ void Round::start_game(bool human_is_first) {
 		this->game_view->update_view(this->game_players, this->game_table);
 		possible_move_selected = false;	
 	}	
+
+	delete player_one, player_two;
 }
 
 void Round::deal_hands(vector<Player*> game_players) {
@@ -331,6 +368,13 @@ Move* Round::generate_capture_move(Card* card_played, Player* game_player) {
 	// (Eventually - check list of build values on board)
 	// Check all possible sets of cards, if value of sets match card value, add to 2d vector
 	// Return Move obj generated with (card_played, capturable_cards, capturable_sets) 
+	if (card_played->get_locked_to_build()) {
+			// give option to capture your build
+			// if yes selected, get other builds that can be captured and offer them.
+				// Then, continue with algo
+			// if no, return Move obj with empty capturable_cards / sets 
+	}
+
 	int played_value = card_played->get_value();
 	vector<Card*> avail_cards = this->game_table->get_table_cards();
 	vector<Card*> capturable_cards;

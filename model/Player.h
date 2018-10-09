@@ -26,6 +26,8 @@ class Player {
 		bool hand_is_empty();
 		void set_is_playing(bool a_is_playing);
 		bool get_is_playing();
+		void set_hand(vector<Card*> a_hand);
+		void set_pile(vector<Card*> a_pile);
 };
 
 #endif

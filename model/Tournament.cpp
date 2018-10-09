@@ -49,11 +49,11 @@ bool Tournament::load_saved_game() {
 	ifstream save_file(file_name);
 	if (!save_file.good()) return false;
 	int current_round_num, computer_score, player_score;
-	vector<Card*> player_hand, player_pile, computer_hand, computer_pile, deck_list;
-	vector<vector<Card*>> total_table_cards;
+	vector<Card*> player_hand, player_pile, computer_hand, computer_pile, deck_list, table_cards;
+	// vector<vector<Card*>> total_table_cards;
 	vector<Build*> current_builds;
 	vector<string> build_strings;
-	Deck* current_deck = NULL;
+	Deck* current_deck = NULL;	
 	bool human_next;
 	
 	
@@ -87,7 +87,8 @@ bool Tournament::load_saved_game() {
 					break;
 				case 12:
 					// Table:
-					build_strings = parse_builds(line.substr(line.find(':') + 1));	
+					build_strings = parse_builds(line.substr(line.find(':') + 1));
+					table_cards = get_table_cards(line.substr(line.find(':')+ 1));
 					break;
 				case 14:
 					// Build Owner:
@@ -95,7 +96,7 @@ bool Tournament::load_saved_game() {
 					break;
 				case 16:
 					deck_list = parse_cards_from_file(line);
-					current_deck = new Deck(deck_list);
+					// current_deck = new Deck(deck_list);
 					break;
 				case 18:
 					// Next Player:
@@ -104,7 +105,6 @@ bool Tournament::load_saved_game() {
 					next_player.erase(remove(next_player.begin(), next_player.end(), ' '), next_player.end());
 					// Sets human_next boolean based on parsed Next Player value.
 					next_player == "Human" ? human_next = true : human_next = false;
-					cout << "Human is next?: " << human_next << endl;
 					break;
 			}
 					
@@ -114,14 +114,86 @@ bool Tournament::load_saved_game() {
 		save_file.close();
 	}
 
+	table_cards = modify_table_cards(table_cards, current_builds);
+
+	// set up human player
+	game_players[0]->set_hand(player_hand);
+	game_players[0]->set_pile(player_pile);
+	game_players[0]->set_score(player_score);
+
+	// set up computer player
+	game_players[1]->set_hand(computer_hand);
+	game_players[1]->set_pile(computer_pile);
+	game_players[1]->set_score(computer_score);
+
+	// for (int i = 0; i < table_cards.size(); i++) {
+	// 	if (table_cards[i]->get_part_of_build())
+	// 		cout << table_cards[i]->get_card_string() << " is a part of a build." << endl;
+	// 	else
+	// 		cout << table_cards[i]->get_card_string() << " is not part of a build." << endl;
+	// }
+
+	Round game_round(rounds_played, game_players, deck_list, table_cards, current_builds);
+	this->current_round = &game_round;
+	this->current_round->start_game(human_next, true);
+	
+	return true;
+}
+
+vector<Card*> Tournament::modify_table_cards(vector<Card*> table_cards_list, vector<Build*> current_builds) {
 	for (int i = 0; i < current_builds.size(); i++) {
-		vector<vector<Card*>> cards = current_builds[i]->get_total_build_cards();
-		for (int j = 0; j < cards.size(); j++) {
-			print_cards(cards[j]);
+		vector<vector<Card*>> total_build_cards = current_builds[i]->get_total_build_cards();
+		for (int j = 0; j < total_build_cards.size(); j++) {
+			for (int k = 0; k < total_build_cards[j].size(); k++) {
+				for (int l = 0; l < table_cards_list.size(); l++) {
+					if (total_build_cards[j][k]->get_card_string() == table_cards_list[l]->get_card_string()) {
+						table_cards_list[l]->set_build_buddies(total_build_cards[j]);
+						table_cards_list[l]->set_part_of_build(true);
+						// cout << "Found a match." << endl;
+					}
+				}
+				// Get card string; check if card string is in temp_build_cards vector.
+				// Might have to create temp vectors to hold the card strings. 
+			}
 		}
 	}
+	return table_cards_list;
+}
 
-	return true;
+vector<Card*> Tournament::get_table_cards(string line) {
+	// remove brackets and garbage from line then call parse_cards_from_file() and return that vector
+	// need to set any card within brackets to be part of build
+
+	// [ [C6 S3] [S9] ] C8 CJ HA 
+
+	int index_of_last_bracket = 0;
+	int sum_spaces = 0;
+	// iterator to get position of last closing bracket
+	for (int i = 0; i < line.size(); i++) {
+		if (line[i] == ']') index_of_last_bracket = i;
+	}
+
+	// find sum_spaces - equivalent to how many loose cards there in a list of table cards.
+	for (int i = index_of_last_bracket; i < line.size(); i++) {
+		if (line[i] == ' ') sum_spaces++;
+	}
+
+	cout << sum_spaces << endl;
+	// line.size() - index_of_last_bracket = ?
+
+	line.erase(remove(line.begin(), line.end(), '['), line.end());
+	line.erase(remove(line.begin(), line.end(), ']'), line.end());
+
+	// trying to figure out how to set part of build / build buddies so display class can handle properly.
+	vector<Card*> table_cards_list = parse_cards_from_file(line);
+	// Temporary vector to hold current build cards.
+
+	// Current builds
+	// Check part of build cards against current build cards to set build buddies.
+	
+	cout << "Table build func is happening" << endl;
+
+	return table_cards_list;
 }
 
 vector<string> Tournament::parse_builds(string line) {
@@ -230,7 +302,9 @@ vector<vector<Card*>> Tournament::get_build_cards(string build_str) {
 		if (build_str[i] == ']')  {
 			// end of build string
 			bracket_found = false;
-			total_build_cards.push_back(parse_cards_from_file(sub_build));
+			vector<Card*> build_cards = parse_cards_from_file(sub_build);
+			total_build_cards.push_back(build_cards);
+			// build_cards.clear();
 			sub_build.clear();
 		}
 		if (bracket_found == true && build_str[i] != '[')
@@ -294,7 +368,7 @@ void Tournament::start_round() {
 	this->rounds_played += 1;	
 	Round game_round(rounds_played, game_players);
 	this->current_round = &game_round;	
-	this->current_round->start_game(coin_toss());
+	this->current_round->start_game(coin_toss(), false);
 }
 
 void Tournament::end_round() {

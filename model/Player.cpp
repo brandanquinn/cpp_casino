@@ -57,3 +57,12 @@ void Player::set_is_playing(bool a_is_playing) {
 bool Player::get_is_playing() {
 	return this->is_playing;
 }
+
+void Player::set_hand(vector<Card*> a_hand) {
+	this->hand = a_hand;
+}
+		
+		
+void Player::set_pile(vector<Card*> a_pile) {
+	this->pile = a_pile;
+}

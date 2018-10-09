@@ -10,6 +10,7 @@
 #include "Deck.h"
 #include "Table.h"
 #include "Move.h"
+#include "Build.h"
 #include "../view/Display.h"
 
 class Round {
@@ -25,8 +26,9 @@ class Round {
 		Display* game_view;
 	public:
 		Round(int a_round_num, vector<Player*> a_game_players);
+		Round(int a_round_num, vector<Player*> a_game_players, vector<Card*> a_deck_list, vector<Card*> a_table_cards, vector<Build*> a_current_builds);
 		int get_round_num();
-		void start_game(bool human_is_first);
+		void start_game(bool human_is_first, bool loaded_game);
 		void deal_to_table(Table* game_table);
 		Table* get_game_table();
 		void trail(Card* card_played, Player* game_player);

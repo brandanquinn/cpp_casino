@@ -21,7 +21,8 @@ class Tournament {
 		vector<Build*> get_build_objects(vector<string> build_strings, string line, vector<Card*> player_hand, vector<Card*> computer_hand);
 		int get_build_str_val(string build_str);
 		vector<vector<Card*>> get_build_cards(string build_str);
-
+		vector<Card*> get_table_cards(string line);
+		vector<Card*> modify_table_cards(vector<Card*> table_cards_list, vector<Build*> current_builds);
 
 	public:
 		Tournament();
