@@ -50,6 +50,10 @@ vector<vector<Card*>> Build::get_total_build_cards() {
 	return this->total_build_cards;
 }
 
+void Build::extend_build(vector<Card*> build_cards) {
+	total_build_cards.push_back(build_cards);
+}
+
 
 
 

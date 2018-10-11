@@ -15,6 +15,8 @@ class Table {
 		void remove_card_from_vector(vector<Card*> &card_list, Card* card_to_remove);
 		bool does_build_exist(vector<Card*> build_buddies);
 		void remove_from_table_builds(vector<Card*> cards_to_remove);
+		bool is_card_in_vector(vector<vector<Card*>>, string my_card_string);
+		bool is_card_in_single_vec(vector<Card*> card_list, string my_card_string);
 
 	public:
 		Table();
@@ -30,6 +32,9 @@ class Table {
 		void add_build(Build* new_build);
 		vector<Build*> get_current_builds();
 		vector<Card*> get_flattened_card_list();
+		bool is_part_of_multi_build(Card* my_card);
+		int get_size_of_multi_build(Card* my_card);
+		int get_size_of_single_build(Card* my_card);
 };
 
 #endif

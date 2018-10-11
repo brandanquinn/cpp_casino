@@ -16,6 +16,7 @@ class Card {
 		bool locked_to_build;
 		bool part_of_build;
 		vector<Card*> build_buddies;
+
 	public:
 		Card();
 		Card(char a_suit, char a_type);
@@ -33,6 +34,8 @@ class Card {
 		void set_part_of_build(bool a_part_of_build);
 		vector<Card*> get_build_buddies();
 		void set_build_buddies(vector<Card*> a_build_buddies);
+		// Build* get_my_build();
+		// void set_my_build(Build* new_build);
 };
 
 #endif

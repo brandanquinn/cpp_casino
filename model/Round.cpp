@@ -247,7 +247,7 @@ bool Round::capture(Card* card_played, Player* game_player) {
 		} 	
 	}
 
-		
+	
 	game_player->discard(card_played);
 	this->game_table->remove_cards(capturable_cards);	
 	this->game_table->remove_sets(selected_sets);
@@ -291,12 +291,25 @@ bool Round::build(Card* card_selected, Player* game_player) {
 	int selected_value = card_selected->get_value();
 	vector<Card*> player_hand = game_player->get_hand();
 	int card_num = 0;
-	while (card_num < 1 || card_num > player_hand.size()) {
-		cout << "Which card would you like to add to the build? (Enter # of card position, leftmost being 1): ";
+	bool extending_build = false;
+
+	if (card_selected->get_locked_to_build()) {
+		extending_build = true;
+		// Player should be prompted to extend a build to a multi-build.
+		while (card_num < 1 || card_num > player_hand.size()) {
+		cout << "Which card would you like to extend your build with? (Enter # of card position, leftmost being 1): ";
 		cin >> card_num;
 		if (card_num < 1 || card_num > player_hand.size())
 			cout << "Invalid number input. Try again." << endl;
-	}	
+		}
+	} else {
+		while (card_num < 1 || card_num > player_hand.size()) {
+			cout << "Which card would you like to add to the build? (Enter # of card position, leftmost being 1): ";
+			cin >> card_num;
+			if (card_num < 1 || card_num > player_hand.size())
+				cout << "Invalid number input. Try again." << endl;
+		}
+	}
 	Card* card_played = player_hand[card_num-1];
 	// If that card has value >= locked card: return false
 	if (card_played->get_value() >= selected_value) {
@@ -344,7 +357,7 @@ bool Round::build(Card* card_selected, Player* game_player) {
 		remove_card_from_vector(filtered_cards, build_card);
 		
 		
-		if (played_value + build_card->get_value() == selected_value) {
+		if (played_value + build_card->get_value() == selected_value && !extending_build) {
 			// Needs to print all cards in build_cards
 			cout << "Would you like to create the build of: [ "; 
 			print_vector_cards(build_cards); 
@@ -366,17 +379,53 @@ bool Round::build(Card* card_selected, Player* game_player) {
 				game_player->discard(card_played);
 				this->game_table->add_to_table_cards(card_played);
 				card_selected->set_locked_to_build(true);
+				
 				return true;
 			} else {
 				return false;
 			}			 
-		} 
+		} else if (played_value + build_card->get_value() == selected_value && extending_build) {
+			cout << "Would you like to extend your build with: [ "; 
+			print_vector_cards(build_cards); 
+			cout << "] (y/n)? " << endl;
+			char user_input;
+			while (user_input != 'y' && user_input != 'n') {
+				cin >> user_input;
+				if (user_input != 'y' && user_input != 'n') {
+					cout << "Input not recognized. Try again." << endl;
+				}
+			}
+			if (user_input == 'y') {
+				// create build and update model
+				Build* b1 = get_correct_build(card_selected);
+				b1->extend_build(build_cards);
+				card_played->set_part_of_build(true);
+				card_played->set_build_buddies(build_cards);
+				build_card->set_part_of_build(true);
+				game_player->discard(card_played);
+				this->game_table->add_to_table_cards(card_played);
+				
+				return true;
+			} else {
+				return false;
+			}	
+		}
 		// Need to build with more cards on the table.
 		played_value = get_set_value(build_cards);		
 		card_num = 0;
 		cout << "Played val: " << played_value << endl;
 	}
 	
+}
+
+Build* Round::get_correct_build(Card* my_card) {
+	vector<Build*> total_builds = this->game_table->get_current_builds();
+	for (int i = 0; i < total_builds.size(); i++) {
+		if (total_builds[i]->get_sum_card()->get_card_string() == my_card->get_card_string())
+			return total_builds[i];
+	}
+
+	return NULL;
 }
 
 void Round::print_vector_cards(vector<Card*> card_list) {

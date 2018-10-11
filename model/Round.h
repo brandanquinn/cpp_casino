@@ -19,6 +19,7 @@ class Round {
 		int get_set_value(vector<Card*> card_set);
 		void print_vector_cards(vector<Card*> card_list);
 		void remove_selected_set(vector<vector<Card*>> &total_sets, vector<Card*> selected_set);
+		Build* get_correct_build(Card* my_card);
 		int round_num;
 		Deck* game_deck;
 		Table* game_table;

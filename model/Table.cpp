@@ -147,3 +147,68 @@ void Table::add_build(Build* new_build) {
 vector<Build*> Table::get_current_builds() {
 	return this->current_builds;
 }
+
+bool Table::is_part_of_multi_build(Card* my_card) {
+	for (int i = 0; i < this->current_builds.size(); i++) {
+		vector<vector<Card*>> temp_build_cards = this->current_builds[i]->get_total_build_cards();
+		
+		if (is_card_in_vector(temp_build_cards, my_card->get_card_string())) {
+			if (temp_build_cards.size() > 1) {
+			// cout << my_card->get_card_string() << " is part of a multi-build" << endl;
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
+	return false;
+}
+
+int Table::get_size_of_multi_build(Card* my_card) {
+	int count = 0;
+	for (int i = 0; i < this->current_builds.size(); i++) {
+		vector<vector<Card*>> temp_build_cards = current_builds[i]->get_total_build_cards();
+		if (is_card_in_vector(temp_build_cards, my_card->get_card_string())) {
+			// cout << "multi-build size of " << my_card->get_card_string() << " is " << temp_build_cards.size() << endl;
+			for (int j = 0; j < temp_build_cards.size(); j++) {
+				for (int k = 0; k < temp_build_cards[j].size(); k++)
+					count++;
+			}
+		}
+	}
+
+	return count;
+}
+
+int Table::get_size_of_single_build(Card* my_card) {
+	for (int i = 0; i < this->current_builds.size(); i++) {
+		vector<vector<Card*>> temp_build_cards = current_builds[i]->get_total_build_cards();
+		for (int j = 0; j < temp_build_cards.size(); j++) {
+			if (is_card_in_single_vec(temp_build_cards[j], my_card->get_card_string()))
+				return temp_build_cards[j].size();
+		}
+	}
+
+	return 0;
+}
+
+bool Table::is_card_in_single_vec(vector<Card*> card_list, string my_card_string) {
+	for (int i = 0; i < card_list.size(); i++) {
+		if (card_list[i]->get_card_string() == my_card_string)
+			return true;
+	}
+
+	return false;
+}
+
+bool Table::is_card_in_vector(vector<vector<Card*>> card_lists, string my_card_string) {
+	for (int i = 0; i < card_lists.size(); i++) {
+		for (int j = 0; j < card_lists[i].size(); j++) {
+			if (card_lists[i][j]->get_card_string() == my_card_string)
+				// cout << card_lists[i][j]->get_card_string() " is equal to " << my_card_string << endl;
+				return true;
+		}
+	}
+	return false;
+}

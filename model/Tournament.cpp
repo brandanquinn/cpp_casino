@@ -189,9 +189,7 @@ vector<Card*> Tournament::get_table_cards(string line) {
 	// Temporary vector to hold current build cards.
 
 	// Current builds
-	// Check part of build cards against current build cards to set build buddies.
-	
-	cout << "Table build func is happening" << endl;
+	// Check part of build cards against current build cards to set build buddies
 
 	return table_cards_list;
 }

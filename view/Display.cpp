@@ -35,7 +35,8 @@ void Display::print_cards(vector<Player*> game_players, Table* game_table) {
 	vector<Card*> human_pile = game_players[0]->get_pile();
 	vector<Card*> comp_card_list = game_players[1]->get_hand();
 	vector<Card*> comp_pile = game_players[1]->get_pile();
-	vector<vector<Card*>> table_card_list = game_table->get_total_table_cards();
+	// vector<vector<Card*>> table_card_list = game_table->get_total_table_cards();
+	vector<Card*> table_card_list = game_table->get_flattened_card_list();
 	vector<Build*> build_list = game_table->get_current_builds();
 	
 	cout << "Player pile: ";
@@ -56,20 +57,62 @@ void Display::print_cards(vector<Player*> game_players, Table* game_table) {
 	}
 	cout << endl;	
 
-	cout << "Table hand: ";
+	cout << "Table cards: ";
+	// int mb_size = 0;
+	// for (int i = 0; i < table_card_list.size(); i++) {
+	// 	for (int j = 0; j < table_card_list[i].size(); j++) {
+	// 		if (j == 0 && game_table->is_part_of_multi_build(table_card_list[i][j])) {
+	// 			cout << "[ ";	
+	// 			mb_size = game_table->get_size_of_multi_build(table_card_list[i][j]);
+	// 		}
+	// 		if (j == mb_size && mb_size != 0) cout << " ]";
+	// 		if (table_card_list[i][j]->get_part_of_build()) {
+	// 			if (j == 0)  
+	// 				cout << "[ ";
+	// 		}
+	// 		cout << table_card_list[i][j]->get_card_string() << " ";
+	// 		if (table_card_list[i][j]->get_part_of_build()) {
+	// 			if (j == table_card_list[i].size() - 1)  
+	// 				cout << "] ";
+	// 		}
+	// 	}
+	// }
+	// cout << endl;
+
+	int mb_size = 0, build_size = 0;
+	bool in_mb = false, in_build = false;
+
 	for (int i = 0; i < table_card_list.size(); i++) {
-		for (int j = 0; j < table_card_list[i].size(); j++) {	
-			if (table_card_list[i][j]->get_part_of_build()) {
-				if (j == 0)  
-					cout << "[ ";
-			}
-			cout << table_card_list[i][j]->get_card_string() << " ";
-			if (table_card_list[i][j]->get_part_of_build()) {
-				if (j == table_card_list[i].size() - 1)  
-					cout << "] ";
-			}
+		if (i == mb_size && in_mb) {
+			cout << "] ";
+			in_mb = false;
+		} 
+		if (i == build_size && in_build) { 
+			cout << "] ";
+			in_build = false;
 		}
+
+		if (game_table->is_part_of_multi_build(table_card_list[i]) && !in_mb) {
+			in_mb = true;
+			mb_size = i + game_table->get_size_of_multi_build(table_card_list[i]);
+			cout << "[ ";
+		}
+		if (table_card_list[i]->get_part_of_build() && !in_build) {
+			in_build = true;
+			build_size = i + game_table->get_size_of_single_build(table_card_list[i]);
+			// cout << "build size for: " << table_card_list[i]->get_card_string() << " is: " << build_size << endl;
+			cout << "[ ";
+		}
+		
+		cout << table_card_list[i]->get_card_string() << " ";
+		// if (i == mb_size && in_mb && in_build) {
+		// 	cout << "] ] ";
+		// 	in_mb = false;
+		// 	in_build = false;
+		// }
+		
 	}
+
 	cout << endl;
 
 	if (game_players[1]->get_is_playing()) cout <<  "[x] Computer hand: ";

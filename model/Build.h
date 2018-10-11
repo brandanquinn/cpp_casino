@@ -27,6 +27,7 @@ class Build {
 		Card* get_sum_card();
 		void set_sum_card(Card* a_sum_card);
 		vector<vector<Card*>> get_total_build_cards();	
+		void extend_build(vector<Card*> build_cards);
 };
 
 #endif
