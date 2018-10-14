@@ -101,6 +101,17 @@ bool Deck::is_empty() {
 int Deck::get_num_cards_left() {
 	return this->game_deck.size();
 }
+
+string Deck::get_deck_string() {
+	queue <Card*> game_deck_copy = this->game_deck;
+	string deck_str = "";
+	for (int i = 0; i < game_deck_copy.size(); i++) {
+		deck_str += game_deck_copy.front()->get_card_string() + " ";
+		game_deck_copy.pop();
+	}
+
+	return deck_str;
+}
 	
 
 

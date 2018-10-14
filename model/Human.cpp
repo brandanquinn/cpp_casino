@@ -11,11 +11,13 @@ using namespace std;
 
 Human::Human() {
 	Player::set_score(0);
+	Player::set_is_human(true);
 }
 
 Human::Human(string a_name, int a_score) {
 	set_name(a_name);
 	Player::set_score(a_score);
+	Player::set_is_human(true);
 }
 
 string Human::get_name() {
@@ -31,10 +33,10 @@ pair<Card*, char> Human::play() {
 	pair<Card*, char> move_pair;
 	vector<Card*> player_hand = Player::get_hand();
 	
-	while (move_option != 't' && move_option != 'b' && move_option != 'c') {
-		cout << "Enter (t) to trail, (b) to build, or (c) to capture: ";
+	while (move_option != 't' && move_option != 'b' && move_option != 'c' && move_option != 's') {
+		cout << "Enter (t) to trail, (b) to build, (c) to capture, or (s) to save current game: ";
 		cin >> move_option; 
-		if (move_option != 't' && move_option != 'b' && move_option != 'c') {
+		if (move_option != 't' && move_option != 'b' && move_option != 'c' && move_option != 's') {
 			cout << "You entered: " << move_option << endl;
 			cout << "Incorrect command entered. Try again." << endl;
 		}		
@@ -47,11 +49,14 @@ pair<Card*, char> Human::play() {
 		// Return move with played card, player type, and move option
 		int card_num = get_card_index('c');
 		move_pair.first = player_hand[card_num];
-	} else {
+	} else if (move_option == 'b') {
 		// Select card to start a build with
 		// If that card is already locked to a build; ask if you'd like to start a multi build.
 		int card_num = get_card_index('b');
 		move_pair.first = player_hand[card_num];
+		cout << player_hand[card_num]->get_card_string() << " selected. Building towards value: " << player_hand[card_num]->get_value() << endl;
+	} else {
+		move_pair.first = new Card;
 	}
 	
 	move_pair.second = move_option;

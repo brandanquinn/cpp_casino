@@ -12,6 +12,7 @@ Build::Build(vector<Card*> a_build_cards, int a_sum, Card* a_sum_card, Player* a
 	set_sum(a_sum);
 	set_sum_card(a_sum_card);
 	this->build_owner = a_build_owner;
+	set_multi_build(false);
 }
 
 Build::Build(vector<vector<Card*>> a_multi_build_cards, int a_sum, Card* a_sum_card, Player* a_build_owner) {
@@ -52,8 +53,33 @@ vector<vector<Card*>> Build::get_total_build_cards() {
 
 void Build::extend_build(vector<Card*> build_cards) {
 	total_build_cards.push_back(build_cards);
+	set_multi_build(true);
 }
 
+string Build::get_build_owner() {
+	if (this->build_owner->get_is_human()) return "Human";
+	else return "Computer";
+}
+
+string Build::get_build_string() {
+	string build_str = "";
+
+	for (int i = 0; i < this->total_build_cards.size(); i++) {
+		if (this->multi_build) build_str += "[ ";
+		for (int j = 0; j < this->total_build_cards[i].size(); j++) {
+			if (j == 0) build_str += "[ ";
+			build_str += this->total_build_cards[i][j]->get_card_string() + " ";
+		}
+		build_str += "] ";
+		if (this->multi_build) build_str += "]";
+	}
+
+	return build_str + get_build_owner();
+}
+
+Player* Build::get_player_of_build() {
+	return this->build_owner;
+}
 
 
 

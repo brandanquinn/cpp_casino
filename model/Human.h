@@ -20,6 +20,7 @@ class Human: public Player {
 		string get_name();
 		void set_name(string a_name);
 		pair<Card*, char> play();
+		
 };
 
 #endif

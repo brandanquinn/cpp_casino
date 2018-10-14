@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <vector>
+#include <string>
 #include <utility>
 
 #include "Card.h"
@@ -12,6 +13,8 @@ class Player {
 		vector<Card*> hand;
 		vector<Card*> pile;
 		bool is_playing;
+		bool is_human;
+
 	public:
 		Player();
 		virtual pair<Card*, char> play() = 0;
@@ -28,6 +31,10 @@ class Player {
 		bool get_is_playing();
 		void set_hand(vector<Card*> a_hand);
 		void set_pile(vector<Card*> a_pile);
+		string get_hand_string();
+		string get_pile_string();
+		void set_is_human(bool a_is_human);
+		bool get_is_human();
 };
 
 #endif

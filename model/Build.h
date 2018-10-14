@@ -16,7 +16,8 @@ class Build {
 		Card* sum_card;
 		vector<vector<Card*>> total_build_cards;
 		Player* build_owner;
-		
+		string get_build_owner();
+	
 	public:
 		Build(vector<Card*> a_build_cards, int a_sum, Card* a_sum_card, Player* a_build_owner);
 		Build(vector<vector<Card*>> a_multi_build_cards, int a_sum, Card* a_sum_card, Player* a_build_owner);
@@ -28,6 +29,8 @@ class Build {
 		void set_sum_card(Card* a_sum_card);
 		vector<vector<Card*>> get_total_build_cards();	
 		void extend_build(vector<Card*> build_cards);
+		string get_build_string();
+		Player* get_player_of_build();
 };
 
 #endif

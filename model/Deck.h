@@ -20,9 +20,9 @@ class Deck {
 		Deck(vector<Card*> pre_loaded_deck);
 		Card* draw_card();
 		void shuffle_deck();
-		void print_deck();
 		bool is_empty();
 		int get_num_cards_left();
+		string get_deck_string();
 };
 
 #endif

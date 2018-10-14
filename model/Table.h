@@ -35,6 +35,7 @@ class Table {
 		bool is_part_of_multi_build(Card* my_card);
 		int get_size_of_multi_build(Card* my_card);
 		int get_size_of_single_build(Card* my_card);
+		string get_table_string();
 };
 
 #endif

@@ -58,26 +58,6 @@ void Display::print_cards(vector<Player*> game_players, Table* game_table) {
 	cout << endl;	
 
 	cout << "Table cards: ";
-	// int mb_size = 0;
-	// for (int i = 0; i < table_card_list.size(); i++) {
-	// 	for (int j = 0; j < table_card_list[i].size(); j++) {
-	// 		if (j == 0 && game_table->is_part_of_multi_build(table_card_list[i][j])) {
-	// 			cout << "[ ";	
-	// 			mb_size = game_table->get_size_of_multi_build(table_card_list[i][j]);
-	// 		}
-	// 		if (j == mb_size && mb_size != 0) cout << " ]";
-	// 		if (table_card_list[i][j]->get_part_of_build()) {
-	// 			if (j == 0)  
-	// 				cout << "[ ";
-	// 		}
-	// 		cout << table_card_list[i][j]->get_card_string() << " ";
-	// 		if (table_card_list[i][j]->get_part_of_build()) {
-	// 			if (j == table_card_list[i].size() - 1)  
-	// 				cout << "] ";
-	// 		}
-	// 	}
-	// }
-	// cout << endl;
 
 	int mb_size = 0, build_size = 0;
 	bool in_mb = false, in_build = false;
@@ -105,11 +85,6 @@ void Display::print_cards(vector<Player*> game_players, Table* game_table) {
 		}
 		
 		cout << table_card_list[i]->get_card_string() << " ";
-		// if (i == mb_size && in_mb && in_build) {
-		// 	cout << "] ] ";
-		// 	in_mb = false;
-		// 	in_build = false;
-		// }
 		
 	}
 

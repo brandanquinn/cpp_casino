@@ -10,10 +10,12 @@ using namespace std;
 
 Computer::Computer() {
 	Player::set_score(0);
+	Player::set_is_human(false);
 }
 
 Computer::Computer(int a_score) {
 	Player::set_score(a_score);
+	Player::set_is_human(false);
 }
 
 pair<Card*, char> Computer::play() {

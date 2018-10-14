@@ -25,6 +25,9 @@ class Round {
 		Table* game_table;
 		vector<Player*> game_players;
 		Display* game_view;
+		bool save_game();
+		string get_build_strings();
+
 	public:
 		Round(int a_round_num, vector<Player*> a_game_players);
 		Round(int a_round_num, vector<Player*> a_game_players, vector<Card*> a_deck_list, vector<Card*> a_table_cards, vector<Build*> a_current_builds);

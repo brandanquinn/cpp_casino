@@ -66,3 +66,29 @@ void Player::set_hand(vector<Card*> a_hand) {
 void Player::set_pile(vector<Card*> a_pile) {
 	this->pile = a_pile;
 }
+
+string Player::get_hand_string() {
+	string hand_str = "";
+	for (int i = 0; i < hand.size(); i++) {
+		hand_str += hand[i]->get_card_string() + " ";
+	}
+
+	return hand_str;
+}
+
+string Player::get_pile_string() {
+	string pile_str = "";
+	for (int i = 0; i < pile.size(); i++) {
+		pile_str += pile[i]->get_card_string() + " ";
+	}
+
+	return pile_str;
+}
+
+void Player::set_is_human(bool a_is_human) {
+	this->is_human = a_is_human;
+}
+		
+bool Player::get_is_human() {
+	return this->is_human;
+}

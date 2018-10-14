@@ -3,6 +3,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
+#include <fstream>
 
 #include "Round.h"
 #include "Player.h"
@@ -30,28 +31,6 @@ Round::Round(int a_round_num, vector<Player*> a_game_players, vector<Card*> a_de
 	this->game_table = new Table(a_table_cards, a_current_builds);
 	this->game_players = a_game_players;
 	this->game_view = new Display;
-	
-	// cout << "In round constructor..." << endl;
-
-	// vector<Card*> table_cards = this->game_table->get_flattened_card_list();
-
-	// for (int i = 0; i < table_cards.size(); i++) {
-	// 	if (table_cards[i]->get_part_of_build())
-	// 		cout << table_cards[i]->get_card_string() << " is a part of a build." << endl;
-	// 	else
-	// 		cout << table_cards[i]->get_card_string() << " is not part of a build." << endl;
-	// }
-
-	// cout << "According to a_table_cards..." << endl;
-
-	// for (int i = 0; i < a_table_cards.size(); i++) {
-	// 	if (a_table_cards[i]->get_part_of_build())
-	// 		cout << a_table_cards[i]->get_card_string() << " is a part of a build." << endl;
-	// 	else
-	// 		cout << a_table_cards[i]->get_card_string() << " is not part of a build." << endl;
-	// }
-
-	
 }
 
 int Round::get_round_num() {
@@ -81,12 +60,9 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 	
 	player_one->set_is_playing(true);
 
-	cout << "Human playing: " << game_players[0]->get_is_playing() << endl;
-	cout << "Computer playing: " << game_players[1]->get_is_playing() << endl;
 	this->game_view->print_welcome(this->round_num);
 	this->game_view->update_view(this->game_players, this->game_table);
 
-	
 	while (!this->game_deck->is_empty()) {	
 		// cout << "Seg fault occurs before move selection." << endl;
 		if (player_one->hand_is_empty() && player_two->hand_is_empty()) { 
@@ -100,8 +76,14 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 				possible_move_selected = true;
 			} else if (move_pair.second == 'c') {
 				possible_move_selected = capture(move_pair.first, player_one);
-			} else {
+			} else if (move_pair.second == 'b') {
 				possible_move_selected = build(move_pair.first, player_one);
+			} else {
+				// save game
+				// call deserialization function
+				possible_move_selected = save_game();
+				cout << "Game saved." << endl;
+			
 			}
 		}
 		player_one->set_is_playing(false);
@@ -115,8 +97,14 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 				possible_move_selected = true;
 			} else if (move_pair.second == 'c') {
 				possible_move_selected = capture(move_pair.first, player_two);
-			} else {
+			} else if (move_pair.second == 'b') {
 				possible_move_selected = build(move_pair.first, player_two);
+			} else {
+				// save game
+				// call deserialization function
+				possible_move_selected = save_game();
+				cout << "Game saved." << endl;
+			
 			}
 		}
 		player_one->set_is_playing(true);
@@ -126,6 +114,72 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 	}	
 
 	delete player_one, player_two;
+}
+
+bool Round::save_game() {
+	// Open '/serialization/save_game.txt' for writing
+	// Write Round: round_num
+	// newline
+	// For both players:
+	// Player:
+	// \t Score: player_score
+	// \t Hand: player_hand
+	// \t Pile: player_pile
+	// newline
+	// Table: get table string from view and print it.
+	// newline
+	// Build Owner: print each build from left to right with respective owner
+	// newline
+	// Deck: game_deck
+	// Next Player: use player->get_is_playing();
+	const char *file_name = "serialization/save_game.txt";
+	ofstream save_file(file_name);
+	string next_player;
+	if (save_file.is_open()) {
+		// Round
+		save_file << "Round: " << this->round_num << "\n\n";
+
+		// Player info
+		// Computer
+		save_file << "Computer: \n";
+		save_file << "\t Score: " << this->game_players[1]->get_score() << endl;
+		save_file << "\t Hand: " << this->game_players[1]->get_hand_string() << endl;
+		save_file << "\t Pile: " << this->game_players[1]->get_pile_string() << "\n\n";
+
+		// Human
+		save_file << "Human: \n";
+		save_file << "\t Score: " << this->game_players[0]->get_score() << endl;
+		save_file << "\t Hand: " << this->game_players[0]->get_hand_string() << endl;
+		save_file << "\t Pile: " << this->game_players[0]->get_pile_string() << "\n\n";
+
+		// Table
+		save_file << "Table: " << this->game_table->get_table_string() << "\n\n";
+
+		// Builds
+		save_file << "Build Owner: " << get_build_strings() << "\n\n";
+
+		// Deck
+		save_file << "Deck: " << this->game_deck->get_deck_string() << "\n\n";
+
+		// Next Player
+		if (this->game_players[0]->get_is_playing()) next_player = "Human";
+		else next_player = "Computer";
+		save_file << "Next Player: " << next_player; 
+	}
+
+	return false;
+
+}
+
+string Round::get_build_strings() {
+	string build_strings = "";
+	vector<Build*> current_builds = this->game_table->get_current_builds();
+
+	for (int i = 0; i < current_builds.size(); i++) {
+		build_strings += current_builds[i]->get_build_string() + " ";
+	}
+
+	return build_strings;
 }
 
 void Round::deal_hands(vector<Player*> game_players) {
@@ -263,6 +317,7 @@ bool Round::capture(Card* card_played, Player* game_player) {
 		}
 	}
 	for (int i = 0; i < capturable_builds.size(); i++) {
+		capturable_builds[i]->get_sum_card()->set_locked_to_build(false);
 		vector<vector<Card*>> temp_build_cards = capturable_builds[i]->get_total_build_cards();
 		for (int j = 0; j < temp_build_cards.size(); j++) {
 			for (int k = 0; k < temp_build_cards[j].size(); k++) {
@@ -455,17 +510,25 @@ Move* Round::generate_capture_move(Card* card_played, Player* game_player) {
 	// Check all possible sets of cards, if value of sets match card value, add to 2d vector
 	// Return Move obj generated with (card_played, capturable_cards, capturable_sets)
 	vector<Build*> capturable_builds; 
-	if (card_played->get_locked_to_build()) {
-			// give option to capture your build
-			// if yes selected, get other builds that can be captured and offer them.
-				// Then, continue with algo
-			// if no, return Move obj with empty capturable_cards / sets 
-			vector<Build*> current_builds = this->game_table->get_current_builds();
-			for (int i = 0; i < current_builds.size(); i++) {
-				if (current_builds[i]->get_sum_card()->get_card_string() == card_played->get_card_string()) {
-					capturable_builds.push_back(current_builds[i]);	
-				}
-			}
+	// if (card_played->get_locked_to_build()) {
+	// 		// give option to capture your build
+	// 		// if yes selected, get other builds that can be captured and offer them.
+	// 			// Then, continue with algo
+	// 		// if no, return Move obj with empty capturable_cards / sets 
+	// 		vector<Build*> current_builds = this->game_table->get_current_builds();
+	// 		for (int i = 0; i < current_builds.size(); i++) {
+	// 			if (current_builds[i]->get_sum_card()->get_card_string() == card_played->get_card_string() || 
+	// 			(current_builds[i]->get_player_of_build() != game_player && current_builds[i]->get_sum_card()->get_value() == card_played->get_value()) ) {
+	// 				capturable_builds.push_back(current_builds[i]);	
+	// 			}
+	// 		}
+	// }
+	vector<Build*> current_builds = this->game_table->get_current_builds();
+	for (int i = 0; i < current_builds.size(); i++) {
+		if (current_builds[i]->get_sum_card()->get_card_string() == card_played->get_card_string() || 
+		(current_builds[i]->get_player_of_build() != game_player && current_builds[i]->get_sum_card()->get_value() == card_played->get_value()) ) {
+			capturable_builds.push_back(current_builds[i]);	
+		}
 	}
 
 	int played_value = card_played->get_value();

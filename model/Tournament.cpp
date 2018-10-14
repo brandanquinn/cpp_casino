@@ -45,8 +45,18 @@ void Tournament::show_start_screen() {
 }
 
 bool Tournament::load_saved_game() {
-	const char *file_name = "serialization/save.txt";
-	ifstream save_file(file_name);
+	const char * files[2] = {"serialization/save.txt", "serialization/save_game.txt"};
+	char *file_name;
+	int input = 0;
+	cout << "(1) serialization test file" << endl;
+	cout << "(2) saved game file" << endl;
+
+	while (input != 1 && input != 2) {
+		cout << "Which file would you like to load: ";
+		cin >> input;
+		if (input != 1 && input != 2) cout << "Invalid input. Try again." << endl;
+	}
+	ifstream save_file(files[input-1]);
 	if (!save_file.good()) return false;
 	int current_round_num, computer_score, player_score;
 	vector<Card*> player_hand, player_pile, computer_hand, computer_pile, deck_list, table_cards;
@@ -166,23 +176,11 @@ vector<Card*> Tournament::get_table_cards(string line) {
 
 	// [ [C6 S3] [S9] ] C8 CJ HA 
 
-	int index_of_last_bracket = 0;
-	int sum_spaces = 0;
-	// iterator to get position of last closing bracket
-	for (int i = 0; i < line.size(); i++) {
-		if (line[i] == ']') index_of_last_bracket = i;
-	}
-
-	// find sum_spaces - equivalent to how many loose cards there in a list of table cards.
-	for (int i = index_of_last_bracket; i < line.size(); i++) {
-		if (line[i] == ' ') sum_spaces++;
-	}
-
-	cout << sum_spaces << endl;
-	// line.size() - index_of_last_bracket = ?
 
 	line.erase(remove(line.begin(), line.end(), '['), line.end());
 	line.erase(remove(line.begin(), line.end(), ']'), line.end());
+
+	// cout << "Line after removing brackets: " << line << endl;
 
 	// trying to figure out how to set part of build / build buddies so display class can handle properly.
 	vector<Card*> table_cards_list = parse_cards_from_file(line);
@@ -288,9 +286,18 @@ vector<Build*> Tournament::get_build_objects(vector<string> build_strings, strin
 
 vector<vector<Card*>> Tournament::get_build_cards(string build_str) {
 	vector<vector<Card*>> total_build_cards;
-	// Remove overarching brackets
-	build_str.erase(0, 1);
-	build_str.erase(build_str.size() - 1);
+
+	// To see if build_str is a multi-build
+	int bracket_count = 0;
+	for (int i = 0; i < build_str.size(); i++) {
+		if (build_str[i] == '[') bracket_count++;
+	}
+
+	// Remove overarching brackets if multi-build
+	if (bracket_count > 1) {
+		build_str.erase(0, 1);
+		build_str.erase(build_str.size() - 1);
+	}
 	// If no more brackets exist, call parse_cards_from_file, push_back returned vector and return
 	// Call parse_cards_from_file on each element of build.
 	bool bracket_found = false;
