@@ -7,19 +7,19 @@
 
 using namespace std;
 
-Build::Build(vector<Card*> a_build_cards, int a_sum, Card* a_sum_card, Player* a_build_owner) {
+Build::Build(vector<Card*> a_build_cards, int a_sum, Card* a_sum_card, string a_build_owner) {
 	this->total_build_cards.push_back(a_build_cards);	
 	set_sum(a_sum);
 	set_sum_card(a_sum_card);
-	this->build_owner = a_build_owner;
+	set_build_owner(a_build_owner);
 	set_multi_build(false);
 }
 
-Build::Build(vector<vector<Card*>> a_multi_build_cards, int a_sum, Card* a_sum_card, Player* a_build_owner) {
+Build::Build(vector<vector<Card*>> a_multi_build_cards, int a_sum, Card* a_sum_card, string a_build_owner) {
 	this->total_build_cards = a_multi_build_cards;	
 	set_sum(a_sum);
 	set_sum_card(a_sum_card);
-	this->build_owner = a_build_owner;
+	set_build_owner(a_build_owner);
 	set_multi_build(true);
 }
 
@@ -56,9 +56,12 @@ void Build::extend_build(vector<Card*> build_cards) {
 	set_multi_build(true);
 }
 
+void Build::set_build_owner(string a_build_owner) {
+	this->build_owner = a_build_owner;
+}
+
 string Build::get_build_owner() {
-	if (this->build_owner->get_is_human()) return "Human";
-	else return "Computer";
+	return this->build_owner;
 }
 
 string Build::get_build_string() {
@@ -75,10 +78,6 @@ string Build::get_build_string() {
 	}
 
 	return build_str + get_build_owner();
-}
-
-Player* Build::get_player_of_build() {
-	return this->build_owner;
 }
 
 

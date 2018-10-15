@@ -128,11 +128,15 @@ void Table::remove_builds(vector<Build*> builds_to_remove) {
 void Table::remove_from_table_builds(vector<Card*> cards_to_remove) {
 	// Look for 
 	vector<vector<Card*>> builds_to_erase;
+	bool build_erased = false;
 	for (int i = 0; i < table_builds.size(); i++) {
+		build_erased = false;
 		for (int j = 0; j < table_builds[i].size(); j++) {
 			for (int k = 0; k < cards_to_remove.size(); k++)
-				if (table_builds[i][j]->get_card_string() == cards_to_remove[i]->get_card_string())
+				if (table_builds[i][j]->get_card_string() == cards_to_remove[i]->get_card_string() && !build_erased) {
 					builds_to_erase.push_back(table_builds[i]);
+					build_erased = true;
+				}
 		}
 	}
 	

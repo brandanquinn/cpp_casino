@@ -20,7 +20,7 @@ using namespace std;
 Tournament::Tournament() {
 	this->rounds_played = 0;
 	this->game_players.push_back(new Human());
-	this->game_players.push_back(new Human());
+	this->game_players.push_back(new Computer());
 }
 
 void Tournament::show_start_screen() {
@@ -265,7 +265,7 @@ vector<Build*> Tournament::get_build_objects(vector<string> build_strings, strin
 				if (player_hand[j]->get_value() == build_str_val) {
 					// Sum card found
 					// Create build here:
-					build_list.push_back(new Build(get_build_cards(build_strings[i]), build_str_val, player_hand[j], game_players[0]));
+					build_list.push_back(new Build(get_build_cards(build_strings[i]), build_str_val, player_hand[j], "Human"));
 					player_hand[j]->set_locked_to_build(true);
 					return build_list;
 				}
@@ -275,7 +275,7 @@ vector<Build*> Tournament::get_build_objects(vector<string> build_strings, strin
 				if (computer_hand[j]->get_value() == build_str_val) {
 					// Sum card found
 					// Create build here:
-					build_list.push_back(new Build(get_build_cards(build_strings[i]), build_str_val, computer_hand[j], game_players[1]));
+					build_list.push_back(new Build(get_build_cards(build_strings[i]), build_str_val, computer_hand[j], "Computer"));
 					computer_hand[j]->set_locked_to_build(true);
 					return build_list;
 				}

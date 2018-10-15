@@ -27,6 +27,7 @@ class Round {
 		Display* game_view;
 		bool save_game();
 		string get_build_strings();
+		bool make_move(char move_type, Card* card_played, Player* game_player);
 
 	public:
 		Round(int a_round_num, vector<Player*> a_game_players);

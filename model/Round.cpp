@@ -57,6 +57,9 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 		player_one = game_players[1];	
 		player_two = game_players[0];
 	}
+
+	player_one->set_game_table(this->game_table);
+	player_two->set_game_table(this->game_table);
 	
 	player_one->set_is_playing(true);
 
@@ -71,19 +74,23 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 		}
 		while (!possible_move_selected) {
 			pair<Card*, char> move_pair = player_one->play();
-			if (move_pair.second == 't') {
-				trail(move_pair.first, player_one);
-				possible_move_selected = true;
-			} else if (move_pair.second == 'c') {
-				possible_move_selected = capture(move_pair.first, player_one);
-			} else if (move_pair.second == 'b') {
-				possible_move_selected = build(move_pair.first, player_one);
+			if (player_one->get_player_string() == "Computer") {
+				possible_move_selected = make_move(move_pair.second, move_pair.first, player_one);
 			} else {
-				// save game
-				// call deserialization function
-				possible_move_selected = save_game();
-				cout << "Game saved." << endl;
-			
+				if (move_pair.second == 't') {
+					trail(move_pair.first, player_two);
+					possible_move_selected = true;
+				} else if (move_pair.second == 'c') {
+					possible_move_selected = capture(move_pair.first, player_two);
+				} else if (move_pair.second == 'b') {
+					possible_move_selected = build(move_pair.first, player_two);
+				} else {
+					// save game
+					// call deserialization function
+					possible_move_selected = save_game();
+					cout << "Game saved." << endl;
+				
+				}
 			}
 		}
 		player_one->set_is_playing(false);
@@ -92,19 +99,23 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 		possible_move_selected = false;
 		while (!possible_move_selected) {
 			pair<Card*, char> move_pair = player_two->play();
-			if (move_pair.second == 't') {
-				trail(move_pair.first, player_two);
-				possible_move_selected = true;
-			} else if (move_pair.second == 'c') {
-				possible_move_selected = capture(move_pair.first, player_two);
-			} else if (move_pair.second == 'b') {
-				possible_move_selected = build(move_pair.first, player_two);
+			if (player_two->get_player_string() == "Computer") {
+				possible_move_selected = make_move(move_pair.second, move_pair.first, player_two);
 			} else {
-				// save game
-				// call deserialization function
-				possible_move_selected = save_game();
-				cout << "Game saved." << endl;
-			
+				if (move_pair.second == 't') {
+					trail(move_pair.first, player_two);
+					possible_move_selected = true;
+				} else if (move_pair.second == 'c') {
+					possible_move_selected = capture(move_pair.first, player_two);
+				} else if (move_pair.second == 'b') {
+					possible_move_selected = build(move_pair.first, player_two);
+				} else {
+					// save game
+					// call deserialization function
+					possible_move_selected = save_game();
+					cout << "Game saved." << endl;
+				
+				}
 			}
 		}
 		player_one->set_is_playing(true);
@@ -114,6 +125,100 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 	}	
 
 	delete player_one, player_two;
+}
+
+bool Round::make_move(char move_type, Card* card_played, Player* game_player) {
+	if (move_type == 'c') {
+		vector<Build*> capturable_builds; 
+	
+		vector<Build*> current_builds = this->game_table->get_current_builds();
+		for (int i = 0; i < current_builds.size(); i++) {
+			if (current_builds[i]->get_sum_card()->get_card_string() == card_played->get_card_string() || 
+			(current_builds[i]->get_build_owner() != game_player->get_player_string() && current_builds[i]->get_sum_card()->get_value() == card_played->get_value()) ) {
+				capturable_builds.push_back(current_builds[i]);	
+			}
+		}
+
+		int played_value = card_played->get_value();
+		vector<Card*> avail_cards = this->game_table->get_table_cards();
+		vector<Card*> capturable_cards;
+		// Find exact value matches
+		for (int i = 0; i < avail_cards.size(); i++) {
+			if (avail_cards[i]->get_value() == played_value) {
+				capturable_cards.push_back(avail_cards[i]);
+			}
+		}	
+		// Iterate through avail_cards vector
+		// Take element i and  
+		vector<Card*> sub_set;
+		vector<vector<Card*>> avail_sets;
+		vector<Card*> empty;
+		avail_sets.push_back(empty);	
+		for (int i = 0; i < avail_cards.size(); i++) {
+			vector<vector<Card*>> temp_sets = avail_sets;
+			
+			for (int j = 0; j < temp_sets.size(); j++)
+				temp_sets[j].push_back(avail_cards[i]);
+			for (int j = 0; j < temp_sets.size(); j++) 
+				avail_sets.push_back(temp_sets[j]);
+		}
+		vector<vector<Card*>> capturable_sets;
+		for (int i = 0; i < avail_sets.size(); i++) {
+			if (get_set_value(avail_sets[i]) == played_value && avail_sets[i].size() > 1) {
+				capturable_sets.push_back(avail_sets[i]);	
+			}
+		}
+
+		vector<vector<Card*>> selected_sets;
+
+		if (!capturable_sets.empty()) {
+		// Give selection of sets to capture as well:
+		int max_set_size = 0;
+		int best_set_index = 0;
+		int set_selection = -1;
+		while (!capturable_sets.empty()) {
+			for (int i = 0; i < capturable_sets.size(); i++) {
+				if (capturable_sets[i].size() > max_set_size) { 
+					max_set_size = capturable_sets[i].size();
+					best_set_index = i;
+				}
+			}
+			selected_sets.push_back(capturable_sets[best_set_index]);	
+			// remove cards in selected_sets from capturable_sets
+			remove_selected_set(capturable_sets, capturable_sets[best_set_index]);	
+		} 	
+	}
+
+		vector<Card*> pile_additions;
+
+		game_player->discard(card_played);
+		this->game_table->remove_cards(capturable_cards);	
+		this->game_table->remove_sets(selected_sets);
+		this->game_table->remove_builds(capturable_builds);	
+
+		pile_additions.push_back(card_played);
+		for (int i = 0; i < capturable_cards.size(); i++) {
+			pile_additions.push_back(capturable_cards[i]);
+		}
+		for (int i = 0; i < selected_sets.size(); i++) {
+			for (int j = 0; j < selected_sets[i].size(); j++) {
+				pile_additions.push_back(selected_sets[i][j]);
+			}
+		}
+		for (int i = 0; i < capturable_builds.size(); i++) {
+			capturable_builds[i]->get_sum_card()->set_locked_to_build(false);
+			vector<vector<Card*>> temp_build_cards = capturable_builds[i]->get_total_build_cards();
+			for (int j = 0; j < temp_build_cards.size(); j++) {
+				for (int k = 0; k < temp_build_cards[j].size(); k++) {
+					pile_additions.push_back(temp_build_cards[j][k]);
+				}
+			}
+		}
+		game_player->add_to_pile(pile_additions);
+		return true;
+	}
+
+	return false;
 }
 
 bool Round::save_game() {
@@ -278,7 +383,7 @@ bool Round::capture(Card* card_played, Player* game_player) {
 		// Give selection of sets to capture as well:
 		
 		int set_selection = -1;
-			while (set_selection != 0) {
+		while (set_selection != 0) {
 			cout << "List of capturable sets:" << endl;
 			for (int i = 0; i < capturable_sets.size(); i++) {
 				cout << "Subset (" << i+1 << ") ";
@@ -426,7 +531,7 @@ bool Round::build(Card* card_selected, Player* game_player) {
 			}
 			if (user_input == 'y') {
 				// create build and update model
-				Build* b1 = new Build(build_cards, selected_value, card_selected, game_player);
+				Build* b1 = new Build(build_cards, selected_value, card_selected, game_player->get_player_string());
 				this->game_table->add_build(b1);
 				card_played->set_part_of_build(true);
 				card_played->set_build_buddies(build_cards);
@@ -526,7 +631,7 @@ Move* Round::generate_capture_move(Card* card_played, Player* game_player) {
 	vector<Build*> current_builds = this->game_table->get_current_builds();
 	for (int i = 0; i < current_builds.size(); i++) {
 		if (current_builds[i]->get_sum_card()->get_card_string() == card_played->get_card_string() || 
-		(current_builds[i]->get_player_of_build() != game_player && current_builds[i]->get_sum_card()->get_value() == card_played->get_value()) ) {
+		(current_builds[i]->get_build_owner() != game_player->get_player_string() && current_builds[i]->get_sum_card()->get_value() == card_played->get_value()) ) {
 			capturable_builds.push_back(current_builds[i]);	
 		}
 	}

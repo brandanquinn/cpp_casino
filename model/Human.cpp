@@ -11,13 +11,13 @@ using namespace std;
 
 Human::Human() {
 	Player::set_score(0);
-	Player::set_is_human(true);
+	Player::set_player_string("Human");
 }
 
 Human::Human(string a_name, int a_score) {
 	set_name(a_name);
 	Player::set_score(a_score);
-	Player::set_is_human(true);
+	Player::set_player_string("Human");
 }
 
 string Human::get_name() {
