@@ -117,6 +117,7 @@ pair<Card*, char> Player::get_help() {
 	}
 
 	int max_index = get_max_score(capture_values);
+	int max_build_index;
 
 	vector<int> build_values;
 	if (capture_values[max_index] == 0) {
@@ -124,11 +125,7 @@ pair<Card*, char> Player::get_help() {
 		for (int i = 0; i < hand.size(); i++) {
 			build_values.push_back(assess_builds(hand[i]));
 		}
-		cout << "Max build values: ";
-		for (int i = 0; i < build_values.size(); i++)
-			cout << build_values[i] << " ";
-		cout << endl;
-		int max_build_index = get_max_score(build_values);
+		max_build_index = get_max_score(build_values);
 		if (build_values[max_build_index] == 0) {
 			//trail
 			int min_val = 15;
@@ -143,7 +140,7 @@ pair<Card*, char> Player::get_help() {
 			}
 
 		} else {
-			move_pair.first = hand[max_index];
+			move_pair.first = hand[max_build_index];
 			move_pair.second = 'b';
 		}
 
@@ -286,14 +283,7 @@ int Player::assess_builds(Card* card_selected) {
 			possible_build_vals.push_back(create_builds(card_selected, hand[i], false));
 		}
 	}
-
-	cout << "Possible build values: ";
-	for (int i = 0; i < possible_build_vals.size(); i++) {
-		cout << possible_build_vals[i] << " ";
-	}
-	cout << endl;
-
-	cout << "max score found: " << possible_build_vals[get_max_score(possible_build_vals)] << endl;
+	
 	return possible_build_vals[get_max_score(possible_build_vals)];
 }
 

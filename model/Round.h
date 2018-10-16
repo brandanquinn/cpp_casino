@@ -28,6 +28,7 @@ class Round {
 		bool save_game();
 		string get_build_strings();
 		bool make_move(char move_type, Card* card_selected, Player* game_player);
+		bool create_build(Card* card_selected, Card* card_played, bool extending_build, Player* game_player);
 
 	public:
 		Round(int a_round_num, vector<Player*> a_game_players);

@@ -32,7 +32,7 @@ pair<Card*, char> Computer::play() {
 	if (move_pair.second == 'c') {
 		cout << "AI decided it could capture the most cards with: " << move_pair.first->get_card_string() << endl;
 	} else if (move_pair.second == 'b') {
-		cout << "AI couldn't find any cards to capture, decided to make start a build with: " << move_pair.first->get_card_string() << endl;
+		cout << "AI couldn't find any cards to capture, decided to start a build with: " << move_pair.first->get_card_string() << endl;
 	} else {
 		cout << "No captures or builds could be found, AI will trail the lowest value card: " << move_pair.first->get_card_string() << endl;
 	}

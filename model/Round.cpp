@@ -221,84 +221,93 @@ bool Round::make_move(char move_type, Card* card_selected, Player* game_player) 
 		bool extending_build = false;
 
 		if (card_selected->get_locked_to_build()) {
-			extending_build = true;
-		}
-
-		for (int i = 0; i < player_hand.size(); i++) {
-			if (player_hand[i] != card_selected) {
-				Card* card_played = player_hand[i];
-				// If that card has value >= locked card: return false
-				vector<Card*> table_cards = this->game_table->get_table_cards();
-				vector<Card*> filtered_cards = table_cards;
-				int played_value = card_played->get_value();
-				// Provide options to build with on table.
-				bool build_created = false;
-				vector<Card*> build_cards;
-				build_cards.push_back(card_played);
-				// Filter available cards to remove all cards with value + played_value > locked card val
-				filtered_cards = filter_build_options(filtered_cards, played_value, selected_value);
-				int best_card_selection = 0;
-				int min_value = 15;
-				for (int i = 0; i < filtered_cards.size(); i++) {
-					if (played_value + filtered_cards[i]->get_value() == selected_value) {
-						best_card_selection = i;
-						break;
-					}
-					// If no possible build currently exists, pick lowest value to find build later.
-					if (filtered_cards[i]->get_value() < min_value) {
-						best_card_selection = i;
-						min_value = filtered_cards[i]->get_value();
-					}
+			for (int i = 0; i < player_hand.size(); i++) {
+				if (create_build(card_selected, player_hand[i], true, game_player)) {
+					return true;
 				}
-				// At this point we have a locked card for the build to sum to | card_selected
-				// A card selected to play into a build (1) | card_played
-				// And a card on the board to build with (2) | build_card
-				// If (1) + (2) = locked card value, ask user if they'd like to complete build.
-
-				cout << "Seg faults after filtered_cards, best card selection: " << best_card_selection <<  endl;
-			
-
-				Card* build_card = filtered_cards[best_card_selection];
-				build_cards.push_back(build_card);
-				remove_card_from_vector(filtered_cards, build_card);
-
-				cout << "Selected card for build: " << build_card->get_card_string() << endl;
-				
-				
-				if (played_value + build_card->get_value() == selected_value && !extending_build) {
-					// create build and update model
-					Build* b1 = new Build(build_cards, selected_value, card_selected, game_player->get_player_string());
-					this->game_table->add_build(b1);
-					card_played->set_part_of_build(true);
-					card_played->set_build_buddies(build_cards);
-					build_card->set_part_of_build(true);
-					game_player->discard(card_played);
-					this->game_table->add_to_table_cards(card_played);
-					card_selected->set_locked_to_build(true);
-					
-					return true;			 
-				} else if (played_value + build_card->get_value() == selected_value && extending_build) {
-					// create build and update model
-					Build* b1 = get_correct_build(card_selected);
-					b1->extend_build(build_cards);
-					card_played->set_part_of_build(true);
-					card_played->set_build_buddies(build_cards);
-					build_card->set_part_of_build(true);
-					game_player->discard(card_played);
-					this->game_table->add_to_table_cards(card_played);
-					
-					return true;	
-				}
-				// Need to build with more cards on the table.
-				played_value = get_set_value(build_cards);
 			}
-		}	
+		} else {
+			for (int i = 0; i < player_hand.size(); i++) {
+				if (create_build(card_selected, player_hand[i], false, game_player)) {
+					return true;
+				}
+			}
+		}
 	} else if (move_type == 't') {
 		trail(card_selected, game_player);
 		return true;
 	}
 
 	return false;
+}
+
+bool Round::create_build(Card* card_selected, Card* card_played, bool extending_build, Player* game_player) {	
+	// If that card has value >= locked card: return false
+	vector<Card*> table_cards = this->game_table->get_table_cards();
+	vector<Card*> filtered_cards = table_cards;
+	int selected_value = card_selected->get_value();
+	int played_value = card_played->get_value();
+	if (played_value >= selected_value) return false;
+	// Provide options to build with on table.
+	bool build_created = false;
+	vector<Card*> build_cards;
+	build_cards.push_back(card_played);
+	
+	while (true) {
+		// Filter available cards to remove all cards with value + played_value > locked card val
+		filtered_cards = filter_build_options(filtered_cards, played_value, selected_value);
+		if (filtered_cards.empty()) return false;
+		int best_card_selection = 0;
+		int min_value = 15;
+		for (int i = 0; i < filtered_cards.size(); i++) {
+			if (played_value + filtered_cards[i]->get_value() == selected_value) {
+				best_card_selection = i;
+				break;
+			}
+			// If no possible build currently exists, pick lowest value to find build later.
+			if (filtered_cards[i]->get_value() < min_value) {
+				best_card_selection = i;
+				min_value = filtered_cards[i]->get_value();
+			}
+		}
+		// At this point we have a locked card for the build to sum to | card_selected
+		// A card selected to play into a build (1) | card_played
+		// And a card on the board to build with (2) | build_card
+		// If (1) + (2) = locked card value, ask user if they'd like to complete build.
+
+		Card* build_card = filtered_cards[best_card_selection];
+		build_cards.push_back(build_card);
+		remove_card_from_vector(filtered_cards, build_card);
+		
+		if (played_value + build_card->get_value() == selected_value && !extending_build) {
+
+			// create build and update model
+			Build* b1 = new Build(build_cards, selected_value, card_selected, game_player->get_player_string());
+			this->game_table->add_build(b1);
+			card_played->set_part_of_build(true);
+			card_played->set_build_buddies(build_cards);
+			build_card->set_part_of_build(true);
+			game_player->discard(card_played);
+			this->game_table->add_to_table_cards(card_played);
+			card_selected->set_locked_to_build(true);
+			
+			return true;			 
+		} else if (played_value + build_card->get_value() == selected_value && extending_build) {
+
+			// create build and update model
+			Build* b1 = get_correct_build(card_selected);
+			b1->extend_build(build_cards);
+			card_played->set_part_of_build(true);
+			card_played->set_build_buddies(build_cards);
+			build_card->set_part_of_build(true);
+			game_player->discard(card_played);
+			this->game_table->add_to_table_cards(card_played);
+			
+			return true;	
+		}
+		// Need to build with more cards on the table.
+		played_value = get_set_value(build_cards);
+	}
 }
 
 bool Round::save_game() {
