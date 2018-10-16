@@ -41,6 +41,7 @@ class Player {
 		void discard(Card* removed_card);
 		vector<Card*> get_hand();
 		void clear_hand();
+		void clear_pile();
 		bool hand_is_empty();
 		void set_is_playing(bool a_is_playing);
 		bool get_is_playing();

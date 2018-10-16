@@ -23,7 +23,7 @@ void Display::update_view(vector<Player*> game_players, Table* game_table) {
 }
 
 void Display::print_welcome(int round_num) {
-	cout << "Welcome to Casino C++! Round " << round_num << " is about to begin!" << endl;
+	cout << "Welcome to Casino C++! Round " << round_num+1 << " is about to begin!" << endl;
 }
 
 void Display::print_line_break() {

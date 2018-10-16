@@ -66,13 +66,13 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 	this->game_view->print_welcome(this->round_num);
 	this->game_view->update_view(this->game_players, this->game_table);
 
-	while (!this->game_deck->is_empty()) {	
+	while (!this->game_deck->is_empty() || !(player_one->hand_is_empty() && player_two->hand_is_empty())) {	
 		// cout << "Seg fault occurs before move selection." << endl;
-		if (player_one->hand_is_empty() && player_two->hand_is_empty()) { 
+		if (player_one->hand_is_empty() && player_two->hand_is_empty() && !this->game_deck->is_empty()) { 
 			deal_hands(game_players);
 			this->game_view->update_view(this->game_players, this->game_table);
 		}
-		while (!possible_move_selected) {
+		while (!possible_move_selected && !player_one->hand_is_empty()) {
 			pair<Card*, char> move_pair = player_one->play();
 			if (player_one->get_player_string() == "Computer") {
 				possible_move_selected = make_move(move_pair.second, move_pair.first, player_one);
@@ -97,7 +97,7 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 		player_two->set_is_playing(true);
 		this->game_view->update_view(this->game_players, this->game_table);
 		possible_move_selected = false;
-		while (!possible_move_selected) {
+		while (!possible_move_selected && !player_two->hand_is_empty()) {
 			pair<Card*, char> move_pair = player_two->play();
 			if (player_two->get_player_string() == "Computer") {
 				possible_move_selected = make_move(move_pair.second, move_pair.first, player_two);
@@ -122,9 +122,8 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 		player_two->set_is_playing(false);
 		this->game_view->update_view(this->game_players, this->game_table);
 		possible_move_selected = false;	
-	}	
+	}
 
-	delete player_one, player_two;
 }
 
 bool Round::make_move(char move_type, Card* card_selected, Player* game_player) {

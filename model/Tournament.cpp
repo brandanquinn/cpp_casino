@@ -38,7 +38,7 @@ void Tournament::show_start_screen() {
 	}
 
 	if (user_input == 1)
-		start_round();
+		start_round(true);
 	else
 		if(!load_saved_game())
 			cout << "Save file does not exist." << endl; 
@@ -65,8 +65,6 @@ bool Tournament::load_saved_game() {
 	vector<string> build_strings;
 	Deck* current_deck = NULL;	
 	bool human_next;
-	
-	
 
 	string line;
 	int line_num = 0;	
@@ -146,7 +144,7 @@ bool Tournament::load_saved_game() {
 	Round game_round(rounds_played, game_players, deck_list, table_cards, current_builds);
 	this->current_round = &game_round;
 	this->current_round->start_game(human_next, true);
-	
+	end_round();
 	return true;
 }
 
@@ -256,10 +254,11 @@ vector<Build*> Tournament::get_build_objects(vector<string> build_strings, strin
 	// For each owner, we create a build
 	// Select the first card in the players hand that can be used and lock it to the build.
 	// Build(vector<Card*> a_build_cards, int a_sum, Card* a_sum_card, Player* a_build_owner)
-	
-	int build_str_val = get_build_str_val(build_strings[0]);
+
+	int build_str_val;
 
 	for (int i = 0; i < owner_list.size(); i++) {
+		build_str_val = get_build_str_val(build_strings[i]);
 		if (owner_list[i] == "Human") {
 			for (int j = 0; j < player_hand.size(); j++) {
 				if (player_hand[j]->get_value() == build_str_val) {
@@ -369,18 +368,86 @@ vector<Card*> Tournament::parse_cards_from_file(string line) {
 	return cards_vec;
 }
 
-void Tournament::start_round() {
+void Tournament::start_round(bool first_round) {
 	this->rounds_played += 1;	
 	Round game_round(rounds_played, game_players);
 	this->current_round = &game_round;	
-	this->current_round->start_game(coin_toss(), false);
+	if (first_round) {
+		this->current_round->start_game(coin_toss(), false);
+	} else {
+		this->current_round->start_game(true, false);
+	}
+	end_round();
 }
 
 void Tournament::end_round() {
-	cout << "Round has ended. Player 1 scored: " << game_players[0]->get_score() << ". Player 2 scored: " << game_players[1]->get_score() << endl; 
-	this->game_players[0]->clear_hand();
-	this->game_players[1]->clear_hand();
-	this->current_round->get_game_table()->clear_table_cards();
+	// Compute scores, if player's score is >= 21, they are declared the victor and the game is over
+	// Else reset deck, clear hands, and piles
+	// Start new round.
+	compute_player_scores();
+	if (this->game_players[0]->get_score() >= 21 && this->game_players[0]->get_score() >= 21) {
+		// tie
+		cout << "Game has ended, both players have tied." << endl;
+	} else if (this->game_players[0]->get_score() >= 21) {
+		cout << "Game has ended, Player 1 is the victor!" << endl;
+	} else if (this->game_players[1]->get_score() >= 21) {
+		cout << "Game has ended, Player 2 is the victor!" << endl;
+	} else {
+		this->game_players[0]->clear_hand();
+		this->game_players[1]->clear_hand();
+		this->game_players[0]->clear_pile();
+		this->game_players[1]->clear_pile();
+		this->current_round->get_game_table()->clear_table_cards();
+		cout << "Round has ended. Player 1 has score: " << this->game_players[0]->get_score() << ". Player 2 has score: " << this->game_players[1]->get_score() << endl; 
+		cout << "Starting new round. Good luck!" << endl;
+		start_round(false); 
+	}
+}
+
+void Tournament::compute_player_scores() {
+	// score info init
+	int p1_current_score = this->game_players[0]->get_score();
+	vector<Card*> p1_current_pile = this->game_players[0]->get_pile();
+
+	int p2_current_score = this->game_players[1]->get_score();
+	vector<Card*> p2_current_pile = this->game_players[1]->get_pile();
+
+	// Scoring for pile size
+	if (p1_current_pile.size() > p2_current_pile.size()) {
+		p1_current_score += 3;
+	} else if (p2_current_pile.size() > p1_current_pile.size()) {
+		p2_current_score += 3;
+	}
+
+	// Scoring for spades count / 10 of diamonds / 2 of spades / ace count
+	int p1_spades_count = 0, p2_spades_count = 0;
+	for (int i = 0; i < p1_current_pile.size(); i++) {
+		if (p1_current_pile[i]->get_suit() == 'S')
+			p1_spades_count++;
+		if (p1_current_pile[i]->get_type() == 'A')
+			p1_current_score++;
+		if (p1_current_pile[i]->get_card_string() == "DX")
+			p1_current_score += 2;
+		if (p1_current_pile[i]->get_card_string() == "S2")
+			p1_current_score++;
+	
+	}
+	for (int i = 0; i < p2_current_pile.size(); i++) {
+		if (p2_current_pile[i]->get_suit() == 'S')
+			p2_spades_count++;
+		if (p2_current_pile[i]->get_type() == 'A')
+			p2_current_score++;
+		if (p2_current_pile[i]->get_card_string() == "DX")
+			p2_current_score += 2;
+		if (p2_current_pile[i]->get_card_string() == "S2")
+			p2_current_score++;
+	}
+	if (p1_spades_count > p2_spades_count) p1_current_score++;
+	else if (p2_spades_count > p1_spades_count) p2_current_score++;
+
+	this->game_players[0]->set_score(p1_current_score);
+	this->game_players[1]->set_score(p2_current_score);
+
 }
 
 bool Tournament::coin_toss() {

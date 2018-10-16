@@ -56,6 +56,10 @@ void Player::clear_hand() {
 	this->hand.clear();
 }
 
+void Player::clear_pile() {
+	this->pile.clear();
+}
+
 bool Player::hand_is_empty() {
 	return this->hand.empty();
 }
@@ -111,23 +115,23 @@ pair<Card*, char> Player::get_help() {
 	// 4. Trail the card with the lowest value.
 	pair<Card*, char> move_pair;
 
-	vector<int> capture_values;
+	int max_build_index = 0, max_capture_index = 0;
+	vector<int> build_values, capture_values;
+
 	for (int i = 0; i < hand.size(); i++) {
-		capture_values.push_back(assess_capture(hand[i]));
+		build_values.push_back(assess_builds(hand[i]));
 	}
+	max_build_index = get_max_score(build_values);
 
-	int max_index = get_max_score(capture_values);
-	int max_build_index;
-
-	vector<int> build_values;
-	if (capture_values[max_index] == 0) {
-		// Build
+	if (build_values[max_build_index] == 0) {
+		// capture
 		for (int i = 0; i < hand.size(); i++) {
-			build_values.push_back(assess_builds(hand[i]));
+			capture_values.push_back(assess_capture(hand[i]));
 		}
-		max_build_index = get_max_score(build_values);
-		if (build_values[max_build_index] == 0) {
-			//trail
+		max_capture_index = get_max_score(capture_values);
+
+		if (capture_values[max_capture_index] == 0) {
+			// trail
 			int min_val = 15;
 			int min_index = 0;
 			for (int i = 0; i < hand.size(); i++) {
@@ -135,18 +139,18 @@ pair<Card*, char> Player::get_help() {
 					min_val = hand[i]->get_value();
 					min_index = i;
 				}
-				move_pair.first = hand[min_index];
-				move_pair.second = 't';
 			}
-
+			move_pair.first = hand[min_index];
+			move_pair.second = 't';
 		} else {
-			move_pair.first = hand[max_build_index];
-			move_pair.second = 'b';
+			// capture
+			move_pair.first = hand[max_capture_index];
+			move_pair.second = 'c';
 		}
-
 	} else {
-		move_pair.first = hand[max_index];
-		move_pair.second = 'c';
+		// build
+		move_pair.first = hand[max_build_index];
+		move_pair.second = 'b';
 	}
 
 	return move_pair;
@@ -283,7 +287,7 @@ int Player::assess_builds(Card* card_selected) {
 			possible_build_vals.push_back(create_builds(card_selected, hand[i], false));
 		}
 	}
-	
+
 	return possible_build_vals[get_max_score(possible_build_vals)];
 }
 
@@ -320,7 +324,6 @@ int Player::create_builds(Card* card_selected, Card* card_played, bool extending
 			}
 
 		}
-		cout << "Best card selection is: " << filtered_cards[best_card_selection]->get_card_string() << " building to value: " << selected_value << endl;
 		// At this point we have a locked card for the build to sum to | card_selected
 		// A card selected to play into a build (1) | card_played
 		// And a card on the board to build with (2) | build_card
@@ -339,11 +342,7 @@ int Player::create_builds(Card* card_selected, Card* card_played, bool extending
 			// build_card->set_part_of_build(true);
 			// game_player->discard(card_played);
 			// this->game_table->add_to_table_cards(card_played);
-			// card_selected->set_locked_to_build(true);
-			cout << "Found build of: ";
-			for (int i = 0; i < build_cards.size(); i++)
-				cout << build_cards[i]->get_card_string() << " ";
-			cout << endl;
+			// card_selected->set_locked_to_build(true);	
 			
 			return build_cards.size();
 					 

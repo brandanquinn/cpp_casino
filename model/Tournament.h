@@ -23,6 +23,7 @@ class Tournament {
 		vector<vector<Card*>> get_build_cards(string build_str);
 		vector<Card*> get_table_cards(string line);
 		vector<Card*> modify_table_cards(vector<Card*> table_cards_list, vector<Build*> current_builds);
+		void compute_player_scores();
 
 	public:
 		Tournament();
@@ -42,7 +43,7 @@ class Tournament {
 				// Current deck
 				// Who is playing next    
 		// load the serialization file from the serialization directory within /bin
-		void start_round();
+		void start_round(bool first_round);
 		void end_round();
 		bool coin_toss();
 };
