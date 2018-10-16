@@ -15,7 +15,7 @@
 
 class Round {
 	private:	
-		void deal_hands(vector<Player*> game_players);
+		bool deal_hands(vector<Player*> game_players);
 		int get_set_value(vector<Card*> card_set);
 		void print_vector_cards(vector<Card*> card_list);
 		void remove_selected_set(vector<vector<Card*>> &total_sets, vector<Card*> selected_set);

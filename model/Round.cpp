@@ -375,13 +375,19 @@ string Round::get_build_strings() {
 	return build_strings;
 }
 
-void Round::deal_hands(vector<Player*> game_players) {
+bool Round::deal_hands(vector<Player*> game_players) {
 	for (int i = 0; i < 4; i++) {
-		game_players[0]->add_to_hand(game_deck->draw_card());
+		Card* new_card =  game_deck->draw_card();
+		if (new_card->get_suit() == 'X') return false;
+		game_players[0]->add_to_hand(new_card);
 	}
 	for (int i = 0; i < 4; i++) {
-		game_players[1]->add_to_hand(game_deck->draw_card());
+		Card* new_card =  game_deck->draw_card();
+		if (new_card->get_suit() == 'X') return false;
+		game_players[1]->add_to_hand(new_card);
  	}
+	
+	return true;
 }
 
 void Round::deal_to_table(Table* game_table) {
