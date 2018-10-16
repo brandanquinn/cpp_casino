@@ -21,7 +21,13 @@ class Player {
 		int get_set_value(vector<Card*> card_set);
 		Move* generate_capture_move(Card* card_played);
 		void remove_selected_set(vector<vector<Card*>> &total_sets, vector<Card*> selected_set);
-
+		int assess_builds(Card* card_selected);
+		int create_builds(Card* card_selected, Card* card_played, bool extending_build);
+		vector<Card*> filter_build_options(vector<Card*> available_cards, int played_value, int build_sum);
+		Build* get_correct_build(Card* my_card);
+		int get_max_score(vector<int> scores);
+		void remove_card_from_vector(vector<Card*> &card_list, Card* card_to_remove);
+		// Card* selected_for_build;
 
 	public:
 		Player();
@@ -46,6 +52,8 @@ class Player {
 		string get_player_string();
 		Table* get_game_table();
 		void set_game_table(Table* a_game_table);
+		// Card* get_selected_for_build();
+		// void set_selected_for_build(Card* card);
 		
 };
 

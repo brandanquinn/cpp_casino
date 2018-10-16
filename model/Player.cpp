@@ -116,19 +116,41 @@ pair<Card*, char> Player::get_help() {
 		capture_values.push_back(assess_capture(hand[i]));
 	}
 
-	int max_value = 0;
-	int max_index = 0;
-	for (int i = 0; i < capture_values.size(); i++) {
-		if (capture_values[i] > max_value) {
-			max_value = capture_values[i];
-			max_index = i;
+	int max_index = get_max_score(capture_values);
+
+	vector<int> build_values;
+	if (capture_values[max_index] == 0) {
+		// Build
+		for (int i = 0; i < hand.size(); i++) {
+			build_values.push_back(assess_builds(hand[i]));
 		}
+		cout << "Max build values: ";
+		for (int i = 0; i < build_values.size(); i++)
+			cout << build_values[i] << " ";
+		cout << endl;
+		int max_build_index = get_max_score(build_values);
+		if (build_values[max_build_index] == 0) {
+			//trail
+			int min_val = 15;
+			int min_index = 0;
+			for (int i = 0; i < hand.size(); i++) {
+				if (hand[i]->get_value() < min_val) {
+					min_val = hand[i]->get_value();
+					min_index = i;
+				}
+				move_pair.first = hand[min_index];
+				move_pair.second = 't';
+			}
+
+		} else {
+			move_pair.first = hand[max_index];
+			move_pair.second = 'b';
+		}
+
+	} else {
+		move_pair.first = hand[max_index];
+		move_pair.second = 'c';
 	}
-
-	move_pair.first = hand[max_index];
-	move_pair.second = 'c';
-
-	
 
 	return move_pair;
 }
@@ -144,7 +166,7 @@ int Player::assess_capture(Card* card_played) {
 
 	Move* game_move = generate_capture_move(card_played);
 	vector<Card*> capturable_cards = game_move->get_capturable_cards();
-	vector<Card*> pile_additions;	
+	vector<Card*> pile_additions;
 	vector<vector<Card*>> capturable_sets = game_move->get_capturable_sets();
 	vector<Build*> capturable_builds = game_move->get_capturable_builds();
 	vector<vector<Card*>> selected_sets;
@@ -245,6 +267,145 @@ Move* Player::generate_capture_move(Card* card_played) {
 	return new Move(card_played, capturable_cards, capturable_sets, capturable_builds);		
 }
 
+int Player::assess_builds(Card* card_selected) {
+	// Get value of card selected
+	// Have player select card to play into the build.
+	int selected_value = card_selected->get_value();
+	int card_num = 0;
+	bool extending_build = false;
+
+	vector<int> possible_build_vals;
+
+	if (card_selected->get_locked_to_build()) {
+		for (int i = 0; i < hand.size(); i++) {
+			possible_build_vals.push_back(create_builds(card_selected, hand[i], true));
+		}
+	} else {
+		
+		for (int i = 0; i < hand.size(); i++) {
+			possible_build_vals.push_back(create_builds(card_selected, hand[i], false));
+		}
+	}
+
+	cout << "Possible build values: ";
+	for (int i = 0; i < possible_build_vals.size(); i++) {
+		cout << possible_build_vals[i] << " ";
+	}
+	cout << endl;
+
+	cout << "max score found: " << possible_build_vals[get_max_score(possible_build_vals)] << endl;
+	return possible_build_vals[get_max_score(possible_build_vals)];
+}
+
+int Player::create_builds(Card* card_selected, Card* card_played, bool extending_build) {
+	// If that card has value >= locked card: return false
+	int selected_value = card_selected->get_value();
+	if (card_played->get_value() >= selected_value) {
+		return 0;
+	}
+	vector<Card*> table_cards = this->game_table->get_table_cards();
+	vector<Card*> filtered_cards = table_cards;
+	int played_value = card_played->get_value();
+	// Provide options to build with on table.
+	bool build_created = false;
+	vector<Card*> build_cards;
+	build_cards.push_back(card_played);
+	while (!build_created) {
+		// Filter available cards to remove all cards with value + played_value > locked card val
+		filtered_cards = filter_build_options(filtered_cards, played_value, selected_value);
+		if (filtered_cards.empty()) {
+			return 0;
+		}
+		int best_card_selection;
+		int min_value = 15;
+		for (int i = 0; i < filtered_cards.size(); i++) {
+			if (played_value + filtered_cards[i]->get_value() == selected_value) {
+				best_card_selection = i;
+				break;
+			}
+			// If no possible build currently exists, pick lowest value to find build later.
+			if (filtered_cards[i]->get_value() < min_value) {
+				best_card_selection = i;
+				min_value = filtered_cards[i]->get_value();
+			}
+
+		}
+		cout << "Best card selection is: " << filtered_cards[best_card_selection]->get_card_string() << " building to value: " << selected_value << endl;
+		// At this point we have a locked card for the build to sum to | card_selected
+		// A card selected to play into a build (1) | card_played
+		// And a card on the board to build with (2) | build_card
+		// If (1) + (2) = locked card value, ask user if they'd like to complete build.
+	
+
+		Card* build_card = filtered_cards[best_card_selection];
+		build_cards.push_back(build_card);
+		remove_card_from_vector(filtered_cards, build_card);
+		
+		if (played_value + build_card->get_value() == selected_value && !extending_build) {
+			// Build* b1 = new Build(build_cards, selected_value, card_selected, game_player->get_player_string());
+			// this->game_table->add_build(b1);
+			// card_played->set_part_of_build(true);
+			// card_played->set_build_buddies(build_cards);
+			// build_card->set_part_of_build(true);
+			// game_player->discard(card_played);
+			// this->game_table->add_to_table_cards(card_played);
+			// card_selected->set_locked_to_build(true);
+			cout << "Found build of: ";
+			for (int i = 0; i < build_cards.size(); i++)
+				cout << build_cards[i]->get_card_string() << " ";
+			cout << endl;
+			
+			return build_cards.size();
+					 
+		} else if (played_value + build_card->get_value() == selected_value && extending_build) {
+
+			// create build and update model
+			Build* b1 = get_correct_build(card_selected);
+			// b1->extend_build(build_cards);
+			// card_played->set_part_of_build(true);
+			// card_played->set_build_buddies(build_cards);
+			// build_card->set_part_of_build(true);
+			// game_player->discard(card_played);
+			// this->game_table->add_to_table_cards(card_played);
+
+			vector<vector<Card*>> temp_build_cards = b1->get_total_build_cards();
+			int score = 0;
+			for (int i = 0; i < temp_build_cards.size(); i++) {
+				for (int j = 0; j < temp_build_cards[i].size(); j++)
+					score++;
+			}
+			
+			return score;	
+		}
+		// Need to build with more cards on the table.
+		played_value = get_set_value(build_cards);		
+		// cout << "Played val: " << played_value << endl;
+	}
+}
+
+vector<Card*> Player::filter_build_options(vector<Card*> available_cards, int played_value, int build_sum) {
+	vector<Card*> filtered_options;
+	// Iterate through avail_cards
+	// If avail_card val + played_val < build_sum
+	// Add avail_card to filtered vector
+	// Return filtered vector
+	for (int i = 0; i < available_cards.size(); i++) {
+		if (available_cards[i]->get_value() + played_value <= build_sum)
+			filtered_options.push_back(available_cards[i]); 
+	}
+	return filtered_options;
+}
+
+Build* Player::get_correct_build(Card* my_card) {
+	vector<Build*> total_builds = this->game_table->get_current_builds();
+	for (int i = 0; i < total_builds.size(); i++) {
+		if (total_builds[i]->get_sum_card()->get_card_string() == my_card->get_card_string())
+			return total_builds[i];
+	}
+
+	return NULL;
+}
+
 int Player::get_set_value(vector<Card*> card_set) {
 	int value_sum = 0;
 	for (int i = 0; i < card_set.size(); i++) {
@@ -262,4 +423,22 @@ void Player::remove_selected_set(vector<vector<Card*>> &total_sets, vector<Card*
 				total_sets.erase(total_sets.begin() + j);	
 		}
 	}
+}
+
+int Player::get_max_score(vector<int> scores) {
+	int max_val = 0;
+	int max_index = 0;
+
+	for (int i = 0; i < scores.size(); i++) {
+		if (max_val < scores[i]) {
+			max_val = scores[i];
+			max_index = i;
+		}
+	}
+
+	return max_index;
+}
+
+void Player::remove_card_from_vector(vector<Card*> &card_list, Card* card_to_remove) {
+	card_list.erase(remove(card_list.begin(), card_list.end(), card_to_remove), card_list.end());
 }
