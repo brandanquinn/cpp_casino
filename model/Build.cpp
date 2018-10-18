@@ -1,3 +1,10 @@
+************************************************************
+* Name:  Brandan Quinn                                     *
+* Project:  C++ Project         			   *
+* Class:  OPL         		                           *
+* Date:  10/23/18                           	           *
+************************************************************
+
 #include <vector>
 #include <algorithm>
 #include <string>
