@@ -33,10 +33,10 @@ pair<Card*, char> Human::play() {
 	pair<Card*, char> move_pair;
 	vector<Card*> player_hand = Player::get_hand();
 	
-	while (move_option != 't' && move_option != 'b' && move_option != 'c' && move_option != 's') {
-		cout << "Enter (t) to trail, (b) to build, (c) to capture, or (s) to save current game: ";
+	while (move_option != 't' && move_option != 'b' && move_option != 'c' && move_option != 's' && move_option != 'h') {
+		cout << "Enter (t) to trail, (b) to build, (c) to capture, (s) to save current game, or (h) to get help: ";
 		cin >> move_option; 
-		if (move_option != 't' && move_option != 'b' && move_option != 'c' && move_option != 's') {
+		if (move_option != 't' && move_option != 'b' && move_option != 'c' && move_option != 's' && move_option != 'h') {
 			cout << "You entered: " << move_option << endl;
 			cout << "Incorrect command entered. Try again." << endl;
 		}		

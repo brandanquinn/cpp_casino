@@ -28,14 +28,6 @@ pair<Card*, char> Computer::play() {
 
 
 	pair<Card*, char> move_pair = Player::get_help();
-	
-	if (move_pair.second == 'b') {
-		cout << "AI decided to start a new build or extend a current build using: " << move_pair.first->get_card_string() << endl;
-	} else if (move_pair.second == 'c') {
-		cout << "AI couldn't find any cards to build with, decided to capture with: " << move_pair.first->get_card_string() << endl;
-	} else {
-		cout << "No captures or builds could be found, AI will trail the lowest value card: " << move_pair.first->get_card_string() << endl;
-	}
 
 	return move_pair;
 }

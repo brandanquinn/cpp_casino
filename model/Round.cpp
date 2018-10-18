@@ -84,12 +84,16 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 					possible_move_selected = capture(move_pair.first, player_one);
 				} else if (move_pair.second == 'b') {
 					possible_move_selected = build(move_pair.first, player_one);
-				} else {
+				} else if (move_pair.second == 's') {
 					// save game
 					// call deserialization function
 					possible_move_selected = save_game();
 					cout << "Game saved." << endl;
 				
+				} else {
+					move_pair = player_one->get_help();
+					cout << "Getting help from AI." << endl;
+					possible_move_selected = make_move(move_pair.second, move_pair.first, player_one);
 				}
 			}
 		}
@@ -109,12 +113,16 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 					possible_move_selected = capture(move_pair.first, player_two);
 				} else if (move_pair.second == 'b') {
 					possible_move_selected = build(move_pair.first, player_two);
-				} else {
+				} else if (move_pair.second == 's') {
 					// save game
 					// call deserialization function
 					possible_move_selected = save_game();
 					cout << "Game saved." << endl;
 				
+				} else {
+					// get help
+					move_pair = player_two->get_help();
+					possible_move_selected = make_move(move_pair.second, move_pair.first, player_two);
 				}
 			}
 		}
@@ -127,6 +135,15 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 }
 
 bool Round::make_move(char move_type, Card* card_selected, Player* game_player) {
+	if (move_type == 'b') {
+		cout << "AI called by: " << game_player->get_player_string() << " decided to start a new build for or extend a current build using: " << card_selected->get_card_string() << endl;
+	} else if (move_type == 'c') {
+		cout << "AI called by: " << game_player->get_player_string() << " couldn't find any cards to build with, decided to capture with: " << card_selected->get_card_string() << endl;
+	} else {
+		cout << "AI called by: " << game_player->get_player_string() << " found no captures or builds, trailing the lowest value card: " << card_selected->get_card_string() << endl;
+	}
+
+
 	if (move_type == 'c') {
 		vector<Build*> capturable_builds; 
 	
