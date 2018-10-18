@@ -27,7 +27,5 @@ pair<Card*, char> Computer::play() {
 	// 4. Trail the card with the lowest value.
 
 
-	pair<Card*, char> move_pair = Player::get_help();
-
-	return move_pair;
+	return Player::get_help(); 
 }

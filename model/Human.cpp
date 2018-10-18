@@ -14,18 +14,9 @@ Human::Human() {
 	Player::set_player_string("Human");
 }
 
-Human::Human(string a_name, int a_score) {
-	set_name(a_name);
+Human::Human(int a_score) {
 	Player::set_score(a_score);
 	Player::set_player_string("Human");
-}
-
-string Human::get_name() {
-	return this->name;
-}
-
-void Human::set_name(string a_name) {
-	this->name = a_name;
 }
 
 pair<Card*, char> Human::play() {

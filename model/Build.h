@@ -9,14 +9,7 @@
 using namespace std;
 
 class Build {
-	private:
-		bool multi_build;
-		int sum;
-		Card* sum_card;
-		vector<vector<Card*>> total_build_cards;
-		string build_owner;
 		
-	
 	public:
 		/*
 		Function Name: Build
@@ -184,6 +177,13 @@ class Build {
 		Assistance Received: None
 		*/
 		string get_build_string();
+
+	private:
+		bool multi_build;
+		int sum;
+		Card* sum_card;
+		vector<vector<Card*>> total_build_cards;
+		string build_owner;
 };
 
 #endif
