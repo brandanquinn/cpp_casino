@@ -14,7 +14,7 @@ Player::Player() {
 	set_is_playing(false);
 }
 
-Table* Player::get_game_table() {
+Table* Player::get_game_table() const {
 	return this->game_table;
 }
 
@@ -22,7 +22,7 @@ void Player::set_game_table(Table* a_game_table) {
 	this->game_table = a_game_table;
 }
 
-int Player::get_score() {
+int Player::get_score() const {
 	return this->score;
 }
 
@@ -40,7 +40,7 @@ void Player::add_to_pile(vector<Card*> captured_cards) {
 	}	
 }
 
-vector<Card*> Player::get_pile() {
+vector<Card*> Player::get_pile() const {
 	return this->pile;
 }
 
@@ -48,7 +48,7 @@ void Player::discard(Card* removed_card) {
 	this->hand.erase(remove(hand.begin(), hand.end(), removed_card), hand.end());
 }
 
-vector<Card*> Player::get_hand() {
+vector<Card*> Player::get_hand() const {
 	return this->hand;
 }
 
@@ -68,7 +68,7 @@ void Player::set_is_playing(bool a_is_playing) {
 	this->is_playing = a_is_playing;
 }
 
-bool Player::get_is_playing() {
+bool Player::get_is_playing() const {
 	return this->is_playing;
 }
 
@@ -81,7 +81,7 @@ void Player::set_pile(vector<Card*> a_pile) {
 	this->pile = a_pile;
 }
 
-string Player::get_hand_string() {
+string Player::get_hand_string() const {
 	string hand_str = "";
 	for (int i = 0; i < hand.size(); i++) {
 		hand_str += hand[i]->get_card_string() + " ";
@@ -90,7 +90,7 @@ string Player::get_hand_string() {
 	return hand_str;
 }
 
-string Player::get_pile_string() {
+string Player::get_pile_string() const {
 	string pile_str = "";
 	for (int i = 0; i < pile.size(); i++) {
 		pile_str += pile[i]->get_card_string() + " ";
@@ -103,7 +103,7 @@ void Player::set_player_string(string a_player_string) {
 	this->player_string = a_player_string;
 }
 		
-string Player::get_player_string() {
+string Player::get_player_string() const {
 	return this->player_string;
 }
 
@@ -412,7 +412,7 @@ void Player::remove_card_from_vector(vector<Card*> &card_list, Card* card_to_rem
 	card_list.erase(remove(card_list.begin(), card_list.end(), card_to_remove), card_list.end());
 }
 
-bool Player::get_captured_last() {
+bool Player::get_captured_last() const {
 	return this->captured_last;
 }
 

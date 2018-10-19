@@ -35,7 +35,7 @@ class Move {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		Card* get_card_played();
+		Card* get_card_played() const;
 
 		/*
 		Function Name: get_capturable_cards
@@ -46,7 +46,7 @@ class Move {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		vector<Card*> get_capturable_cards();
+		vector<Card*> get_capturable_cards() const;
 
 		/*
 		Function Name: get_capturable_sets
@@ -57,7 +57,7 @@ class Move {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		vector<vector<Card*>> get_capturable_sets();
+		vector<vector<Card*>> get_capturable_sets() const;
 
 		/*
 		Function Name: get_capturable_builds
@@ -68,7 +68,7 @@ class Move {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		vector<Build*> get_capturable_builds();
+		vector<Build*> get_capturable_builds() const;
 	
 	private:
 		Card* card_played;

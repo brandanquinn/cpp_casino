@@ -50,7 +50,7 @@ class Build {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		bool get_multi_build();
+		bool get_multi_build() const;
 	
 		/*
 		Function Name: set_multi_build
@@ -73,7 +73,7 @@ class Build {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		int get_sum();
+		int get_sum() const;
 	
 		/*
 		Function Name: set_sum
@@ -96,7 +96,7 @@ class Build {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		Card* get_sum_card();
+		Card* get_sum_card() const;
 	
 		/*
 		Function Name: set_sum_card
@@ -119,7 +119,7 @@ class Build {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		vector<vector<Card*>> get_total_build_cards();
+		vector<vector<Card*>> get_total_build_cards() const;
 	
 		/*
 		Function Name: extend_build
@@ -144,7 +144,7 @@ class Build {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		string get_build_owner();
+		string get_build_owner() const;
 	
 		/*
 		Function Name: set_build_owner
@@ -176,7 +176,7 @@ class Build {
 			6. Return build string concatenated with Build Owner.
 		Assistance Received: None
 		*/
-		string get_build_string();
+		string get_build_string() const;
 
 		/*
 		Function Name: get_build_string_for_view
@@ -197,7 +197,7 @@ class Build {
 			6. Return build string
 		Assistance Received: None
 		*/
-		string get_build_string_for_view();
+		string get_build_string_for_view() const;
 
 	private:
 		bool multi_build;

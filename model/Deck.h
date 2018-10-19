@@ -83,7 +83,7 @@ class Deck {
 		Return Value: The size of the current game deck.
 		Algorithm: None
 		*/
-		int get_num_cards_left();
+		int get_num_cards_left() const;
 
 		/*
 		Function Name: get_deck_string
@@ -101,7 +101,7 @@ class Deck {
 				b. Pop the card off the game_deck copy.
 			4. Return the deck_str
 		*/
-		string get_deck_string();
+		string get_deck_string() const;
 
 	private:
 		// Array of Card pointers to represent deck.

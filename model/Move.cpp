@@ -12,18 +12,18 @@ Move::Move(Card* a_card_played, vector<Card*> a_capturable_cards, vector<vector<
 	this->capturable_builds = a_capturable_builds;
 }
 
-Card* Move::get_card_played() {
+Card* Move::get_card_played() const{
 	return this->card_played;
 }
 
-vector<Card*> Move::get_capturable_cards() {
+vector<Card*> Move::get_capturable_cards() const {
 	return this->capturable_cards;
 }
 
-vector<vector<Card*>> Move::get_capturable_sets() {
+vector<vector<Card*>> Move::get_capturable_sets() const {
 	return this->capturable_sets;
 }
 
-vector<Build*> Move::get_capturable_builds() {
+vector<Build*> Move::get_capturable_builds() const {
 	return this->capturable_builds;
 }

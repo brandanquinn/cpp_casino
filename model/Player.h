@@ -73,7 +73,7 @@ class Player {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		int get_score();
+		int get_score() const;
 
 		/*
 		Function Name: set_score
@@ -120,7 +120,7 @@ class Player {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		vector<Card*> get_pile();
+		vector<Card*> get_pile() const;
 
 		/*
 		Function Name: discard
@@ -145,7 +145,7 @@ class Player {
 			2. Use erase() to remove card at said index from the vector
 		Assistance Received: None
 		*/
-		vector<Card*> get_hand();
+		vector<Card*> get_hand() const;
 
 		/*
 		Function Name: clear_hand
@@ -201,7 +201,7 @@ class Player {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		bool get_is_playing();
+		bool get_is_playing() const;
 
 		/*
 		Function Name: set_hand
@@ -241,7 +241,7 @@ class Player {
 			3. Return hand_str
 		Assistance Received: None
 		*/
-		string get_hand_string();
+		string get_hand_string() const;
 
 		/*
 		Function Name: get_pile_string
@@ -257,7 +257,7 @@ class Player {
 			3. Return pile_str
 		Assistance Received: None
 		*/
-		string get_pile_string();
+		string get_pile_string() const;
 
 		/*
 		Function Name: set_player_string
@@ -280,7 +280,7 @@ class Player {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		string get_player_string();
+		string get_player_string() const;
 
 		/*
 		Function Name: get_game_table
@@ -291,7 +291,7 @@ class Player {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		Table* get_game_table();
+		Table* get_game_table() const;
 
 		/*
 		Function Name: set_game_table
@@ -314,7 +314,7 @@ class Player {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		bool get_captured_last();
+		bool get_captured_last() const;
 
 		/*
 		Function Name: set_captured_last

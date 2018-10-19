@@ -33,7 +33,7 @@ Round::Round(int a_round_num, vector<Player*> a_game_players, vector<Card*> a_de
 	this->game_view = new Display;
 }
 
-int Round::get_round_num() {
+int Round::get_round_num() const {
 	return this->round_num;
 }
 
@@ -418,7 +418,7 @@ bool Round::save_game() {
 
 }
 
-string Round::get_build_strings() {
+string Round::get_build_strings() const {
 	string build_strings = "";
 	vector<Build*> current_builds = this->game_table->get_current_builds();
 
@@ -450,7 +450,7 @@ void Round::deal_to_table(Table* game_table) {
 	}
 }
 
-Table* Round::get_game_table() {
+Table* Round::get_game_table() const {
 	return this->game_table;
 }
 
@@ -463,9 +463,12 @@ bool Round::trail(Card* card_played, Player* game_player) {
 		return false;
 	}
 
-	if (make_capture(card_played, game_player, false) || make_build(card_played, game_player, false)) {
-		cout << "Capture or Build can be made, you cannot trail." << endl;
-		return false;
+	vector<Card*> player_hand = game_player->get_hand();
+	for (int i = 0; i < player_hand.size(); i++) {
+		if (make_capture(player_hand[i], game_player, false) || make_build(player_hand[i], game_player, false)) {
+			cout << "Capture or Build can be made, you cannot trail." << endl;
+			return false;
+		}
 	}
 
 
@@ -734,12 +737,11 @@ bool Round::build(Card* card_selected, Player* game_player) {
 		// Need to build with more cards on the table.
 		played_value = get_set_value(build_cards);		
 		card_num = 0;
-		cout << "Played val: " << played_value << endl;
 	}
 	
 }
 
-Build* Round::get_correct_build(Card* my_card) {
+Build* Round::get_correct_build(Card* my_card) const {
 	vector<Build*> total_builds = this->game_table->get_current_builds();
 	for (int i = 0; i < total_builds.size(); i++) {
 		if (total_builds[i]->get_sum_card()->get_card_string() == my_card->get_card_string())
@@ -832,7 +834,7 @@ Move* Round::generate_capture_move(Card* card_played, Player* game_player) {
 	return new Move(card_played, capturable_cards, capturable_sets, capturable_builds);		
 }
 
-int Round::get_set_value(vector<Card*> card_set) {
+int Round::get_set_value(vector<Card*> card_set) const {
 	int value_sum = 0;
 	for (int i = 0; i < card_set.size(); i++) {
 		value_sum += card_set[i]->get_value();

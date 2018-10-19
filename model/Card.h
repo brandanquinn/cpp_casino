@@ -51,7 +51,7 @@ class Card {
  		* Algorithm: None
  		* Assistance: None
 		*/
-		char get_suit();
+		char get_suit() const;
 	
 		/*
  		* Function Name: set_suit
@@ -74,7 +74,7 @@ class Card {
  		* Algorithm: None
  		* Assistance: None
  		*/
-		char get_type();
+		char get_type() const;
 	
 		/*
  		* Function Name: set_type
@@ -97,7 +97,7 @@ class Card {
  		* Algorithm: None
  		* Assistance: None
 		*/
-		int get_value();
+		int get_value() const;
 	
 		/*
  		* Function Name: set_value
@@ -125,7 +125,7 @@ class Card {
  		* 	3. Return string. 
  		* Assistance: None
  		*/
-		string get_card_string();
+		string get_card_string() const;
 		
 		/*
 		Function Name: get_locked_to_build
@@ -136,7 +136,7 @@ class Card {
 		Algorithm: None
 		Assistance: None
 		*/
-		bool get_locked_to_build();
+		bool get_locked_to_build() const;
 	
 		/*
 		Function Name: set_locked_to_build
@@ -158,7 +158,7 @@ class Card {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		bool get_part_of_build();
+		bool get_part_of_build() const;
 		
 		/*
 		Function Name: set_part_of_build
@@ -181,7 +181,7 @@ class Card {
 		Algorithm: None
 		Assistance Received: None
 		*/
-		vector<Card*> get_build_buddies();
+		vector<Card*> get_build_buddies() const;
 	
 		/*
 		Function Name: set_build_buddies

@@ -55,11 +55,11 @@ bool Deck::is_empty() {
 	return game_deck.empty();
 }
 
-int Deck::get_num_cards_left() {
+int Deck::get_num_cards_left() const {
 	return this->game_deck.size();
 }
 
-string Deck::get_deck_string() {
+string Deck::get_deck_string() const {
 	queue<Card*> game_deck_copy = this->game_deck;
 	string deck_str = "";
 	for (int i = 0; i < game_deck_copy.size(); i++) {
