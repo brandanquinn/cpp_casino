@@ -247,7 +247,6 @@ Move* Player::generate_capture_move(Card* card_played) {
 	}	
 	// Iterate through avail_cards vector
 	// Take element i and  
-	vector<Card*> sub_set;
 	vector<vector<Card*>> avail_sets;
 	vector<Card*> empty;
 	avail_sets.push_back(empty);	

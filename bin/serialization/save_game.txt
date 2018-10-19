@@ -1,16 +1,16 @@
-Round: 1
+Round: 2
 
 Computer: 
-	 Score: 14
-	 Hand: H6 D9 
-	 Pile: HK HX D3 SA S9 S5 DJ HJ H7 H4 H3 DQ HQ DX CX DK S7 S2 CJ D5 C8 
+	 Score: 7
+	 Hand: H3 DJ 
+	 Pile: H9 C2 C3 H4 HA SA DK HK SJ H2 HQ S5 C7 D8 D6 D2 CQ S6 C6 D5 H5 DA D4 SX 
 
 Human: 
-	 Score: 0
-	 Hand: CA CK C9 
-	 Pile: SX D4 C6 D6 S4 D2 SQ H2 C5 H9 C7 CQ 
+	 Score: 3
+	 Hand: C8 S4 
+	 Pile: CA C5 C9 S8 H8 DX HX CX D9 S9 DQ SQ S7 D7 H6 S3 D3 HJ CJ SK CK H7 S2 C4 
 
-Table: D7 SJ 
+Table: 
 
 Build Owner: 
 

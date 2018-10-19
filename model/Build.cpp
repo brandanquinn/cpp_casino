@@ -67,17 +67,33 @@ string Build::get_build_owner() {
 string Build::get_build_string() {
 	string build_str = "";
 
+	if (this->multi_build) build_str += "[ ";
 	for (int i = 0; i < this->total_build_cards.size(); i++) {
-		if (this->multi_build) build_str += "[ ";
 		for (int j = 0; j < this->total_build_cards[i].size(); j++) {
 			if (j == 0) build_str += "[ ";
 			build_str += this->total_build_cards[i][j]->get_card_string() + " ";
 		}
 		build_str += "] ";
-		if (this->multi_build) build_str += "]";
 	}
+	if (this->multi_build) build_str += "]";
 
 	return build_str + get_build_owner();
+}
+
+string Build::get_build_string_for_view() {
+	string build_str = "";
+
+	if (this->multi_build) build_str += "[ ";
+	for (int i = 0; i < this->total_build_cards.size(); i++) {
+		for (int j = 0; j < this->total_build_cards[i].size(); j++) {
+			if (j == 0) build_str += "[ ";
+			build_str += this->total_build_cards[i][j]->get_card_string() + " ";
+		}
+		build_str += "] ";
+	}
+	if (this->multi_build) build_str += "]";
+
+	return build_str;
 }
 
 

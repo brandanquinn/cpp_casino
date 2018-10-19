@@ -214,15 +214,96 @@ class Player {
 		Assistance Received: None
 		*/
 		void set_hand(vector<Card*> a_hand);
+
+		/*
+		Function Name: set_pile
+		Purpose: Setter for pile private member variable, used in serialization
+		Parameters: 
+			vector<Card*> a_pile, vector of cards to set pile to.
+		Return Value: None
+		Local Variables: None
+		Algorithm: None
+		Assistance Received: None
+		*/
 		void set_pile(vector<Card*> a_pile);
+
+		/*
+		Function Name: get_hand_string
+		Purpose: Generates a string representation of the player's hand for serialization.
+		Parameters: None
+		Return Value: Returns the player's hand as a string.
+		Local Variables: 
+			string hand_str, String to hold the card strings in player's hand.
+		Algorithm: 
+			1. Initialize hand_str to empty string.
+			2. For each card in player's hand
+				a. Add the card string and a space to hand_str
+			3. Return hand_str
+		Assistance Received: None
+		*/
 		string get_hand_string();
+
+		/*
+		Function Name: get_pile_string
+		Purpose: Generates a string representation of the player's pile.
+		Parameters: None
+		Return Value: Returns the player's pile as a string.
+		Local Variables:
+			string pile_str, String to hold the card strings in player's pile.
+		Algorithm: 
+			1. Initialize pile_str to empty string.
+			2. For each card in player's pile
+				a. Add the card string and a space to pile_str
+			3. Return pile_str
+		Assistance Received: None
+		*/
 		string get_pile_string();
+
+		/*
+		Function Name: set_player_string
+		Purpose: Setter for player_string private member variable
+		Parameters: 
+			string a_player_string, String to keep track of whether player is Human or Computer.
+		Return Value: None
+		Local Variables: None
+		Algorithm: None
+		Assistance Received: None
+		*/
 		void set_player_string(string a_player_string);
+
+		/*
+		Function Name: get_player_string
+		Purpose: Getter for player_string private member variable
+		Parameters: None
+		Return Value: Returns a string to keep track of whether player is Human or Computer.
+		Local Variables: None
+		Algorithm: None
+		Assistance Received: None
+		*/
 		string get_player_string();
+
+		/*
+		Function Name: get_game_table
+		Purpose: Getter for game_table private member variable.
+		Parameters: None
+		Return Value: Returns a pointer to the current game table.
+		Local Variables: None
+		Algorithm: None
+		Assistance Received: None
+		*/
 		Table* get_game_table();
+
+		/*
+		Function Name: set_game_table
+		Purpose: Setter for game_table private member variable
+		Parameters: 
+			Table* a_game_table, Pointer to the current game table object.
+		Return Value: None
+		Local Variables: None
+		Algorithm: None
+		Assistance Received: None 
+		*/
 		void set_game_table(Table* a_game_table);
-		// Card* get_selected_for_build();
-		// void set_selected_for_build(Card* card);
 
 	private:
 		int score;
@@ -231,18 +312,119 @@ class Player {
 		Table* game_table;
 		bool is_playing;
 		string player_string;
+
+		/*
+		Function Name: assess_capture
+		Purpose: Called by get_help to assess the viability / possibility of capture moves to be made.
+		Parameters: 
+			Card* card_played, pointer to the card selected by AI / Player.
+		Return Value: An integer heuristic value based on what can be captured with card selected, 0 by default.
+		Local Variables: 
+			Move* game_move, Move object pointer that contains information regarding what can be captured.
+			vector<Card*> capturable_cards, Vector of cards that can be captured with the card selected, pulled from the Move object.
+			vector<Card*> pile_additions, Vector of cards that will contain cards captured that will be added to pile.
+			vector<vector<Card*>> capturable_sets, 2d vector of card sets that can be captured with card selected.
+			vector<Build*> capturable_builds, vector of build objects that can be captured with card selected.
+			vector<vector<Card*>> selected_sets, 2d vector that will contain card sets selected for capture.
+			int max_set_size, best_set_index, set_selection, Used to find the best capturable sets.
+		Algorithm:
+			1. Initialize local variables
+			2. If there are no capturable cards, sets or builds. Return 0.
+			3. While there are capturable sets:
+				a. For each set
+					i. If the size of that set > max_set_size:
+						- Set it as the max set size
+						- Update best_set_index
+				b. Add best set to selected_sets vector.
+				c. Remove selected set and any set containing cards captured from capturable sets vector
+			4. Add card played to pile_additions vector
+			5. Add capturable cards to pile_additions vector
+			6. Add selected sets to pile_additions vector
+			7. Add capturable build cards to pile_additions vector.
+			8. Return size of the pile_additions vector as the heuristic value.
+		Assistance Received: None
+		*/
 		int assess_capture(Card* card_played);
+
+		/*
+		Function Name: get_set_value
+		Purpose: Sums the value of each card in the set to get its total value.
+		Parameters: 
+			vector<Card*> card_set, Vector of cards representing a set.
+		Return Value: Returns the sum value of each card in the set. 
+		Local Variables: 
+			int value_sum, integer variable to keep track of the sum value
+		Algorithm:
+			1. Initialize value_sum to 0
+			2. For each card in the set
+				a. Add its value to value_sum
+			3. Return value_sum
+		Assistance Received: None
+		*/
 		int get_set_value(vector<Card*> card_set);
+
+		/*
+		Function Name: generate_capture_move
+		Purpose: Generates a move object that contains capturable cards, sets, and builds for the card selected.
+		Parameters: 
+			Card* card_played, card selected by AI / player to be evaluated.
+		Return Value: A move object containing everything that can be captured.
+		Local Variables: 
+			vector<Build*> capturable_builds, Vector that will contain builds that can be captured
+			vector<Build*> current_builds, Vector containing all builds on the table.
+			int played_value, value of card played - used for set capturing info
+			vector<Card*> avail_cards, Vector containing loose cards on the table.
+			vector<Card*> capturable_cards, vector that will contain cards that can be captured.
+			vector<vector<Card*>> avail_sets, 2d vector that will contain all sets on the table.
+			vector<Card*> empty, Vector representing the empty set for the power set algorithm.
+			vector<vector<Card*>> temp_sets, Temporary 2d vector used in algorithm
+			vector<vector<Card*>> capturable_sets, 2d vector that will contain sets that total to played_value
+		Algorithm:
+			(General Algorithm)
+			1. Initialize local variables
+			2. For each build in current_builds:
+				a. If the card selected is the capture card for that build
+				or
+				Player does not own the build and they have a viabe capture card.
+					i. Add the build to capturable_builds vector.
+			3. For each loose card on the table:
+				a. If the card has the same value as card selected for play
+					i. Add the card to capturable_cards vector.
+			4. Generate capturable sets using (Set Capture Algorithm)
+			5. Return move object containing card played, as well as everything that can be 
+			
+			(Set Capture Algorithm)
+			1. Initialize local variables
+			2. Add the empty set to avail_sets
+			3. For each loose card on the table:
+				a. Create a temp 2d vector copied from avail_sets
+				b. For each set in temp_sets:
+					i. Add card from table to set
+				c. For each set in temp_sets:
+					i. Add set to avail_sets.
+			4. For each set in avail_sets:
+				a. If set value == played_value and set size > 1
+					i. Add set to capturable_sets
+		Assistance Received: 
+		*/
 		Move* generate_capture_move(Card* card_played);
+
+		/*
+		Function Name:
+		Purpose: 
+		Parameters: 
+		Return Value: 
+		Local Variables: 
+		Algorithm: 
+		Assistance Received: 
+		*/
 		void remove_selected_set(vector<vector<Card*>> &total_sets, vector<Card*> selected_set);
 		int assess_builds(Card* card_selected);
 		int create_builds(Card* card_selected, Card* card_played, bool extending_build);
 		vector<Card*> filter_build_options(vector<Card*> available_cards, int played_value, int build_sum);
 		Build* get_correct_build(Card* my_card);
 		int get_max_score(vector<int> scores);
-		void remove_card_from_vector(vector<Card*> &card_list, Card* card_to_remove);
-		// Card* selected_for_build;
-		
+		void remove_card_from_vector(vector<Card*> &card_list, Card* card_to_remove);		
 };
 
 #endif

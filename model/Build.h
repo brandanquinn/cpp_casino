@@ -159,9 +159,9 @@ class Build {
 	
 		/*
 		Function Name: get_build_string
-		Purpose: Provide a representation of the build object as a string for Display class and Serialization.
+		Purpose: Provide a representation of the build object as a string for Serialization.
 		Parameters: None
-		Return Value: The build object as a string value.
+		Return Value: The build object as a string value concatenated with its owner.
 		Local Variables: 
 			string build_str, string used to concatenate build properties to string format.
 		Algorithm:
@@ -177,6 +177,27 @@ class Build {
 		Assistance Received: None
 		*/
 		string get_build_string();
+
+		/*
+		Function Name: get_build_string_for_view
+		Purpose: Provide a representation of the build object as a string for Display.
+		Parameters: None
+		Return Value: The build object as a string value.
+		Local Variables: 
+			string build_str, string used to concatenate build properties to string format.
+		Algorithm:
+			1. Initialize build string as empty string.
+			2. Iterate through total build cards (2d vector)
+				a. If Build object is a multi build, add an open bracket to build string.
+			3. Iterate through single vector of build cards
+				a. If you are at the beginning of the vector, add an open bracket to build string.
+				b. Add each card represented as a string to build string.
+			4. Add a closed bracket to build string.
+			5. If Build object is a multi build, add a closed bracket to build string.
+			6. Return build string
+		Assistance Received: None
+		*/
+		string get_build_string_for_view();
 
 	private:
 		bool multi_build;

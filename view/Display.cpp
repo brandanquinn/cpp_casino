@@ -36,7 +36,7 @@ void Display::print_cards(vector<Player*> game_players, Table* game_table) {
 	vector<Card*> comp_card_list = game_players[1]->get_hand();
 	vector<Card*> comp_pile = game_players[1]->get_pile();
 	// vector<vector<Card*>> table_card_list = game_table->get_total_table_cards();
-	vector<Card*> table_card_list = game_table->get_flattened_card_list();
+	vector<Card*> table_card_list = game_table->get_table_cards();
 	vector<Build*> build_list = game_table->get_current_builds();
 	
 	cout << "Player pile: ";
@@ -59,34 +59,40 @@ void Display::print_cards(vector<Player*> game_players, Table* game_table) {
 
 	cout << "Table cards: ";
 
-	int mb_size = 0, build_size = 0;
-	bool in_mb = false, in_build = false;
+	// int mb_size = 0, build_size = 0;
+	// bool in_mb = false, in_build = false;
 
-	for (int i = 0; i < table_card_list.size(); i++) {
-		if (i == mb_size && in_mb) {
-			cout << "] ";
-			in_mb = false;
-		} 
-		if (i == build_size && in_build) { 
-			cout << "] ";
-			in_build = false;
-		}
+	// for (int i = 0; i < table_card_list.size(); i++) {
+	// 	if (i == mb_size && in_mb) {
+	// 		cout << "] ";
+	// 		in_mb = false;
+	// 	} 
+	// 	if (i == build_size && in_build) { 
+	// 		cout << "] ";
+	// 		in_build = false;
+	// 	}
 
-		if (game_table->is_part_of_multi_build(table_card_list[i]) && !in_mb) {
-			in_mb = true;
-			mb_size = i + game_table->get_size_of_multi_build(table_card_list[i]);
-			cout << "[ ";
-		}
-		if (table_card_list[i]->get_part_of_build() && !in_build) {
-			in_build = true;
-			build_size = i + game_table->get_size_of_single_build(table_card_list[i]);
-			// cout << "build size for: " << table_card_list[i]->get_card_string() << " is: " << build_size << endl;
-			cout << "[ ";
-		}
+	// 	if (game_table->is_part_of_multi_build(table_card_list[i]) && !in_mb) {
+	// 		in_mb = true;
+	// 		mb_size = i + game_table->get_size_of_multi_build(table_card_list[i]);
+	// 		cout << "[ ";
+	// 	}
+	// 	if (table_card_list[i]->get_part_of_build() && !in_build) {
+	// 		in_build = true;
+	// 		build_size = i + game_table->get_size_of_single_build(table_card_list[i]);
+	// 		// cout << "build size for: " << table_card_list[i]->get_card_string() << " is: " << build_size << endl;
+	// 		cout << "[ ";
+	// 	}
 		
+	// 	cout << table_card_list[i]->get_card_string() << " ";
+		
+	// }
+
+	for (int i = 0; i < build_list.size(); i++)
+		cout << build_list[i]->get_build_string_for_view() << " ";
+
+	for (int i = 0; i < table_card_list.size(); i++)
 		cout << table_card_list[i]->get_card_string() << " ";
-		
-	}
 
 	cout << endl;
 

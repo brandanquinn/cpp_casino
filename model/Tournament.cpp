@@ -18,7 +18,7 @@
 using namespace std;
 
 Tournament::Tournament() {
-	this->rounds_played = 0;
+	this->rounds_played = 1;
 	this->game_players.push_back(new Human());
 	this->game_players.push_back(new Computer());
 }
@@ -369,7 +369,7 @@ vector<Card*> Tournament::parse_cards_from_file(string line) {
 }
 
 void Tournament::start_round(bool first_round) {
-	this->rounds_played += 1;	
+	this->rounds_played;	
 	Round game_round(rounds_played, game_players);
 	this->current_round = &game_round;	
 	if (first_round) {
@@ -381,6 +381,7 @@ void Tournament::start_round(bool first_round) {
 }
 
 void Tournament::end_round() {
+	this->rounds_played++;
 	// Compute scores, if player's score is >= 21, they are declared the victor and the game is over
 	// Else reset deck, clear hands, and piles
 	// Start new round.
@@ -388,10 +389,16 @@ void Tournament::end_round() {
 	if (this->game_players[0]->get_score() >= 21 && this->game_players[0]->get_score() >= 21) {
 		// tie
 		cout << "Game has ended, both players have tied." << endl;
+		cout << "Final Score for Player 1: " << this->game_players[0]->get_score() << endl;
+		cout << "Final Score for Player 2: " << this->game_players[1]->get_score() << endl;
 	} else if (this->game_players[0]->get_score() >= 21) {
 		cout << "Game has ended, Player 1 is the victor!" << endl;
+		cout << "Final Score for Player 1: " << this->game_players[0]->get_score() << endl;
+		cout << "Final Score for Player 2: " << this->game_players[1]->get_score() << endl;
 	} else if (this->game_players[1]->get_score() >= 21) {
 		cout << "Game has ended, Player 2 is the victor!" << endl;
+		cout << "Final Score for Player 1: " << this->game_players[0]->get_score() << endl;
+		cout << "Final Score for Player 2: " << this->game_players[1]->get_score() << endl;
 	} else {
 		this->game_players[0]->clear_hand();
 		this->game_players[1]->clear_hand();
