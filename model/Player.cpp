@@ -271,8 +271,6 @@ int Player::assess_builds(Card* card_selected) {
 	// Get value of card selected
 	// Have player select card to play into the build.
 	int selected_value = card_selected->get_value();
-	int card_num = 0;
-	bool extending_build = false;
 
 	vector<int> possible_build_vals;
 
@@ -328,33 +326,17 @@ int Player::create_builds(Card* card_selected, Card* card_played, bool extending
 		// And a card on the board to build with (2) | build_card
 		// If (1) + (2) = locked card value, ask user if they'd like to complete build.
 	
-
-		Card* build_card = filtered_cards[best_card_selection];
-		build_cards.push_back(build_card);
-		remove_card_from_vector(filtered_cards, build_card);
+		build_cards.push_back(filtered_cards[best_card_selection]);
+		remove_card_from_vector(filtered_cards, filtered_cards[best_card_selection]);
 		
 		if (played_value + build_card->get_value() == selected_value && !extending_build) {
-			// Build* b1 = new Build(build_cards, selected_value, card_selected, game_player->get_player_string());
-			// this->game_table->add_build(b1);
-			// card_played->set_part_of_build(true);
-			// card_played->set_build_buddies(build_cards);
-			// build_card->set_part_of_build(true);
-			// game_player->discard(card_played);
-			// this->game_table->add_to_table_cards(card_played);
-			// card_selected->set_locked_to_build(true);	
-			
+				
 			return build_cards.size();
 					 
 		} else if (played_value + build_card->get_value() == selected_value && extending_build) {
 
 			// create build and update model
 			Build* b1 = get_correct_build(card_selected);
-			// b1->extend_build(build_cards);
-			// card_played->set_part_of_build(true);
-			// card_played->set_build_buddies(build_cards);
-			// build_card->set_part_of_build(true);
-			// game_player->discard(card_played);
-			// this->game_table->add_to_table_cards(card_played);
 
 			vector<vector<Card*>> temp_build_cards = b1->get_total_build_cards();
 			int score = 0;
@@ -367,7 +349,6 @@ int Player::create_builds(Card* card_selected, Card* card_played, bool extending
 		}
 		// Need to build with more cards on the table.
 		played_value = get_set_value(build_cards);		
-		// cout << "Played val: " << played_value << endl;
 	}
 }
 
@@ -429,4 +410,12 @@ int Player::get_max_score(vector<int> scores) {
 
 void Player::remove_card_from_vector(vector<Card*> &card_list, Card* card_to_remove) {
 	card_list.erase(remove(card_list.begin(), card_list.end(), card_to_remove), card_list.end());
+}
+
+bool Player::get_captured_last() {
+	return this->captured_last;
+}
+
+void Player::set_captured_last(bool a_captured_last) {
+	this->captured_last = a_captured_last;
 }

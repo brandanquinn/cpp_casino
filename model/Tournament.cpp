@@ -375,9 +375,15 @@ void Tournament::start_round(bool first_round) {
 	if (first_round) {
 		this->current_round->start_game(coin_toss(), false);
 	} else {
-		this->current_round->start_game(true, false);
+		if (this->game_players[0]->get_captured_last())
+			this->current_round->start_game(true, false);
+		else
+			this->current_round->start_game(false, false);
 	}
-	end_round();
+
+	if (game_players[0]->get_hand().size() == 0 && game_players[1]->get_hand().size() == 0) {
+		end_round();
+	} 
 }
 
 void Tournament::end_round() {
@@ -385,8 +391,10 @@ void Tournament::end_round() {
 	// Compute scores, if player's score is >= 21, they are declared the victor and the game is over
 	// Else reset deck, clear hands, and piles
 	// Start new round.
+	cout << "Final pile for Player 1: " << this->game_players[0]->get_pile_string() << endl;
+	cout << "Final pile for Player 2: " << this->game_players[1]->get_pile_string() << endl;
 	compute_player_scores();
-	if (this->game_players[0]->get_score() >= 21 && this->game_players[0]->get_score() >= 21) {
+	if (this->game_players[0]->get_score() >= 21 && this->game_players[1]->get_score() >= 21) {
 		// tie
 		cout << "Game has ended, both players have tied." << endl;
 		cout << "Final Score for Player 1: " << this->game_players[0]->get_score() << endl;
@@ -419,6 +427,8 @@ void Tournament::compute_player_scores() {
 	int p2_current_score = this->game_players[1]->get_score();
 	vector<Card*> p2_current_pile = this->game_players[1]->get_pile();
 
+	cout << "Player 1 has pile of size: " << p1_current_pile.size() << endl;
+	cout << "Player 2 has pile of size: " << p2_current_pile.size() << endl;
 	// Scoring for pile size
 	if (p1_current_pile.size() > p2_current_pile.size()) {
 		p1_current_score += 3;
@@ -439,6 +449,7 @@ void Tournament::compute_player_scores() {
 			p1_current_score++;
 	
 	}
+	cout << "Player 1 has: " << p1_spades_count << " spades cards." << endl;
 	for (int i = 0; i < p2_current_pile.size(); i++) {
 		if (p2_current_pile[i]->get_suit() == 'S')
 			p2_spades_count++;
@@ -449,6 +460,7 @@ void Tournament::compute_player_scores() {
 		if (p2_current_pile[i]->get_card_string() == "S2")
 			p2_current_score++;
 	}
+	cout << "Player 2 has: " << p2_spades_count << " spades cards." << endl;
 	if (p1_spades_count > p2_spades_count) p1_current_score++;
 	else if (p2_spades_count > p1_spades_count) p2_current_score++;
 

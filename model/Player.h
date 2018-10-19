@@ -305,6 +305,29 @@ class Player {
 		*/
 		void set_game_table(Table* a_game_table);
 
+		/*
+		Function Name: get_captured_last
+		Purpose: Getter for captured_last private member variable
+		Parameters: None
+		Return Value: Boolean value to determine which player captured last.
+		Local Variables: None
+		Algorithm: None
+		Assistance Received: None
+		*/
+		bool get_captured_last();
+
+		/*
+		Function Name: set_captured_last
+		Purpose: Setter for captured_last private member variable
+		Parameters: 
+			bool a_captured_last, Boolean value to set captured_last to.
+		Return Value: None
+		Local Variables: None
+		Algorithm: None
+		Assistance Received: None 
+		*/
+		void set_captured_last(bool a_captured_last);
+
 	private:
 		int score;
 		vector<Card*> hand;
@@ -312,6 +335,7 @@ class Player {
 		Table* game_table;
 		bool is_playing;
 		string player_string;
+		bool captured_last;
 
 		/*
 		Function Name: assess_capture
@@ -410,20 +434,153 @@ class Player {
 		Move* generate_capture_move(Card* card_played);
 
 		/*
-		Function Name:
-		Purpose: 
+		Function Name: remove_selected_set
+		Purpose: Remove a set from vector of sets
 		Parameters: 
-		Return Value: 
-		Local Variables: 
+			vector<vector<Card*>> &total_sets, 2d vector of sets
+			vector<Card*> selected_set, set of cards to be removed
+		Return Value: None
+		Local Variables: None
 		Algorithm: 
-		Assistance Received: 
+			1. For each card in selected_set:
+				a. For each set in total_sets:
+					i. If the card exists in the set, remove the set from total_sets
+		Assistance Received: None
 		*/
 		void remove_selected_set(vector<vector<Card*>> &total_sets, vector<Card*> selected_set);
+
+		/*
+		Function Name: assess_builds
+		Purpose: Evaluating the heuristic value of possible builds and returning it to the AI
+		Parameters:
+			Card* card_selected, Pointer to the card selected as the capture card for the build.
+		Return Value: Returns the heuristic value evaluated.
+		Local Variables: 
+			int selected_value, value of the card selected
+			vector<int> possible_build_vals, vector to keep track of heuristic values for each build option.
+		Algorithm: 
+			1. Initialize local variables
+			2. If card_selected is currently locked to a build
+				a. For each card in your hand:
+					i. Evaluate build heuristics of extending build.
+			3. Else
+				a. For each card in your hand:
+					i. Evaluate build heuristics of creating new build.
+			4. Return maximum heuristic value in possible_build_vals
+		Assistance Received: None
+		*/
 		int assess_builds(Card* card_selected);
+
+		/*
+		Function Name: create_builds
+		Purpose: Called by assess_builds() to create the possible builds and evaluate heuristics
+		Parameters: 
+			Card* card_selected, Pointer to card selected by AI
+			Card* card_played, Pointer to card played into build from hand
+			bool extending_build, Boolean to track whether or not AI is extending build.
+		Return Value: Integer heuristic value based on build size / value.
+		Local Variables: 
+			int selected_value, value of card selected by AI
+			vector<Card*> table_cards, vector of loose table cards
+			vector<Card*> filtered_cards, filtered vector to keep track of cards that can be built with
+			int played_value, value of card played from hand
+			bool build_created, Boolean value to keep track of whether or not build was created
+			vector<Card*> build_cards, vector of cards included in build
+			int best_card_selection, min_value, used to select the best cards to evaluate for build options
+			Build* b1, Build object pointer used for extending a current build
+			vector<vector<Card*>> temp_build_cards, used to evauate heuristic value or multi-build
+		Algorithm: 
+			1. Initialize local variables
+			2. If card selected to play has value >= selected_value, return 0
+			3. Add card played to build_cards vector
+			4. While build is not created:
+				a. Filter out table cards that cannot be used in the build.
+				b. If no cards exist after filtering, return 0
+				c. For each card in filtered_cards:
+					i. If card can be used to create a build, save the index and break
+					i. If card's value < min value
+						- Save index
+						- Set min value to card's value.
+				d. Add selected card to build_cards vector
+				e. Remove selected card from filtered_cards vector.
+				f. If build_cards sum value == selected_value and !extending_build
+					i. Return size of build_cards as heuristic value
+				g. Else if build_cards sum value == selected_value and extending_build
+					i. Return size of multi_build as heuristic value
+		Assistance Received: None
+		*/
 		int create_builds(Card* card_selected, Card* card_played, bool extending_build);
+		
+		/*
+		Function Name: filter_build_options
+		Purpose: Filter cards out of a vector that cannot be used in build
+		Parameters: 
+			vector<Card*> available_cards, Vector of total cards on the table.
+			int played_value, Value of card played into build
+			int build_sum, Value of card selected as capture card.
+		Return Value: Returns filtered vector of cards
+		Local Variables: 
+			vector<Card*> filtered_options, Vector to track filtered cards
+		Algorithm: 
+			1. Initialize filtered_options
+			2. For each card in available card vector:
+				a. If card value + played_value <= build_sum:
+					i. Add card to filtered_options
+			3. Return filtered_options
+		Assistance Received: None
+		*/
 		vector<Card*> filter_build_options(vector<Card*> available_cards, int played_value, int build_sum);
+		
+		/*
+		Function Name: get_correct_build
+		Purpose: Find a Build object that a certain card is locked to.
+		Parameters: 
+			Card* my_card, Pointer to card being searched for.
+		Return Value: Build object containing my_card, NULL if build not found.
+		Local Variables: 
+			vector<Build*> total_builds, Vector of all current builds
+		Algorithm: 
+			1. Initialize total_builds
+			2. For each build in total builds:
+				a. If Build's capture card_string == query card_string
+					i. Return Build
+			3. Return NULL
+		Assistance Received: None
+		*/
 		Build* get_correct_build(Card* my_card);
+
+		/*
+		Function Name: get_max_score
+		Purpose: Find index of maximum heuristic value
+		Parameters: 
+			vector<int> scores, Vector of heuristic values
+		Return Value: Index of max value as an integer
+		Local Variables: 
+			int max_val, max_index, to keep track of maximums
+		Algorithm: 
+			1. Initialize local variables
+			2. For each value in scores:
+				a. If value > max_val
+					i. Set max_val to value
+					ii. Set max_index to current index
+			3. Return max_index
+		Assistance Received: None
+		*/
 		int get_max_score(vector<int> scores);
+
+		/*
+		Function Name: remove_card_from_vector
+		Purpose: Remove a specific card from a given vector of cards
+		Parameters: 
+			vector<Card*> &card_list, Vector of cards
+			Card* card_to_remove, Card to be removed from vector
+		Return Value: None
+		Local Variables: None
+		Algorithm: 
+			1. Call remove() to get index of card_to_remove in vector
+			2. Erase() index from vector.
+		Assistance Received: None
+		*/
 		void remove_card_from_vector(vector<Card*> &card_list, Card* card_to_remove);		
 };
 

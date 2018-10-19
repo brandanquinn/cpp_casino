@@ -81,13 +81,20 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 					possible_move_selected = trail(move_pair.first, player_one);
 				} else if (move_pair.second == 'c') {
 					possible_move_selected = capture(move_pair.first, player_one);
+					if (possible_move_selected) {
+						player_one->set_captured_last(true);
+						player_two->set_captured_last(false);
+					}
 				} else if (move_pair.second == 'b') {
 					possible_move_selected = build(move_pair.first, player_one);
 				} else if (move_pair.second == 's') {
 					// save game
 					// call deserialization function
 					possible_move_selected = save_game();
-					cout << "Game saved." << endl;
+					cout << "Game saved. Quitting now." << endl;
+					if (possible_move_selected) {
+						return;
+					}
 				
 				} else {
 					move_pair = player_one->get_help();
@@ -109,13 +116,20 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 					possible_move_selected = trail(move_pair.first, player_two);
 				} else if (move_pair.second == 'c') {
 					possible_move_selected = capture(move_pair.first, player_two);
+					if (possible_move_selected) {
+						player_two->set_captured_last(true);
+						player_one->set_captured_last(false);
+					}
 				} else if (move_pair.second == 'b') {
 					possible_move_selected = build(move_pair.first, player_two);
 				} else if (move_pair.second == 's') {
 					// save game
 					// call deserialization function
 					possible_move_selected = save_game();
-					cout << "Game saved." << endl;
+					cout << "Game saved. Quitting now." << endl;
+					if (possible_move_selected) {
+						return; 
+					}
 				
 				} else {
 					// get help
@@ -130,6 +144,10 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 		possible_move_selected = false;	
 	}
 
+	if (player_one->get_captured_last())
+		player_one->add_to_pile(this->game_table->get_table_cards());
+	else
+		player_two->add_to_pile(this->game_table->get_table_cards());
 }
 
 bool Round::make_move(char move_type, Card* card_selected, Player* game_player) {
@@ -396,7 +414,7 @@ bool Round::save_game() {
 		save_file << "Next Player: " << next_player; 
 	}
 
-	return false;
+	return true;
 
 }
 
