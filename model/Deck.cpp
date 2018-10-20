@@ -33,7 +33,10 @@ Deck::Deck(vector<Card*> pre_loaded_deck) {
 }
 
 Deck::~Deck() {
-	delete this->top_of_deck;
+	while (!this->game_deck.empty()) {
+		delete this->game_deck.front();
+		this->game_deck.pop();
+	}
 }
 
 Card* Deck::draw_card() {
@@ -62,10 +65,11 @@ int Deck::get_num_cards_left() const {
 	return this->game_deck.size();
 }
 
-string Deck::get_deck_string() const {
+string Deck::get_deck_string() {
 	queue<Card*> game_deck_copy = this->game_deck;
 	string deck_str = "";
-	for (int i = 0; i < game_deck_copy.size(); i++) {
+
+	while (!game_deck_copy.empty()) {
 		deck_str += game_deck_copy.front()->get_card_string() + " ";
 		game_deck_copy.pop();
 	}

@@ -90,7 +90,7 @@ void Table::clear_table_cards() {
 
 void Table::remove_cards(vector<Card*> cards_to_remove) {
 	for (int i = 0; i < cards_to_remove.size(); i++) {
-		remove_card_from_vector(this->table_cards, card_to_remove[i]);
+		remove_card_from_vector(this->table_cards, cards_to_remove[i]);
 	}
 }
 

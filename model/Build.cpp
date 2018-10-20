@@ -23,10 +23,6 @@ Build::Build(vector<vector<Card*>> a_multi_build_cards, int a_sum, Card* a_sum_c
 	set_multi_build(true);
 }
 
-Build::~Build() {
-	delete this->sum_card;
-}
-
 bool Build::get_multi_build() const {
 	return this->multi_build;
 }

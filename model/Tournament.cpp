@@ -140,6 +140,8 @@ bool Tournament::load_saved_game() {
 	game_players[1]->set_pile(computer_pile);
 	game_players[1]->set_score(computer_score);
 
+	this->rounds_played = current_round_num;
+
 	Round game_round(rounds_played, game_players, deck_list, table_cards, current_builds);
 	this->current_round = &game_round;
 	this->current_round->start_game(human_next, true);

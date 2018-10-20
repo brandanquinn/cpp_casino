@@ -27,17 +27,6 @@ class Move {
 		Move(Card* a_card_played, vector<Card*> a_capturable_cards, vector<vector<Card*>> a_capturable_sets, vector<Build*> a_capturable_builds);
 
 		/*
- 		* Function Name: ~Move
-		* Purpose: Destructor for Move class. 
- 		* Params: None
- 		* Returns: None
- 		* Local Vars: None
- 		* Algo: None
- 		* Assistance: None
- 		*/
-	 	~Move()
-
-		/*
 		Function Name: get_card_played
 		Purpose: Getter for card_played private member variable
 		Parameters: None

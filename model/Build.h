@@ -42,16 +42,6 @@ class Build {
 		Build(vector<vector<Card*>> a_multi_build_cards, int a_sum, Card* a_sum_card, string a_build_owner);
 	
 		/*
-		Function Name:
-		Purpose: Destructor for Build class
-		Parameters: None
-		Return Value: None
-		Local Variables: None
-		Algorithm: None
-		Assistance Received: None
-		*/
-		~Build();
-		/*
 		Function Name: get_multi_build
 		Purpose: Getter for multi_build private member variable
 		Parameters: None

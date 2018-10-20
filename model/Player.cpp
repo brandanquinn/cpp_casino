@@ -14,10 +14,6 @@ Player::Player() {
 	set_is_playing(false);
 }
 
-Player::~Player() {
-	delete this->game_table;
-}
-
 Table* Player::get_game_table() const {
 	return this->game_table;
 }
@@ -288,7 +284,7 @@ int Player::assess_builds(Card* card_selected) {
 			possible_build_vals.push_back(create_builds(card_selected, hand[i], false));
 		}
 	}
-
+	
 	return possible_build_vals[get_max_score(possible_build_vals)];
 }
 
@@ -330,14 +326,15 @@ int Player::create_builds(Card* card_selected, Card* card_played, bool extending
 		// And a card on the board to build with (2) | build_card
 		// If (1) + (2) = locked card value, ask user if they'd like to complete build.
 	
-		build_cards.push_back(filtered_cards[best_card_selection]);
-		remove_card_from_vector(filtered_cards, filtered_cards[best_card_selection]);
+		Card* build_card = filtered_cards[best_card_selection];
+		build_cards.push_back(build_card);
+		remove_card_from_vector(filtered_cards, build_card);
 		
-		if (played_value + filtered_cards[best_card_selection]->get_value() == selected_value && !extending_build) {
+		if (played_value + build_card->get_value() == selected_value && !extending_build) {
 				
 			return build_cards.size();
 					 
-		} else if (played_value + filtered_cards[best_card_selection]->get_value() == selected_value && extending_build) {
+		} else if (played_value + build_card->get_value() == selected_value && extending_build) {
 
 			// create build and update model
 			Build* b1 = get_correct_build(card_selected);

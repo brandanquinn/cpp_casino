@@ -112,7 +112,7 @@ class Deck {
 				b. Pop the card off the game_deck copy.
 			4. Return the deck_str
 		*/
-		string get_deck_string() const;
+		string get_deck_string();
 
 	private:
 		// Array of Card pointers to represent deck.

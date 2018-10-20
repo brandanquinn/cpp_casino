@@ -1,4 +1,12 @@
-#include <iostream>
+/*
+		Function Name:
+		Purpose:
+		Parameters:
+		Return Value:
+		Local Variables:
+		Algorithm:
+		Assistance Received:
+		*/#include <iostream>
 #include <string>
 #include <vector>
 #include <utility>
@@ -783,19 +791,7 @@ Move* Round::generate_capture_move(Card* card_played, Player* game_player) {
 	// Check all possible sets of cards, if value of sets match card value, add to 2d vector
 	// Return Move obj generated with (card_played, capturable_cards, capturable_sets)
 	vector<Build*> capturable_builds; 
-	// if (card_played->get_locked_to_build()) {
-	// 		// give option to capture your build
-	// 		// if yes selected, get other builds that can be captured and offer them.
-	// 			// Then, continue with algo
-	// 		// if no, return Move obj with empty capturable_cards / sets 
-	// 		vector<Build*> current_builds = this->game_table->get_current_builds();
-	// 		for (int i = 0; i < current_builds.size(); i++) {
-	// 			if (current_builds[i]->get_sum_card()->get_card_string() == card_played->get_card_string() || 
-	// 			(current_builds[i]->get_player_of_build() != game_player && current_builds[i]->get_sum_card()->get_value() == card_played->get_value()) ) {
-	// 				capturable_builds.push_back(current_builds[i]);	
-	// 			}
-	// 		}
-	// }
+
 	vector<Build*> current_builds = this->game_table->get_current_builds();
 	for (int i = 0; i < current_builds.size(); i++) {
 		if (current_builds[i]->get_sum_card()->get_card_string() == card_played->get_card_string() || 
