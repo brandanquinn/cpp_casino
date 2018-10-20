@@ -68,7 +68,7 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 
 	while (!this->game_deck->is_empty() || !(player_one->hand_is_empty() && player_two->hand_is_empty())) {	
 		// cout << "Seg fault occurs before move selection." << endl;
-		if (player_one->hand_is_empty() && player_two->hand_is_empty() && !this->game_deck->is_empty()) { 
+		if ((player_one->hand_is_empty() && player_two->hand_is_empty()) && !this->game_deck->is_empty()) { 
 			deal_hands(game_players);
 			this->game_view->update_view(this->game_players, this->game_table);
 		}
@@ -272,7 +272,6 @@ bool Round::make_build(Card* card_selected, Player* game_player, bool making_cha
 	// Have player select card to play into the build.
 	int selected_value = card_selected->get_value();
 	vector<Card*> player_hand = game_player->get_hand();
-	bool extending_build = false;
 
 	if (card_selected->get_locked_to_build()) {
 		for (int i = 0; i < player_hand.size(); i++) {
@@ -298,7 +297,6 @@ bool Round::create_build(Card* card_selected, Card* card_played, bool extending_
 	int played_value = card_played->get_value();
 	if (played_value >= selected_value) return false;
 	// Provide options to build with on table.
-	bool build_created = false;
 	vector<Card*> build_cards;
 	build_cards.push_back(card_played);
 	
@@ -432,12 +430,12 @@ string Round::get_build_strings() const {
 bool Round::deal_hands(vector<Player*> game_players) {
 	for (int i = 0; i < 4; i++) {
 		Card* new_card =  game_deck->draw_card();
-		if (new_card->get_suit() == 'X') return false;
+		if (!new_card->get_is_real_card()) return false;
 		game_players[0]->add_to_hand(new_card);
 	}
 	for (int i = 0; i < 4; i++) {
 		Card* new_card =  game_deck->draw_card();
-		if (new_card->get_suit() == 'X') return false;
+		if (!new_card->get_is_real_card()) return false;
 		game_players[1]->add_to_hand(new_card);
  	}
 	
@@ -763,8 +761,6 @@ vector<Card*> Round::filter_build_options(vector<Card*> available_cards, int pla
 	// If avail_card val + played_val < build_sum
 	// Add avail_card to filtered vector
 	// Return filtered vector
-	if (available_cards.empty()) cout << "No cards available in filter_options." << endl;
-	cout << "Played value: " << played_value << " Build sum: " << build_sum << endl;
 
 	for (int i = 0; i < available_cards.size(); i++) {
 		if (available_cards[i]->get_value() + played_value <= build_sum)

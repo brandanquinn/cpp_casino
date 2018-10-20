@@ -8,6 +8,7 @@ using namespace std;
 Card::Card() {
 	set_suit('X');
 	set_type('0');
+	this->is_real_card = false;
 }
 
 Card::Card(char a_suit, char a_type) {
@@ -17,6 +18,7 @@ Card::Card(char a_suit, char a_type) {
 	set_value();	
 	set_locked_to_build(false);
 	set_part_of_build(false);
+	this->is_real_card = true;
 }
 
 void Card::create_map() {
@@ -90,4 +92,8 @@ vector<Card*> Card::get_build_buddies() const {
 
 void Card::set_build_buddies(vector<Card*> a_build_buddies) {
 	this->build_buddies = a_build_buddies;
+}
+
+bool Card::get_is_real_card() const {
+	return this->is_real_card;
 }

@@ -194,6 +194,17 @@ class Card {
 		Assistance Received: None
 		*/
 		void set_build_buddies(vector<Card*> a_build_buddies);
+
+		/*
+		Function Name: get_is_real_card
+		Purpose: Getter for is_real_card private member variable
+		Parameters: None
+		Return Value: Whether or not card created is a real card
+		Local Variables: None
+		Algorithm: None
+		Assistance Received: None
+		*/
+		bool get_is_real_card() const;
 	
 	private:
 		char suit;
@@ -202,6 +213,7 @@ class Card {
 		unordered_map<char, int> type_value_pairs;	
 		bool locked_to_build;
 		bool part_of_build;
+		bool is_real_card;
 		vector<Card*> build_buddies;
 };
 

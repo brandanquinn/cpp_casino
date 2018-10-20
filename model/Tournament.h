@@ -14,6 +14,7 @@ class Tournament {
 	private:
 		Round* current_round;
 		int rounds_played;
+		int card_count;
 		vector<Player*> game_players;
 		vector<Card*> parse_cards_from_file(string line);
 		void print_cards(vector<Card*> card_list);

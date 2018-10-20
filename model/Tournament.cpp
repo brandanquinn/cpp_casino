@@ -19,6 +19,7 @@ using namespace std;
 
 Tournament::Tournament() {
 	this->rounds_played = 1;
+	this->card_count = 0;
 	this->game_players.push_back(new Human());
 	this->game_players.push_back(new Computer());
 }
@@ -122,6 +123,11 @@ bool Tournament::load_saved_game() {
 		save_file.close();
 	}
 
+	if (card_count < 52) {
+		cout << "Corrupt save file. Exiting game." << endl;
+		return false;
+	}
+
 	table_cards = modify_table_cards(table_cards, current_builds);
 
 	// set up human player
@@ -133,13 +139,6 @@ bool Tournament::load_saved_game() {
 	game_players[1]->set_hand(computer_hand);
 	game_players[1]->set_pile(computer_pile);
 	game_players[1]->set_score(computer_score);
-
-	// for (int i = 0; i < table_cards.size(); i++) {
-	// 	if (table_cards[i]->get_part_of_build())
-	// 		cout << table_cards[i]->get_card_string() << " is a part of a build." << endl;
-	// 	else
-	// 		cout << table_cards[i]->get_card_string() << " is not part of a build." << endl;
-	// }
 
 	Round game_round(rounds_played, game_players, deck_list, table_cards, current_builds);
 	this->current_round = &game_round;
@@ -356,12 +355,15 @@ vector<Card*> Tournament::parse_cards_from_file(string line) {
 	// cout << "Parsed string in func: " << parsed_str << endl;
 	istringstream parser(parsed_str);
 	vector<Card*> cards_vec;
+	if (parsed_str.empty()) return cards_vec;
 	do {
 		string card_str;
 		parser >> card_str;
 		// cout << "Card string in stringstream: " << card_str << endl;
-		if (!card_str.empty())
+		if (!card_str.empty()) {
 			cards_vec.push_back(new Card(card_str[0], card_str[1]));
+			this->card_count++;
+		}
 	} while (parser);
 	
 	parser.clear();

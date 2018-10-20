@@ -35,7 +35,6 @@ Deck::Deck(vector<Card*> pre_loaded_deck) {
 Card* Deck::draw_card() {
 	// Need to handle if deck is empty
 	if (game_deck.empty()) {
-		cout << "Deck is empty. Round has ended." << endl;
 		return new Card();
 	}
 

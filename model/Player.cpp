@@ -329,11 +329,11 @@ int Player::create_builds(Card* card_selected, Card* card_played, bool extending
 		build_cards.push_back(filtered_cards[best_card_selection]);
 		remove_card_from_vector(filtered_cards, filtered_cards[best_card_selection]);
 		
-		if (played_value + build_card->get_value() == selected_value && !extending_build) {
+		if (played_value + filtered_cards[best_card_selection]->get_value() == selected_value && !extending_build) {
 				
 			return build_cards.size();
 					 
-		} else if (played_value + build_card->get_value() == selected_value && extending_build) {
+		} else if (played_value + filtered_cards[best_card_selection]->get_value() == selected_value && extending_build) {
 
 			// create build and update model
 			Build* b1 = get_correct_build(card_selected);

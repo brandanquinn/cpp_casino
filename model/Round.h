@@ -413,11 +413,161 @@ class Round {
 		Table* game_table;
 		vector<Player*> game_players;
 		Display* game_view;
+		/*
+		Function Name: save_game
+		Purpose: Save the current game state to a text file.
+		Parameters: None
+		Return Value: Boolean value determining whether or not the save completed
+		Local Variables:
+			const char *file_name, Exact file path that the game will be saved to
+			ofstream save_file, Output stream to save file
+			string next_player, Used to write who is playing next to save file
+		Algorithm:
+			1. Initialize local variables
+			2. If save file is open:
+				a. Write stringified game info to save file
+			3. Return true
+		Assistance Received: None
+		*/
 		bool save_game();
+
+		/*
+		Function Name: get_build_strings
+		Purpose: Get a concatenated string of individual build strings to write to save file.
+		Parameters: None
+		Return Value: String containing all builds on the table with their respective owners.
+		Local Variables: 
+			string build_strings, String to concatentate - returned by function
+			vector<Build*> current_builds, temp vector to hold current build objects
+		Algorithm:
+			1. Initialize local variables
+			2. For each build in current_builds
+				a. Add stringified build to build_strings
+			3. Return build_strings
+		Assistance Received: None
+		*/
 		string get_build_strings() const;
+
+		/*
+		Function Name: make_move
+		Purpose: Handles Making the move the AI decided upon and updates the model accordingly.
+		Parameters: 
+			char move_type, Character value representing which move will be made
+			Card* card_selected, card selected for play by AI
+			Player* game_player, player currently making the move
+		Return Value: Boolean value determing whether move was made successfully or not.
+		Local Variables: None
+		Algorithm: 
+			1. Explain which move was made by AI, and why.
+			2. Call function corresponding to move_type and return its boolean value
+			3. Return false
+		Assistance Received: None
+		*/
 		bool make_move(char move_type, Card* card_selected, Player* game_player);
+		
+		/*
+		Function Name: create_build
+		Purpose: Generate build move decided upon by AI and update model accordingly
+		Parameters: 
+			Card* card_selected, capture card determined by AI
+			Card* card_played, card to be played into build
+			bool extending_build, whether or not player is extending a current build
+		Return Value: Boolean value determing whether move was made successfully or not.
+		Local Variables:
+			vector<Card*> table_cards, Vector of loose table cards
+			vector<Card*> filtered_cards, Filtered table cards
+			int selected_value, played_value, integer values of cards involved in build
+			vector<Card*> build_cards, Vector of cards contained in the build
+			Card* build_card, Pointer to keep track of cards added to build
+		Algorithm:
+			1. Initialize local variables
+			2. If card selected to play has value >= selected_value, return 0
+			3. Add card played to build_cards vector
+			4. While true:
+				a. Filter out table cards that cannot be used in the build.
+				b. If no cards exist after filtering, return 0
+				c. For each card in filtered_cards:
+					i. If card can be used to create a build, save the index and break
+					i. If card's value < min value
+						- Save index
+						- Set min value to card's value.
+				d. Add selected card to build_cards vector
+				e. Remove selected card from filtered_cards vector.
+				f. If build_cards sum value == selected_value and !extending_build
+					i. Create build object, update model accordingly
+					ii. Return true
+				g. Else if build_cards sum value == selected_value and extending_build
+					i. Extend build object, update model accordingly
+					ii. Return true
+		Assistance Received: None
+		*/
 		bool create_build(Card* card_selected, Card* card_played, bool extending_build, Player* game_player, bool making_changes);
+		
+		/*
+		Function Name: make_capture
+		Purpose: Make the capture move decided on by the AI and update the model accordingly
+		Parameters:
+			Card* card_selected, Card selected by AI to capture with
+			Player* game_player, Player making move
+			bool making_changes, Indicates whether or not model should be updated
+			- Used to check if move can be made other than trail.
+		Return Value: Boolean value determing whether move was made successfully or not.
+		Local Variables:
+			Move* game_move, Move object pointer that contains information regarding what can be captured.
+			vector<Card*> capturable_cards, Vector of cards that can be captured with the card selected, pulled from the Move object.
+			vector<Card*> pile_additions, Vector of cards that will contain cards captured that will be added to pile.
+			vector<vector<Card*>> capturable_sets, 2d vector of card sets that can be captured with card selected.
+			vector<Build*> capturable_builds, vector of build objects that can be captured with card selected.
+			vector<vector<Card*>> selected_sets, 2d vector that will contain card sets selected for capture.
+			int max_set_size, best_set_index, set_selection, Used to find the best capturable sets.
+		Algorithm:
+			1. Initialize local variables
+			2. If there are no capturable cards, sets or builds. Return false.
+			3. While there are capturable sets:
+				a. For each set
+					i. If the size of that set > max_set_size:
+						- Set it as the max set size
+						- Update best_set_index
+				b. Add best set to selected_sets vector.
+				c. Remove selected set and any set containing cards captured from capturable sets vector
+			4. If making_changes to model:
+				a. Update model accordingly
+				b. Add card played to pile_additions vector
+				c. Add capturable cards to pile_additions vector
+				d. Add selected sets to pile_additions vector
+				e. Add capturable build cards to pile_additions vector.
+				e. Add pile to player making move
+			5. Return true
+				
+		Assistance Received: None
+		*/
 		bool make_capture(Card* card_selected, Player* game_player, bool making_changes);
+		
+		/*
+		Function Name: make_build
+		Purpose: Test build viability for each card that can be played from player's hand
+		Parameters:
+			Card* card_selected, Pointer to capture card selected
+			Player* game_player, Player making move
+			bool making_changes, bool making_changes, Indicates whether or not model should be updated
+			- Used to check if move can be made other than trail.
+		Return Value: Boolean value determing whether move was made successfully or not.
+		Local Variables:
+			int selected_value, value of card selected
+			vector<Card*> player_hand, vector of cards in player's hand
+		Algorithm:
+			1. Initialize local variables
+			2. If card_selected is a capture card already:
+				a. For each card in player's hand:
+					i. Check if card can be used in a build extension
+						- If it can, return true
+			3. Else if looking to start a new build with card selected:
+				a. For each card in player's hand:
+					i. Check if card can be used to play into a build
+						- If it can, return true
+			4. Return false
+		Assistance Received: None
+		*/
 		bool make_build(Card* card_selected, Player* game_player, bool making_changes);
 
 };	
