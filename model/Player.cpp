@@ -14,6 +14,10 @@ Player::Player() {
 	set_is_playing(false);
 }
 
+Player::~Player() {
+	delete this->game_table;
+}
+
 Table* Player::get_game_table() const {
 	return this->game_table;
 }

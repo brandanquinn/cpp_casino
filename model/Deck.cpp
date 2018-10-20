@@ -32,6 +32,10 @@ Deck::Deck(vector<Card*> pre_loaded_deck) {
 	this->top_of_deck = this->game_deck.front();
 }
 
+Deck::~Deck() {
+	delete this->top_of_deck;
+}
+
 Card* Deck::draw_card() {
 	// Need to handle if deck is empty
 	if (game_deck.empty()) {

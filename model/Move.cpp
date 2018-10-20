@@ -12,6 +12,10 @@ Move::Move(Card* a_card_played, vector<Card*> a_capturable_cards, vector<vector<
 	this->capturable_builds = a_capturable_builds;
 }
 
+Move::~Move() {
+	delete this->card_played;
+}
+
 Card* Move::get_card_played() const{
 	return this->card_played;
 }

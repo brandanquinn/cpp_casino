@@ -24,6 +24,17 @@ class Player {
 		Player();
 
 		/*
+		Function Name: ~Player
+		Purpose: Destructor for Player class
+		Parameters: None
+		Return Value: None
+		Local Variables: None
+		Algorithm: None
+		Assistance Received: None
+		*/
+		~Player();
+
+		/*
 		Function Name: play
 		Purpose: Virtual function defined in Human / Computer classes.
 		Parameters: None

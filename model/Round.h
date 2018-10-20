@@ -46,6 +46,17 @@ class Round {
 		Round(int a_round_num, vector<Player*> a_game_players, vector<Card*> a_deck_list, vector<Card*> a_table_cards, vector<Build*> a_current_builds);
 		
 		/*
+		Function Name: ~Round
+		Purpose: Destructor for Round class
+		Parameters: None
+		Return Value: None
+		Local Variables: None
+		Algorithm: None
+		Assistance Received: None
+		*/
+		~Round();
+
+		/*
 		Function Name: get_round_num
 		Purpose: Getter for round_num private member variable
 		Parameters: 

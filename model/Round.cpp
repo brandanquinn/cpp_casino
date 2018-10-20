@@ -33,6 +33,12 @@ Round::Round(int a_round_num, vector<Player*> a_game_players, vector<Card*> a_de
 	this->game_view = new Display;
 }
 
+Round::~Round() {
+	delete this->game_deck;
+	delete this->game_table;
+	delete this->game_view;
+}
+
 int Round::get_round_num() const {
 	return this->round_num;
 }

@@ -39,6 +39,17 @@ class Deck {
 		Deck(vector<Card*> pre_loaded_deck);
 
 		/*
+ 		* Function Name: ~Deck
+		* Purpose: Destructor for Deck class. 
+ 		* Params: None
+ 		* Returns: None
+ 		* Local Vars: None
+ 		* Algo: None
+ 		* Assistance: None
+ 		*/
+	 	~Deck();
+
+		/*
 		* Function Name: draw_card()
 		* Purpose: Will draw a card off the top of the deck and return that card to be handled by player.
 		* Params: None
