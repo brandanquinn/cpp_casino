@@ -1,12 +1,4 @@
-/*
-		Function Name:
-		Purpose:
-		Parameters:
-		Return Value:
-		Local Variables:
-		Algorithm:
-		Assistance Received:
-		*/#include <iostream>
+#include <iostream>
 #include <string>
 #include <vector>
 #include <utility>
@@ -110,10 +102,12 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 						return;
 					}
 				
-				} else {
+				} else if (move_pair.second == 'h') {
 					move_pair = player_one->get_help();
 					cout << "Getting help from AI." << endl;
 					possible_move_selected = make_move(move_pair.second, move_pair.first, player_one);
+				} else {
+					cout << "Current Game Deck: " << this->game_deck->get_deck_string() << endl;
 				}
 			}
 		}
@@ -145,10 +139,12 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 						return; 
 					}
 				
-				} else {
+				} else if (move_pair.second == 'h') {
 					// get help
 					move_pair = player_two->get_help();
 					possible_move_selected = make_move(move_pair.second, move_pair.first, player_two);
+				} else {
+					cout << "Current Game Deck: " << this->game_deck->get_deck_string() << endl;
 				}
 			}
 		}
