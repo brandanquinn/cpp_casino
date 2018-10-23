@@ -256,6 +256,29 @@ class Round {
 		bool build(Card* card_selected, Player* game_player);
 
 		/*
+		Function Name: make_increase
+		Purpose: Make the increase build move that AI selected, if player is human - asks them if they want to make move.
+		Parameters:
+			Card* card_selected, pointer to card selected to increase build with.
+			Player* game_player, player making move
+		Return Value: Boolean value determining whether or not move can be made.
+		Local variables:
+			vector<Build*> current_builds, vector of build objects currently on the table
+			vector<Card*> player_hand, vector of cards in player's hand
+		Algorithm:
+			1. Get list of current builds on the table
+			2. For each build in filtered list:
+				a. If build belongs to opponent:
+					i. For each card in player's hand:
+						- If Build sum + card_selected value == value of card in your hand:
+							- Ask user if they want to make move
+								- If yes, update model and return true
+			3. Return false
+		Assistance Received: None
+		*/
+		bool make_increase(Card* card_selected, Player* game_player);
+
+		/*
 		Function Name: increase_build
 		Purpose: Allow user to increase an opponent's build and claim it.
 		Parameters:

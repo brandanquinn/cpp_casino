@@ -337,6 +337,28 @@ class Player {
 		string player_string;
 		bool captured_last;
 
+
+		/*
+		Function Name: assess_increase
+		Purpose: Called by get_help to assess whether or not player can increase and claim opponent's build.
+		Parameters:
+			Card* card_selected, pointer to card selected to increase with from hand.
+		Return Value: An integer heuristic value based on what the opposing build can be increased to, 0 otherwise.
+		Local Variables:
+			vector<Build*> current_builds, vector of current builds on the table
+			vector<Card*> player_hand, vector of cards in players hand.
+		Algorithm:
+			1. Get list of current builds on the table
+			2. For each build in filtered list:
+				a. If build belongs to opponent:
+					i. For each card in player's hand:
+						- If Build sum + card_selected value == value of card in your hand:
+							- Return value of card in hand
+			3. Return 0
+		Assistance Received: None
+		*/
+		int assess_increase(Card* card_selected);
+
 		/*
 		Function Name: assess_capture
 		Purpose: Called by get_help to assess the viability / possibility of capture moves to be made.

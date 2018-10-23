@@ -169,8 +169,10 @@ bool Round::make_move(char move_type, Card* card_selected, Player* game_player) 
 		cout << "AI called by: " << game_player->get_player_string() << " decided to start a new build for or extend a current build using: " << card_selected->get_card_string() << endl;
 	} else if (move_type == 'c') {
 		cout << "AI called by: " << game_player->get_player_string() << " couldn't find any cards to build with, decided to capture with: " << card_selected->get_card_string() << endl;
-	} else {
+	} else if (move_type == 't') {
 		cout << "AI called by: " << game_player->get_player_string() << " found no captures or builds, trailing the lowest value card: " << card_selected->get_card_string() << endl;
+	} else {
+		cout << "AI called by: " << game_player->get_player_string() << " decided to increase and claim an opponent's build using: " << card_selected->get_card_string() << endl;
 	}
 
 	if (game_player->get_player_string() == "Human") {
@@ -197,6 +199,8 @@ bool Round::make_move(char move_type, Card* card_selected, Player* game_player) 
 	} else if (move_type == 't') {
 		return trail(card_selected, game_player);
 
+	} else {
+		return make_increase(card_selected, game_player);
 	}
 
 	return false;
@@ -635,6 +639,51 @@ bool Round::increase_build(Card* card_selected, Player* game_player) {
 
 	return false;
 	
+}
+
+bool Round::make_increase(Card* card_selected, Player* game_player) {
+	vector<Build*> current_builds = this->game_table->get_current_builds();
+	vector<Card*> player_hand = game_player->get_hand();
+
+	cout << "AI trying to increase build." << endl;
+
+	for (int i = 0; i < current_builds.size(); i++) {
+		if (current_builds[i]->get_build_owner() != game_player->get_player_string()) {
+			// Opponent's build:
+			for (int j = 0; j < player_hand.size(); j++) {
+				if (current_builds[i]->get_sum() + card_selected->get_value() == player_hand[j]->get_value() && !current_builds[i]->get_multi_build()) {
+					char user_input = ' ';
+					if (game_player->get_player_string() == "Human") {
+						while (user_input != 'y' && user_input != 'n') {
+							cout << "Would you like to increase opponents build: " << current_builds[i]->get_build_string_for_view() << " with: " << card_selected->get_card_string() << "? (y\n) ";
+							cin >> user_input;
+
+							if (user_input != 'y' && user_input != 'n')
+								cout << "Invalid input. Try again." << endl;
+						}
+					} else {
+						user_input = 'y';
+					}
+
+					if (user_input == 'y') {
+						game_player->discard(card_selected);
+						current_builds[i]->get_sum_card()->set_locked_to_build(false);
+						current_builds[i]->set_sum_card(player_hand[j]);
+						player_hand[j]->set_locked_to_build(true);
+						current_builds[i]->set_build_owner(game_player->get_player_string());
+						current_builds[i]->add_to_build(card_selected);
+						card_selected->set_build_buddies(current_builds[i]->get_total_build_cards()[0]);
+						return true;
+					}
+
+				}
+			}
+		}
+	}
+
+	cout << "There are no builds you can successfully increase." << endl;
+
+	return false;
 }
 
 bool Round::trail(Card* card_played, Player* game_player) {

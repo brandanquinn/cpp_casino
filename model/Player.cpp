@@ -115,8 +115,20 @@ pair<Card*, char> Player::get_help() {
 	// 4. Trail the card with the lowest value.
 	pair<Card*, char> move_pair;
 
-	int max_build_index = 0, max_capture_index = 0;
-	vector<int> build_values, capture_values;
+	int max_increase_index = 0, max_build_index = 0, max_capture_index = 0;
+	vector<int> increase_values, build_values, capture_values;
+
+	for (int i = 0; i < hand.size(); i++) {
+		increase_values.push_back(assess_increase(hand[i]));
+	}
+
+	max_increase_index = get_max_score(increase_values);
+
+	if (increase_values[max_increase_index] != 0) {
+		move_pair.first = hand[max_increase_index];
+		move_pair.second = 'i';
+		return move_pair;
+	}
 
 	for (int i = 0; i < hand.size(); i++) {
 		build_values.push_back(assess_builds(hand[i]));
@@ -154,6 +166,23 @@ pair<Card*, char> Player::get_help() {
 	}
 
 	return move_pair;
+}
+
+int Player::assess_increase(Card* card_selected) {
+	vector<Build*> current_builds = this->game_table->get_current_builds();
+
+	for (int i = 0; i < current_builds.size(); i++) {
+		if (current_builds[i]->get_build_owner() != get_player_string()) {
+			// Opponent's build:
+			for (int j = 0; j < this->hand.size(); j++) {
+				if (current_builds[i]->get_sum() + card_selected->get_value() == this->hand[j]->get_value() && !current_builds[i]->get_multi_build()) {
+					return this->hand[j]->get_value();
+				}
+			}
+		}
+	}
+
+	return 0;	
 }
 
 int Player::assess_capture(Card* card_played) {
