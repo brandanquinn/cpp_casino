@@ -130,16 +130,6 @@ bool Tournament::load_saved_game() {
 		return false;
 	}
 
-	// cout << "Build strings: ";
-	// for (int i = 0; i < build_strings.size(); i++)
-	// 	cout << build_strings[i] << " ";
-	// cout << endl;
-
-	// cout << "Build objects: ";
-	// for (int i = 0; i < current_builds.size(); i++)
-	// 	cout << current_builds[i]->get_build_string_for_view() << " ";
-	// cout << endl;
-
 	table_cards = modify_table_cards(table_cards, current_builds);
 
 	// set up human player
@@ -274,7 +264,6 @@ vector<Build*> Tournament::get_build_objects(vector<string> build_strings, strin
 
 	for (int i = 0; i < owner_list.size(); i++) {
 		build_str_val = get_build_str_val(build_strings[i]);
-		cout << "build string values: " << build_str_val << endl;
 		if (owner_list[i] == "Human") {
 			for (int j = 0; j < player_hand.size(); j++) {
 				if (player_hand[j]->get_value() == build_str_val) {
