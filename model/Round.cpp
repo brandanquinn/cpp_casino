@@ -106,8 +106,10 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 					move_pair = player_one->get_help();
 					cout << "Getting help from AI." << endl;
 					possible_move_selected = make_move(move_pair.second, move_pair.first, player_one);
-				} else {
+				} else if (move_pair.second == 'd') {
 					cout << "Current Game Deck: " << this->game_deck->get_deck_string() << endl;
+				} else {
+					possible_move_selected = increase_build(move_pair.first, player_one);
 				}
 			}
 		}
@@ -143,8 +145,10 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 					// get help
 					move_pair = player_two->get_help();
 					possible_move_selected = make_move(move_pair.second, move_pair.first, player_two);
-				} else {
+				} else if (move_pair.second == 'd') {
 					cout << "Current Game Deck: " << this->game_deck->get_deck_string() << endl;
+				} else {
+					possible_move_selected = increase_build(move_pair.first, player_two);
 				}
 			}
 		}
@@ -462,19 +466,70 @@ Table* Round::get_game_table() const {
 	return this->game_table;
 }
 
+bool Round::increase_build(Card* card_selected, Player* game_player) {
+	// 1. Get list of current builds on the table
+	// 2. For each build in filtered list:
+	//	a. If build belongs to opponent:
+	// 		i. For each card in player's hand:
+	// 			- If Build sum + card_selected value == value of card in your hand:
+	// 				- Ask user if they want to make move
+	// 					- If yes, update model and return true
+	// 3. Return false
+
+	vector<Build*> current_builds = this->game_table->get_current_builds();
+	vector<Card*> player_hand = game_player->get_hand();
+
+	cout << "Attempting to increase build." << endl;
+
+	for (int i = 0; i < current_builds.size(); i++) {
+		if (current_builds[i]->get_build_owner() != game_player->get_player_string()) {
+			cout << "found an opponent's build." << endl;
+			// Opponent's build:
+			for (int j = 0; j < player_hand.size(); j++) {
+				if (current_builds[i]->get_sum() + card_selected->get_value() == player_hand[j]->get_value() && !current_builds[i]->get_multi_build()) {
+					char user_input = ' ';
+					while (user_input != 'y' && user_input != 'n') {
+						cout << "Would you like to increase opponents build: " << current_builds[i]->get_build_string_for_view() << " with: " << card_selected->get_card_string() << "? (y\n) ";
+						cin >> user_input;
+
+						if (user_input != 'y' && user_input != 'n')
+							cout << "Invalid input. Try again." << endl;
+					}
+					if (user_input == 'y') {
+						game_player->discard(card_selected);
+						current_builds[i]->get_sum_card()->set_locked_to_build(false);
+						current_builds[i]->set_sum_card(player_hand[j]);
+						player_hand[j]->set_locked_to_build(true);
+						current_builds[i]->set_build_owner(game_player->get_player_string());
+						current_builds[i]->add_to_build(card_selected);
+						card_selected->set_build_buddies(current_builds[i]->get_total_build_cards()[0]);
+						return true;
+					}
+				}
+			}
+		}
+	}
+
+	cout << "There are no builds you can successfully increase." << endl;
+
+	return false;
+	
+}
+
 bool Round::trail(Card* card_played, Player* game_player) {
 	// Remove card from players hand
 	// Add card to table_cards
 	// Update view
-	if (card_played->get_locked_to_build()) {
-		cout << "Card is currently locked to build, must capture or extend build." << endl;
-		return false;
+
+	if (make_capture(card_played, game_player, false)) {
+			cout << "Capture can be made with this card, you cannot trail." << endl;
+			return false;
 	}
 
 	vector<Card*> player_hand = game_player->get_hand();
 	for (int i = 0; i < player_hand.size(); i++) {
-		if (make_capture(player_hand[i], game_player, false) || make_build(player_hand[i], game_player, false)) {
-			cout << "Capture or Build can be made, you cannot trail." << endl;
+		if (player_hand[i]->get_locked_to_build()) {
+			cout << "You currently own a build, you cannot trail." << endl;
 			return false;
 		}
 	}

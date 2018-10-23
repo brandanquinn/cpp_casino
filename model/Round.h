@@ -256,6 +256,27 @@ class Round {
 		bool build(Card* card_selected, Player* game_player);
 
 		/*
+		Function Name: increase_build
+		Purpose: Allow user to increase an opponent's build and claim it.
+		Parameters:
+			Card* card_selected, Pointer to card selected to increase build with.
+			Player* game_player, Player making move
+		Return Value: Boolean value determining whether or not move can be made.
+		Local Variables:
+		Algorithm:
+			1. Get list of current builds on the table
+			2. For each build in filtered list:
+				a. If build belongs to opponent:
+					i. For each card in player's hand:
+						- If Build sum + card_selected value == value of card in your hand:
+							- Ask user if they want to make move
+								- If yes, update model and return true
+			3. Return false
+		Assistance Received: None
+		*/
+		bool increase_build(Card* card_selected, Player* game_player);
+
+		/*
 		Function Name: filter_build_options
 		Purpose: Filter cards out of a vector that cannot be used in build
 		Parameters: 

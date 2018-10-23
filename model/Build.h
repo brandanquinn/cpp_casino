@@ -199,6 +199,24 @@ class Build {
 		*/
 		string get_build_string_for_view() const;
 
+		/*
+		Function Name: add_to_build
+		Purpose: Add a card to an existing build and increase its sum accordingly.
+		Parameters: 
+			Card* increasing_card, card to increase existing build with.
+		Return Value: None
+		Local Variables:
+			int sum, variable to keep track of new build sum
+		Algorithm:
+			1. Add increasing_card to build cards
+			2. Initialize sum variable
+			3. For each card in the build card set:
+				a. Add value of card to sum variable
+			4. Set build sum to sum variable
+		Assistance Received: None
+		*/
+		void add_to_build(Card* increasing_card);
+
 	private:
 		bool multi_build;
 		int sum;

@@ -20,7 +20,10 @@ Build::Build(vector<vector<Card*>> a_multi_build_cards, int a_sum, Card* a_sum_c
 	set_sum(a_sum);
 	set_sum_card(a_sum_card);
 	set_build_owner(a_build_owner);
-	set_multi_build(true);
+	if (a_multi_build_cards.size() > 1)
+		set_multi_build(true);
+	else
+		set_multi_build(false);
 }
 
 bool Build::get_multi_build() const {
@@ -96,6 +99,14 @@ string Build::get_build_string_for_view() const {
 	return build_str;
 }
 
+void Build::add_to_build(Card* increasing_card) {
+	this->total_build_cards[0].push_back(increasing_card);
+	int sum = 0;
+
+	for (int i = 0; i < total_build_cards[0].size(); i++)
+		sum += total_build_cards[0][i]->get_value();
+	set_sum(sum);
+}
 
 
 

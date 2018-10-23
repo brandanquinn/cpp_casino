@@ -24,10 +24,10 @@ pair<Card*, char> Human::play() {
 	pair<Card*, char> move_pair;
 	vector<Card*> player_hand = Player::get_hand();
 	
-	while (move_option != 't' && move_option != 'b' && move_option != 'c' && move_option != 's' && move_option != 'h' && move_option != 'd') {
-		cout << "Enter (t) to trail, (b) to build, (c) to capture, (s) to save current game, (h) to get help, or (d) to print current deck: ";
+	while (move_option != 't' && move_option != 'b' && move_option != 'c' && move_option != 's' && move_option != 'h' && move_option != 'd' && move_option != 'i') {
+		cout << "Enter (t) to trail, (b) to build, (i) to increase build, (c) to capture, (s) to save current game, (h) to get help, or (d) to print current deck: ";
 		cin >> move_option; 
-		if (move_option != 't' && move_option != 'b' && move_option != 'c' && move_option != 's' && move_option != 'h' && move_option != 'd') {
+		if (move_option != 't' && move_option != 'b' && move_option != 'c' && move_option != 's' && move_option != 'h' && move_option != 'd' && move_option != 'i') {
 			cout << "You entered: " << move_option << endl;
 			cout << "Incorrect command entered. Try again." << endl;
 		}		
@@ -46,6 +46,10 @@ pair<Card*, char> Human::play() {
 		int card_num = get_card_index('b');
 		move_pair.first = player_hand[card_num];
 		cout << player_hand[card_num]->get_card_string() << " selected. Building towards value: " << player_hand[card_num]->get_value() << endl;
+	} else if (move_option == 'i') {
+		// Select card to increase build with
+		int card_num = get_card_index('i');
+		move_pair.first = player_hand[card_num];
 	} else {
 		move_pair.first = new Card;
 	}
@@ -66,6 +70,9 @@ int Human::get_card_index(char move_type) {
 				break;
 			case 'b':
 				cout << "Which card would you like to start or continue a build with? (Enter # of card position, leftmost being 1): ";
+				break;
+			case 'i':
+				cout << "Which card would you like to increase and claim and opponent's build with? (Enter # of card position, leftmost being 1): ";
 				break;
 			default:
 				cout << "Which card would you like to add to the build? (Enter # of card position, leftmost being 1): ";
