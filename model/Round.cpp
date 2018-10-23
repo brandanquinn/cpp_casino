@@ -173,6 +173,20 @@ bool Round::make_move(char move_type, Card* card_selected, Player* game_player) 
 		cout << "AI called by: " << game_player->get_player_string() << " found no captures or builds, trailing the lowest value card: " << card_selected->get_card_string() << endl;
 	}
 
+	if (game_player->get_player_string() == "Human") {
+		char user_input = ' ';
+		while (user_input != 'y' && user_input != 'n') {
+			cout << "Would you like to continue making move AI recommended? (y/n) ";
+			cin >> user_input;
+
+			if (user_input != 'y' && user_input != 'n')
+				cout << "Invalid input. Try again." << endl;
+		}
+
+		if (user_input == 'n')
+			return false;
+	}
+
 
 	if (move_type == 'c') {
 		return make_capture(card_selected, game_player, true);
@@ -199,6 +213,29 @@ bool Round::make_capture(Card* card_selected, Player* game_player, bool making_c
 		}
 	}
 
+	if (game_player->get_player_string() == "Human" && !capturable_builds.empty()) {
+		cout << "AI found these builds to capture: " << endl;
+		for (int i = 0; i < capturable_builds.size(); i++)
+			cout << capturable_builds[i]->get_build_string_for_view() << endl;
+		
+		char user_input = ' ';
+		while (user_input != 'y' && user_input != 'n') {
+			cout << "Would you like to capture those builds? (y/n) ";
+			cin >> user_input;
+
+			if (user_input != 'y' && user_input != 'n')
+				cout << "Invalid input. Try again." << endl;
+		}
+
+		if (user_input == 'n' && card_selected->get_locked_to_build()) {
+			cout << "Cannot make capture move without capturing build." << endl;
+			return false;
+		} else if (user_input == 'n') {
+			cout << "Builds will not be captured." << endl;
+			capturable_builds.clear();
+		}
+	}
+
 	int played_value = card_selected->get_value();
 	vector<Card*> avail_cards = this->game_table->get_table_cards();
 	vector<Card*> capturable_cards;
@@ -208,6 +245,27 @@ bool Round::make_capture(Card* card_selected, Player* game_player, bool making_c
 			capturable_cards.push_back(avail_cards[i]);
 		}
 	}	
+
+	if (game_player->get_player_string() == "Human" && !capturable_cards.empty()) {
+		cout << "List of cards to be captured: ";
+		for (int i = 0; i < capturable_cards.size(); i++)
+			cout << capturable_cards[i]->get_card_string() << " ";
+		cout << endl;
+
+		char user_input = ' ';
+		while (user_input != 'y' && user_input != 'n') {
+			cout << "Would you like to capture those cards? (y/n) ";
+			cin >> user_input;
+
+			if (user_input != 'y' && user_input != 'n')
+				cout << "Invalid input. Try again." << endl;
+		}
+
+		if (user_input == 'n') {
+			cout << "Cannot make capture move without capturing same value cards on table." << endl;
+			return false;
+		}
+	}
 	// Iterate through avail_cards vector
 	// Take element i and  
 	vector<Card*> sub_set;
@@ -246,6 +304,29 @@ bool Round::make_capture(Card* card_selected, Player* game_player, bool making_c
 		// remove cards in selected_sets from capturable_sets
 		remove_selected_set(capturable_sets, capturable_sets[best_set_index]);	
 	} 	
+
+	if (game_player->get_player_string() == "Human" && !selected_sets.empty()) {
+		cout << "Sets selected for capture by AI: " << endl;
+		for (int i = 0; i < selected_sets.size(); i++) {
+			for (int j = 0; j < selected_sets[i].size(); j++)
+				cout << selected_sets[i][j]->get_card_string() << " ";
+			cout << endl;
+		}
+
+		char user_input = ' ';
+		while (user_input != 'y' && user_input != 'n') {
+			cout << "Would you like to capture sets recommended by AI? (y/n) ";
+			cin >> user_input;
+
+			if (user_input != 'y' && user_input != 'n')
+				cout << "Invalid input. Try again." << endl;
+		}
+
+		if (user_input == 'n') {
+			cout << "Sets will not be captured" << endl;
+			selected_sets.clear();
+		}
+	}
 
 	if (capturable_builds.empty() && selected_sets.empty() && capturable_cards.empty())
 		return false;
@@ -344,6 +425,25 @@ bool Round::create_build(Card* card_selected, Card* card_played, bool extending_
 
 			// create build and update model
 			if (making_changes) {
+				if (game_player->get_player_string() == "Human") {
+					cout << "The AI found this possible build: ";
+					cout << "[ ";
+					for (int i = 0; i < build_cards.size(); i++) {
+						cout << build_cards[i]->get_card_string() << " ";
+					}
+					cout << "]" << endl;
+					char user_input = ' ';
+					while (user_input != 'y' && user_input != 'n') {
+						cout << "Would you like to create the build that AI recommended? (y/n) ";
+						cin >> user_input;
+
+						if (user_input != 'y' && user_input != 'n')
+							cout << "Invalid input. Try again." << endl;
+					}
+
+					if (user_input == 'n')
+						return false;
+				}
 				Build* b1 = new Build(build_cards, selected_value, card_selected, game_player->get_player_string());
 				this->game_table->add_build(b1);
 				card_played->set_part_of_build(true);
@@ -360,6 +460,30 @@ bool Round::create_build(Card* card_selected, Card* card_played, bool extending_
 			// create build and update model
 			if (making_changes) {
 				Build* b1 = get_correct_build(card_selected);
+
+				if (game_player->get_player_string() == "Human") {
+					cout << "The AI decided to extend this build: ";
+					cout << b1->get_build_string_for_view();
+					cout << " with the following build: ";
+					cout << "[ ";
+					for (int i = 0; i < build_cards.size(); i++) {
+						cout << build_cards[i]->get_card_string() << " ";
+					}
+					cout << "]" << endl;
+
+					char user_input = ' ';
+					while (user_input != 'y' && user_input != 'n') {
+						cout << "Would you like to create the build that AI recommended? (y/n) ";
+						cin >> user_input;
+
+						if (user_input != 'y' && user_input != 'n')
+							cout << "Invalid input. Try again." << endl;
+					}
+
+					if (user_input == 'n')
+						return false;
+				}
+
 				b1->extend_build(build_cards);
 				card_played->set_part_of_build(true);
 				card_played->set_build_buddies(build_cards);
@@ -479,11 +603,8 @@ bool Round::increase_build(Card* card_selected, Player* game_player) {
 	vector<Build*> current_builds = this->game_table->get_current_builds();
 	vector<Card*> player_hand = game_player->get_hand();
 
-	cout << "Attempting to increase build." << endl;
-
 	for (int i = 0; i < current_builds.size(); i++) {
 		if (current_builds[i]->get_build_owner() != game_player->get_player_string()) {
-			cout << "found an opponent's build." << endl;
 			// Opponent's build:
 			for (int j = 0; j < player_hand.size(); j++) {
 				if (current_builds[i]->get_sum() + card_selected->get_value() == player_hand[j]->get_value() && !current_builds[i]->get_multi_build()) {

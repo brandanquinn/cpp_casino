@@ -128,15 +128,6 @@ bool Tournament::load_saved_game() {
 		return false;
 	}
 
-	cout << "Current builds: " << endl;
-	for (int i = 0; i < current_builds.size(); i++) {
-		if (current_builds[i]->get_multi_build())
-			cout << "This single build is a fucking multi-build..." << endl;
-		else
-			cout << "Registered as single build, gonna have to check some things out." << endl;
-		cout << "Build in question: " << current_builds[i]->get_build_string_for_view() << endl;
-	}
-
 	table_cards = modify_table_cards(table_cards, current_builds);
 
 	// set up human player
