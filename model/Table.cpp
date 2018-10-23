@@ -117,17 +117,18 @@ void Table::remove_from_table_builds(vector<Card*> cards_to_remove) {
 	// Look for 
 	vector<vector<Card*>> builds_to_erase;
 	bool build_erased = false;
-	for (int i = 0; i < table_builds.size(); i++) {
+	for (int i = 0; i < this->table_builds.size(); i++) {
 		build_erased = false;
-		for (int j = 0; j < table_builds[i].size(); j++) {
-			for (int k = 0; k < cards_to_remove.size(); k++)
-				if (table_builds[i][j]->get_card_string() == cards_to_remove[i]->get_card_string() && !build_erased) {
+		for (int j = 0; j < this->table_builds[i].size(); j++) {
+			for (int k = 0; k < cards_to_remove.size(); k++) {
+				if (table_builds[i][j]->get_card_string() == cards_to_remove[k]->get_card_string() && !build_erased) {
 					builds_to_erase.push_back(table_builds[i]);
 					build_erased = true;
 				}
+			}
 		}
 	}
-	
+
 	for (int i = 0; i < builds_to_erase.size(); i++)
 		table_builds.erase(remove(table_builds.begin(), table_builds.end(), builds_to_erase[i]), table_builds.end());
 }

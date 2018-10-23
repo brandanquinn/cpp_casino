@@ -234,7 +234,6 @@ int Player::assess_capture(Card* card_played) {
 		}
 	}
 	for (int i = 0; i < capturable_builds.size(); i++) {
-		capturable_builds[i]->get_sum_card()->set_locked_to_build(false);
 		vector<vector<Card*>> temp_build_cards = capturable_builds[i]->get_total_build_cards();
 		for (int j = 0; j < temp_build_cards.size(); j++) {
 			for (int k = 0; k < temp_build_cards[j].size(); k++) {

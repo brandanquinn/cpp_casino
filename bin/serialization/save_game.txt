@@ -1,19 +1,19 @@
-Round: 1
+Round: 2
 
 Computer: 
-	 Score: 0
-	 Hand: HX SA C6 
-	 Pile: 
+	 Score: 5
+	 Hand: C5 DK S5 
+	 Pile: H2 D3 H5 HJ D5 H6 D8 C8 S8 C9 D9 
 
 Human: 
-	 Score: 0
-	 Hand: H8 C5 H7 HQ 
-	 Pile: 
+	 Score: 9
+	 Hand: SK SA SQ 
+	 Pile: S9 H3 S4 C2 CA DA H7 S7 
 
-Table: [ S5 S2 H3 ] CQ D7 
+Table: [ C4 H9 ] [ H8 C6 ] CK H4 D7 HQ 
 
-Build Owner: [ S5 S2 H3 ] Computer 
+Build Owner: [ C4 H9 ] Computer [ H8 C6 ] Human
 
-Deck: C8 HA DJ S9 HK SX D8 D9 SQ C3 H6 DX S4 D6 D4 SJ S6 C2 S7 H2 CJ D3 CA SK S3 C7 D5 D2 C4 CK C9 DK DQ CX S8 H4 HJ H5 H9 DA 
+Deck: DX DJ S3 D6 SX CX S6 SJ DQ HA C7 CJ D2 S2 CQ C3 D4 HK 
 
 Next Player: Human

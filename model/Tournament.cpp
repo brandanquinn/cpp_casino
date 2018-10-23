@@ -46,16 +46,18 @@ void Tournament::show_start_screen() {
 }
 
 bool Tournament::load_saved_game() {
-	const char * files[2] = {"serialization/save.txt", "serialization/save_game.txt"};
+	const char * files[4] = {"serialization/case1.txt", "serialization/case2.txt", "serialization/case3.txt", "serialization/save_game.txt"};
 	char *file_name;
 	int input = 0;
-	cout << "(1) serialization test file" << endl;
-	cout << "(2) saved game file" << endl;
+	cout << "(1) serialization case 1" << endl;
+	cout << "(2) serialization case 2" << endl;
+	cout << "(3) serialization case 3" << endl;
+	cout << "(4) saved game file" << endl;
 
-	while (input != 1 && input != 2) {
+	while (input != 1 && input != 2 && input != 3 && input != 4) {
 		cout << "Which file would you like to load: ";
 		cin >> input;
-		if (input != 1 && input != 2) cout << "Invalid input. Try again." << endl;
+		if (input != 1 && input != 2 && input != 3 && input != 4) cout << "Invalid input. Try again." << endl;
 	}
 	ifstream save_file(files[input-1]);
 	if (!save_file.good()) return false;
@@ -128,6 +130,16 @@ bool Tournament::load_saved_game() {
 		return false;
 	}
 
+	// cout << "Build strings: ";
+	// for (int i = 0; i < build_strings.size(); i++)
+	// 	cout << build_strings[i] << " ";
+	// cout << endl;
+
+	// cout << "Build objects: ";
+	// for (int i = 0; i < current_builds.size(); i++)
+	// 	cout << current_builds[i]->get_build_string_for_view() << " ";
+	// cout << endl;
+
 	table_cards = modify_table_cards(table_cards, current_builds);
 
 	// set up human player
@@ -145,7 +157,9 @@ bool Tournament::load_saved_game() {
 	Round game_round(rounds_played, game_players, deck_list, table_cards, current_builds);
 	this->current_round = &game_round;
 	this->current_round->start_game(human_next, true);
-	end_round();
+	if (game_players[0]->get_hand().size() == 0 && game_players[1]->get_hand().size() == 0) {
+		end_round();
+	}
 	return true;
 }
 
@@ -260,6 +274,7 @@ vector<Build*> Tournament::get_build_objects(vector<string> build_strings, strin
 
 	for (int i = 0; i < owner_list.size(); i++) {
 		build_str_val = get_build_str_val(build_strings[i]);
+		cout << "build string values: " << build_str_val << endl;
 		if (owner_list[i] == "Human") {
 			for (int j = 0; j < player_hand.size(); j++) {
 				if (player_hand[j]->get_value() == build_str_val) {
@@ -267,7 +282,6 @@ vector<Build*> Tournament::get_build_objects(vector<string> build_strings, strin
 					// Create build here:
 					build_list.push_back(new Build(get_build_cards(build_strings[i]), build_str_val, player_hand[j], "Human"));
 					player_hand[j]->set_locked_to_build(true);
-					return build_list;
 				}
 			}
 		} else {
@@ -277,11 +291,12 @@ vector<Build*> Tournament::get_build_objects(vector<string> build_strings, strin
 					// Create build here:
 					build_list.push_back(new Build(get_build_cards(build_strings[i]), build_str_val, computer_hand[j], "Computer"));
 					computer_hand[j]->set_locked_to_build(true);
-					return build_list;
 				}
 			}
 		}
 	}
+
+	return build_list;
 }
 
 vector<vector<Card*>> Tournament::get_build_cards(string build_str) {

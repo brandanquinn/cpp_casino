@@ -73,7 +73,6 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 	this->game_view->update_view(this->game_players, this->game_table);
 
 	while (!this->game_deck->is_empty() || !(player_one->hand_is_empty() && player_two->hand_is_empty())) {	
-		// cout << "Seg fault occurs before move selection." << endl;
 		if ((player_one->hand_is_empty() && player_two->hand_is_empty()) && !this->game_deck->is_empty()) { 
 			deal_hands(game_players);
 			this->game_view->update_view(this->game_players, this->game_table);
@@ -113,9 +112,20 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 				}
 			}
 		}
+		vector<Build*> current_builds = this->game_table->get_current_builds();
+		for (int i = 0; i < current_builds.size(); i++) {
+			cout << "Capture card of build: " << current_builds[i]->get_sum_card()->get_card_string() << endl;
+			if (current_builds[i]->get_sum_card()->get_locked_to_build()) {
+				cout << "SA is correctly locked to build, wtf." << endl;
+			} else {
+				cout << "SA is not locked to a build, this shit cray." << endl;
+			}
+		}
+
 		player_one->set_is_playing(false);
 		player_two->set_is_playing(true);
 		this->game_view->update_view(this->game_players, this->game_table);
+		
 		possible_move_selected = false;
 		while (!possible_move_selected && !player_two->hand_is_empty()) {
 			pair<Card*, char> move_pair = player_two->play();
@@ -248,7 +258,7 @@ bool Round::make_capture(Card* card_selected, Player* game_player, bool making_c
 		if (avail_cards[i]->get_value() == played_value) {
 			capturable_cards.push_back(avail_cards[i]);
 		}
-	}	
+	}
 
 	if (game_player->get_player_string() == "Human" && !capturable_cards.empty()) {
 		cout << "List of cards to be captured: ";
@@ -270,6 +280,7 @@ bool Round::make_capture(Card* card_selected, Player* game_player, bool making_c
 			return false;
 		}
 	}
+
 	// Iterate through avail_cards vector
 	// Take element i and  
 	vector<Card*> sub_set;
@@ -614,7 +625,7 @@ bool Round::increase_build(Card* card_selected, Player* game_player) {
 				if (current_builds[i]->get_sum() + card_selected->get_value() == player_hand[j]->get_value() && !current_builds[i]->get_multi_build()) {
 					char user_input = ' ';
 					while (user_input != 'y' && user_input != 'n') {
-						cout << "Would you like to increase opponents build: " << current_builds[i]->get_build_string_for_view() << " with: " << card_selected->get_card_string() << "? (y\n) ";
+						cout << "Would you like to increase opponents build: " << current_builds[i]->get_build_string_for_view() << " with: " << card_selected->get_card_string() << "? (y/n) ";
 						cin >> user_input;
 
 						if (user_input != 'y' && user_input != 'n')
@@ -645,7 +656,7 @@ bool Round::make_increase(Card* card_selected, Player* game_player) {
 	vector<Build*> current_builds = this->game_table->get_current_builds();
 	vector<Card*> player_hand = game_player->get_hand();
 
-	cout << "AI trying to increase build." << endl;
+	cout << "making increase for some reason..." << endl;
 
 	for (int i = 0; i < current_builds.size(); i++) {
 		if (current_builds[i]->get_build_owner() != game_player->get_player_string()) {
@@ -655,7 +666,7 @@ bool Round::make_increase(Card* card_selected, Player* game_player) {
 					char user_input = ' ';
 					if (game_player->get_player_string() == "Human") {
 						while (user_input != 'y' && user_input != 'n') {
-							cout << "Would you like to increase opponents build: " << current_builds[i]->get_build_string_for_view() << " with: " << card_selected->get_card_string() << "? (y\n) ";
+							cout << "Would you like to increase opponents build: " << current_builds[i]->get_build_string_for_view() << " with: " << card_selected->get_card_string() << "? (y/n) ";
 							cin >> user_input;
 
 							if (user_input != 'y' && user_input != 'n')
