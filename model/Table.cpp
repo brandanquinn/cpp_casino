@@ -211,35 +211,14 @@ bool Table::is_card_in_vector(vector<vector<Card*>> card_lists, string my_card_s
 }
 
 string Table::get_table_string() {
-	vector<Card*> table_card_list = get_flattened_card_list();
-	int mb_size = 0, build_size = 0;
-	bool in_mb = false, in_build = false;
 	string table_str = "";
-	
-	for (int i = 0; i < table_card_list.size(); i++) {
-		if (i == mb_size && in_mb) {
-			table_str += "] ";
-			in_mb = false;
-		} 
-		if (i == build_size && in_build) { 
-			table_str += "] ";
-			in_build = false;
-		}
 
-		if (is_part_of_multi_build(table_card_list[i]) && !in_mb) {
-			in_mb = true;
-			mb_size = i + get_size_of_multi_build(table_card_list[i]);
-			table_str += "[ ";
-		}
-		if (table_card_list[i]->get_part_of_build() && !in_build) {
-			in_build = true;
-			build_size = i + get_size_of_single_build(table_card_list[i]);
-			// cout << "build size for: " << table_card_list[i]->get_card_string() << " is: " << build_size << endl;
-			table_str += "[ ";
-		}
-		
-		table_str += table_card_list[i]->get_card_string() + " ";	
+	for (int i = 0; i < this->current_builds.size(); i++) {
+		table_str += this->current_builds[i]->get_build_string_for_view() + " ";
 	}
-
+	
+	for (int i = 0; i < this->table_cards.size(); i++) {
+		table_str += this->table_cards[i]->get_card_string() + " ";
+	}
 	return table_str;
 }
