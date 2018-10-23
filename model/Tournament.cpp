@@ -156,7 +156,7 @@ bool Tournament::load_saved_game() {
 
 	Round game_round(rounds_played, game_players, deck_list, table_cards, current_builds);
 	this->current_round = &game_round;
-	this->current_round->start_game(human_next, true);
+	this->current_round->start_game(human_next, true, vector<Card*>());
 	if (game_players[0]->get_hand().size() == 0 && game_players[1]->get_hand().size() == 0) {
 		end_round();
 	}
@@ -387,17 +387,72 @@ vector<Card*> Tournament::parse_cards_from_file(string line) {
 	return cards_vec;
 }
 
+vector<Card*> Tournament::get_deck_list() {
+	vector<Card*> temp_vec;
+	const char* deck_file = "serialization/deck.txt";
+
+	ifstream deck_parser(deck_file);
+
+	if (!deck_parser.good()) {
+		cout << "Deck file does not exist." << endl;
+		return temp_vec;
+	}
+
+	string line;
+	int line_count = 0;
+	if (deck_parser.is_open()) {
+		while (getline(deck_parser, line)) {
+			if (!line.empty()) {
+				temp_vec.push_back(new Card(line[0], line[1]));
+				line_count++;
+			}
+		}
+	}
+
+	if (line_count < 52) {
+		cout << "Invalid deck loaded. Check save file and try again." << endl;
+		return vector<Card*>();
+	} else {
+		return temp_vec;
+	}
+
+}
+
 void Tournament::start_round(bool first_round) {
 	this->rounds_played;	
 	Round game_round(rounds_played, game_players);
-	this->current_round = &game_round;	
+	this->current_round = &game_round;
+	vector<Card*> deck_list;
+
+	char user_input = ' ';
+	while (user_input != 'n') {
+		cout << "Would you like to load a deck from file? (y/n) ";
+		cin >> user_input;
+
+		if (user_input != 'y' && user_input != 'n') {
+			cout << "Invalid input. Try again." << endl;
+		}
+
+		if (user_input == 'y') {
+			deck_list = get_deck_list();
+			if (deck_list.empty()) {
+				cout << "Deck not properly loaded from file. Try again." << endl;
+			} else {
+				break;
+			}
+		}
+	}
+
+	
+	
+
 	if (first_round) {
-		this->current_round->start_game(coin_toss(), false);
+		this->current_round->start_game(coin_toss(), false, deck_list);
 	} else {
 		if (this->game_players[0]->get_captured_last())
-			this->current_round->start_game(true, false);
+			this->current_round->start_game(true, false, deck_list);
 		else
-			this->current_round->start_game(false, false);
+			this->current_round->start_game(false, false, deck_list);
 	}
 
 	if (game_players[0]->get_hand().size() == 0 && game_players[1]->get_hand().size() == 0) {

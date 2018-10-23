@@ -43,8 +43,12 @@ int Round::get_round_num() const {
 	return this->round_num;
 }
 
-void Round::start_game(bool human_is_first, bool loaded_game) {
+void Round::start_game(bool human_is_first, bool loaded_game, vector<Card*> deck_list) {
 	if (!loaded_game) {
+		if (!deck_list.empty()) {
+			delete this->game_deck;
+			this->game_deck = new Deck(deck_list);
+		}
 		deal_hands(game_players);
 		deal_to_table(game_table);
 	}
@@ -110,15 +114,6 @@ void Round::start_game(bool human_is_first, bool loaded_game) {
 				} else {
 					possible_move_selected = increase_build(move_pair.first, player_one);
 				}
-			}
-		}
-		vector<Build*> current_builds = this->game_table->get_current_builds();
-		for (int i = 0; i < current_builds.size(); i++) {
-			cout << "Capture card of build: " << current_builds[i]->get_sum_card()->get_card_string() << endl;
-			if (current_builds[i]->get_sum_card()->get_locked_to_build()) {
-				cout << "SA is correctly locked to build, wtf." << endl;
-			} else {
-				cout << "SA is not locked to a build, this shit cray." << endl;
 			}
 		}
 
@@ -655,8 +650,6 @@ bool Round::increase_build(Card* card_selected, Player* game_player) {
 bool Round::make_increase(Card* card_selected, Player* game_player) {
 	vector<Build*> current_builds = this->game_table->get_current_builds();
 	vector<Card*> player_hand = game_player->get_hand();
-
-	cout << "making increase for some reason..." << endl;
 
 	for (int i = 0; i < current_builds.size(); i++) {
 		if (current_builds[i]->get_build_owner() != game_player->get_player_string()) {

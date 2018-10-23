@@ -25,6 +25,7 @@ class Tournament {
 		vector<Card*> get_table_cards(string line);
 		vector<Card*> modify_table_cards(vector<Card*> table_cards_list, vector<Build*> current_builds);
 		void compute_player_scores();
+		vector<Card*> get_deck_list();
 
 	public:
 		Tournament();

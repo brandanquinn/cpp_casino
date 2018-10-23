@@ -75,6 +75,7 @@ class Round {
 		Parameters: 
 			bool human_is_first, boolean value representing whether or not human is playing first
 			bool loaded_game, boolean value representing whether or not game is loading from file
+			vector<Card*> deck_list, if player selects to load in seeded deck - round will create and use a new deck with this vector of cards
 		Return Value: None
 		Local Variables: 
 			bool possible_move_selected, keep track of whether or not to possible move has been selected by player
@@ -114,7 +115,7 @@ class Round {
 				a. Add loose cards on table to player_two's pile
 		Assistance: None
 		*/
-		void start_game(bool human_is_first, bool loaded_game);
+		void start_game(bool human_is_first, bool loaded_game, vector<Card*> deck_list);
 
 		/*
 		Function Name: deal_to_table
